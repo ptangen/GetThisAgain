@@ -25,15 +25,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.statusBarStyle = .lightContent // sets status bar text color white
         
         //let signInViewControllerInst = SignInViewController()
-        let scanViewControllerInst = ScanViewController()
-        //let myItemsViewControllerInst = MyItemsViewController()
+        //let scanViewControllerInst = ScanViewController()
+        let itemsTabViewControllerInst = ItemsTabViewController()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         if let window = self.window {
             window.backgroundColor = UIColor.white
-            //let navigationController = UINavigationController(rootViewController: signInViewControllerInst) // show signIn on startup
-            let navigationController = UINavigationController(rootViewController: scanViewControllerInst) // show signIn on startup
-            //let navigationController = UINavigationController(rootViewController: myItemsViewControllerInst) // show myItems on startup
+            //let navigationController = UINavigationController(rootViewController: signInViewControllerInst)
+            //let navigationController = UINavigationController(rootViewController: scanViewControllerInst)
+            let navigationController = UINavigationController(rootViewController: itemsTabViewControllerInst)
             navigationController.view.addSubview(statusBarBackground)
             navigationController.navigationBar.tintColor = UIColor.white
             
