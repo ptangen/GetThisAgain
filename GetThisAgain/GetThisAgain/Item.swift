@@ -10,16 +10,16 @@ import Foundation
 
 class Item {
     
-    let barcode: Int
-    let barcodeType: Constants.barcodeType
+    let barcode: String
+    //let barcodeType: Constants.barcodeType
     let name: String
     let categoryText: String
     let imageURL: String
     var shoppingList: Bool
     
-    init (barcode: Int, barcodeType: Constants.barcodeType, name: String, categoryText: String, imageURL: String, shoppingList: Bool) {
+    init (barcode: String, name: String, categoryText: String, imageURL: String, shoppingList: Bool) {
         self.barcode = barcode
-        self.barcodeType = barcodeType
+        //self.barcodeType = barcodeType
         self.name = name
         self.categoryText = categoryText
         self.imageURL = imageURL

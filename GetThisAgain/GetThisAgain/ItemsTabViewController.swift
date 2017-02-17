@@ -33,7 +33,6 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
         // Create MyItems Tab
         let tabMyItems = UITabBarItem(title: "My Items", image: UIImage(named: "sentiment_satisfied"), selectedImage: UIImage(named: "sentiment_satisfied"))
         self.myItemsViewControllerInst.tabBarItem = tabMyItems
-        //self.myItemsViewControllerInst.myItemsViewInst.setHeadingLabels()
         
         self.viewControllers = [myItemsViewControllerInst]
         

@@ -8,12 +8,13 @@
 
 import UIKit
 
-class MyItemsViewController: UIViewController {
+class MyItemsViewController: UIViewController, ScanViewDelegate {
 
     var myItemsViewInst = MyItemsView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.myItemsViewInst.delegate = self
         //self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
     }
     
@@ -29,9 +30,12 @@ class MyItemsViewController: UIViewController {
         self.title = "My Items"
     }
     
+    func openItemDetail(item: Item) {
+        print(item.barcode)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }

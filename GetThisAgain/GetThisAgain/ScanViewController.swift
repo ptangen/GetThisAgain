@@ -8,14 +8,14 @@
 
 import UIKit
 
-class ScanViewController: UIViewController {
+class ScanViewController: UIViewController, ScanViewDelegate {
     
     var scanViewInst = ScanView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
-        // Do any additional setup after loading the view, typically from a nib.
+        self.scanViewInst.delegate = self
     }
     
     override func loadView(){
@@ -28,12 +28,27 @@ class ScanViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "Scan the barcode"
+        
+        // add cancel button to nav bar
+        self.navigationItem.setHidesBackButton(true, animated:false);
+        
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
+        self.navigationItem.rightBarButtonItems = [cancelButton]
+        
+        //self.scanViewInst.startStopReading(sender: self.scanViewInst.btnStartStop)
+    }
+    
+    func cancelButtonClicked() {
+        let itemsTabViewControllerInst = ItemsTabViewController()
+        self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+    }
+    
+    func openItemDetail(item: Item) {
+        print(item.barcode)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
 }

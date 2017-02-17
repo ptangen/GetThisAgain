@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C027E0721E578D3800CA6577 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0711E578D3800CA6577 /* APIClient.swift */; };
+		C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0731E578D8A00CA6577 /* Secrets.swift */; };
+		C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C027E0791E57A3D000CA6577 /* barcode_sample.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F21E5748020047473B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711F11E5748020047473B /* ViewController.swift */; };
 		C06711F51E5748020047473B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C06711F31E5748020047473B /* Main.storyboard */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C027E0711E578D3800CA6577 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		C027E0731E578D8A00CA6577 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		C027E0791E57A3D000CA6577 /* barcode_sample.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = barcode_sample.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C06711F11E5748020047473B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -99,6 +105,7 @@
 				C06712151E5749490047473B /* ViewControllers */,
 				C06712161E5749670047473B /* Views */,
 				C06711EF1E5748020047473B /* AppDelegate.swift */,
+				C027E0791E57A3D000CA6577 /* barcode_sample.jpg */,
 				C06711F11E5748020047473B /* ViewController.swift */,
 				C06711F31E5748020047473B /* Main.storyboard */,
 				C06711F91E5748020047473B /* Assets.xcassets */,
@@ -123,6 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				C06712191E5749DF0047473B /* Item.swift */,
+				C027E0711E578D3800CA6577 /* APIClient.swift */,
+				C027E0731E578D8A00CA6577 /* Secrets.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -234,6 +243,7 @@
 			files = (
 				C06711FD1E5748020047473B /* LaunchScreen.storyboard in Resources */,
 				C06711FA1E5748020047473B /* Assets.xcassets in Resources */,
+				C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */,
 				C06711F51E5748020047473B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,6 +273,8 @@
 				C06712221E574C9E0047473B /* ScanView.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* ScanViewController.swift in Sources */,
+				C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */,
+				C027E0721E578D3800CA6577 /* APIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,6 +488,7 @@
 				C067120E1E5748020047473B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C067120F1E5748020047473B /* Build configuration list for PBXNativeTarget "GetThisAgainTests" */ = {
 			isa = XCConfigurationList;
@@ -484,6 +497,7 @@
 				C06712111E5748020047473B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

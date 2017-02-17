@@ -9,11 +9,17 @@
 import UIKit
 import AVFoundation
 
+
+protocol ScanViewDelegate: class {
+    func openItemDetail(item: Item)
+}
+
 class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     
-    
+    weak var delegate: ScanViewDelegate?
     let btnStartStop = UIButton()
     let viewReader = UIView()
+    let statusLabel = UILabel()
     
     // Create a session object.
     var captureSession = AVCaptureSession()
@@ -30,17 +36,32 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         super.init(frame: frame)
         self.layoutForm()
         self.btnStartStop.addTarget(self, action: #selector(ScanView.startStopReading), for: UIControlEvents.touchUpInside)
-        
+        self.statusLabel.text = "Locate the barcode on the item and then enable the barcode reader."
+        //self.startStopReading(sender: self.btnStartStop)  // when opening the reading on init, the preview does not get the image from the camera.
+    }
+    
+    func getItemInformation(barcodeValue: String) {
+        APIClient.getItemFromAPI(barcode: barcodeValue, completion: {itemInst in
+            if itemInst.barcode != "error" {
+                DispatchQueue.main.async {
+                    self.statusLabel.text = "The item name is: \(itemInst.name)"
+                }
+            } else {
+                // display error message
+                DispatchQueue.main.async {
+                    self.statusLabel.text = "The item was not found in the database."
+                }
+            }
+        })
     }
     
     func startStopReading(sender: AnyObject) {
-        print("startStopReading")
+        print("startStopReading \(isSessionStart)")
         
         if isSessionStart == false {
             
             captureSession.sessionPreset = AVCaptureSessionPresetHigh
             
-            //let devices = AVCaptureDevice.devices()
             if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
                                                                                  mediaType: AVMediaTypeVideo,
                                                                                  position: AVCaptureDevicePosition.unspecified) {
@@ -58,18 +79,18 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             }
             
             if captureDevice != nil {
-                
+
                 // Create input object.
                 let input : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: captureDevice)
                 
                 //Session
                 if captureSession.canAddOutput(metaDataOutput) && captureSession.canAddInput(input) {
-                    print("adding output to session ")
+                    //print("adding output to session ")
                     // Add input to the session.
                     captureSession.addInput(input)
                     
                     // Add output to the session.
-                    captureSession.addOutput(metaDataOutput);
+                    captureSession.addOutput(metaDataOutput)
                 }
                 
                 //output
@@ -81,8 +102,9 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 // Set barcode type for which to scan: EAN-13.
                 metaDataOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
                 
-                //// Add previewLayer and have it show the video data.
+                // Add previewLayer and have it show the video data.
                 previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                // print("preview layer: \(previewLayer.session)") // this output changes when function is called from init
                 
                 let bounds:CGRect = self.viewReader.layer.bounds
                 previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -92,17 +114,17 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 
                 viewReader.isHidden = false
                 captureSession.startRunning()
-                btnStartStop.setTitle(" Close Barcode Reader ", for: .normal)
+                
+                self.statusLabel.text = "Searching for a barcode..."
+                btnStartStop.setTitle(" Stop Barcode Reader ", for: .normal)
                 //print("array \(metaDataOutput.metadataObjectTypes)")
             }
             else{
-                btnStartStop.setTitle(" Open Barcode Reader ", for: .normal)
-                print("no device found")
-                self.alert(setMessage: "no device found")
+                btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
+                self.statusLabel.text = "No device found."
             }
         } else {
-            
-            btnStartStop.setTitle(" Open Barcode Reader ", for: .normal)
+            btnStartStop.setTitle(" Start Barcode Reader ", for: .normal)
             self.captureSession.stopRunning()
             previewLayer.removeFromSuperlayer()
         }
@@ -117,7 +139,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         
-        print("processing output")
+        //print("processing output")
         
         var barCodeObject: AVMetadataObject!
         var strDetected: String?
@@ -150,25 +172,19 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     self.captureSession.stopRunning()
                     
                     if let strDetected = strDetected {
-                        self.alert(setMessage: strDetected)
-                        
-                        print("strDetected: \(strDetected), barcode type = \(barcodeType)")
+                        self.getItemInformation(barcodeValue: strDetected)
+                        DispatchQueue.main.async {
+                            self.statusLabel.text = "Barcode captured. Searching for product information..."
+                        }
                     } else {
-                        print("Failed to capture barcode, try again.")
+                        DispatchQueue.main.async {
+                            self.statusLabel.text = "Failed to capture barcode, try again."
+                        }
                     }
                     break
                 }
             }
         }
-    }
-    
-    func alert(setMessage: String){
-        let alert : UIAlertController = UIAlertController(title: "BarCode", message: "\(setMessage)", preferredStyle: .alert)
-        let actionOK:UIAlertAction = UIAlertAction(title: "OK", style: .default) { (action) in
-            self.captureSession.startRunning()
-        }
-        alert.addAction(actionOK)
-        //self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func layoutForm(){
@@ -177,20 +193,26 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         // view reader
         self.addSubview(self.viewReader)
         self.viewReader.translatesAutoresizingMaskIntoConstraints = false
-        self.viewReader.backgroundColor = UIColor.yellow
+        self.viewReader.backgroundColor = UIColor.white
+        self.viewReader.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "barcode_sample.jpg"))
         self.viewReader.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
         self.viewReader.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
         self.viewReader.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
         self.viewReader.bottomAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
+        // statusLabel
+        self.addSubview(self.statusLabel)
+        self.statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.statusLabel.topAnchor.constraint(equalTo: self.viewReader.bottomAnchor, constant: 20).isActive = true
+        self.statusLabel.leftAnchor.constraint(equalTo: self.viewReader.leftAnchor, constant: 0).isActive = true
+        self.statusLabel.rightAnchor.constraint(equalTo: self.viewReader.rightAnchor, constant: 0).isActive = true
+        self.statusLabel.numberOfLines = 0
+        
         // sign in button
         self.addSubview(self.btnStartStop)
         self.btnStartStop.translatesAutoresizingMaskIntoConstraints = false
-        self.btnStartStop.setTitle(" Open Barcode Reader ", for: .normal)
+        self.btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
         self.btnStartStop.backgroundColor = UIColor.brown
-        //self.btnStartStop.isEnabled = false
-        //self.btnStartStop.alpha = 0.3
-        
         self.btnStartStop.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
         self.btnStartStop.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -110).isActive = true
     }

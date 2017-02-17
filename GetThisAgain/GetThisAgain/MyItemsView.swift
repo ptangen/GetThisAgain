@@ -8,14 +8,13 @@
 
 import UIKit
 
-protocol MyItemsViewDelegate: class {
-    func openDetail(_: Item)
-    func showAlertMessage(_: String)
-}
+//protocol MyItemsViewDelegate: class {
+//    func openItemDetail(_item : Item)
+//}
 
 class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
-    weak var delegate: MyItemsViewDelegate?
+    weak var delegate: ScanViewDelegate?
     var filteredItems = [Item]()
     var myItems = [Item]()
     let myItemsTableView = UITableView()
@@ -28,7 +27,8 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     override init(frame:CGRect){
         super.init(frame: frame)
         //self.store.getEquitiesMetadataFromCoreData()
-        let myItem1 = Item(barcode: 0073852009385, barcodeType: .EAN13, name: "Purell H/Sanit Gel Aloe 2oz", categoryText: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false)
+        // barcodeType: .EAN13,
+        let myItem1 = Item(barcode: "0073852009385", name: "Purell H/Sanit Gel Aloe 2oz", categoryText: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false)
         self.myItems.append(myItem1)
         
         self.myItemsTableView.delegate = self
@@ -78,9 +78,9 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            self.delegate?.openDetail(self.filteredItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
-            self.delegate?.openDetail(self.myItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.myItems[indexPath.row])
         }
     }
     
@@ -115,7 +115,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.myItemsTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
         self.myItemsTableView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
         self.myItemsTableView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
