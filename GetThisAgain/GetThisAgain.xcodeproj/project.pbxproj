@@ -19,6 +19,8 @@
 		C067121A1E5749DF0047473B /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712191E5749DF0047473B /* Item.swift */; };
 		C067121C1E574A380047473B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121B1E574A380047473B /* Constants.swift */; };
 		C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */; };
+		C06712201E574C700047473B /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* ScanViewController.swift */; };
+		C06712221E574C9E0047473B /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* ScanView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,8 @@
 		C06712191E5749DF0047473B /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		C067121B1E574A380047473B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsTableViewCell.swift; sourceTree = "<group>"; };
+		C067121F1E574C700047473B /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		C06712211E574C9E0047473B /* ScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				C06712131E57492B0047473B /* MyItemsViewController.swift */,
+				C067121F1E574C700047473B /* ScanViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -134,6 +139,7 @@
 			children = (
 				C06712171E57498F0047473B /* MyItemsView.swift */,
 				C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */,
+				C06712211E574C9E0047473B /* ScanView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -250,7 +256,9 @@
 				C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */,
 				C067121C1E574A380047473B /* Constants.swift in Sources */,
 				C067121A1E5749DF0047473B /* Item.swift in Sources */,
+				C06712221E574C9E0047473B /* ScanView.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
+				C06712201E574C700047473B /* ScanViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
