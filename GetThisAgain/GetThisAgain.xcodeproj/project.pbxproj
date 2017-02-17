@@ -14,6 +14,11 @@
 		C06711FA1E5748020047473B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C06711F91E5748020047473B /* Assets.xcassets */; };
 		C06711FD1E5748020047473B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C06711FB1E5748020047473B /* LaunchScreen.storyboard */; };
 		C06712081E5748020047473B /* GetThisAgainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712071E5748020047473B /* GetThisAgainTests.swift */; };
+		C06712141E57492B0047473B /* MyItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712131E57492B0047473B /* MyItemsViewController.swift */; };
+		C06712181E57498F0047473B /* MyItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712171E57498F0047473B /* MyItemsView.swift */; };
+		C067121A1E5749DF0047473B /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712191E5749DF0047473B /* Item.swift */; };
+		C067121C1E574A380047473B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121B1E574A380047473B /* Constants.swift */; };
+		C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +43,11 @@
 		C06712031E5748020047473B /* GetThisAgainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GetThisAgainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06712071E5748020047473B /* GetThisAgainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetThisAgainTests.swift; sourceTree = "<group>"; };
 		C06712091E5748020047473B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C06712131E57492B0047473B /* MyItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsViewController.swift; sourceTree = "<group>"; };
+		C06712171E57498F0047473B /* MyItemsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsView.swift; sourceTree = "<group>"; };
+		C06712191E5749DF0047473B /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		C067121B1E574A380047473B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +89,9 @@
 		C06711EE1E5748020047473B /* GetThisAgain */ = {
 			isa = PBXGroup;
 			children = (
+				C06712121E5748F40047473B /* Model */,
+				C06712151E5749490047473B /* ViewControllers */,
+				C06712161E5749670047473B /* Views */,
 				C06711EF1E5748020047473B /* AppDelegate.swift */,
 				C06711F11E5748020047473B /* ViewController.swift */,
 				C06711F31E5748020047473B /* Main.storyboard */,
@@ -86,6 +99,7 @@
 				C06711FB1E5748020047473B /* LaunchScreen.storyboard */,
 				C06711FE1E5748020047473B /* Info.plist */,
 				C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */,
+				C067121B1E574A380047473B /* Constants.swift */,
 			);
 			path = GetThisAgain;
 			sourceTree = "<group>";
@@ -97,6 +111,31 @@
 				C06712091E5748020047473B /* Info.plist */,
 			);
 			path = GetThisAgainTests;
+			sourceTree = "<group>";
+		};
+		C06712121E5748F40047473B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C06712191E5749DF0047473B /* Item.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		C06712151E5749490047473B /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C06712131E57492B0047473B /* MyItemsViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		C06712161E5749670047473B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C06712171E57498F0047473B /* MyItemsView.swift */,
+				C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,8 +243,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C06712181E57498F0047473B /* MyItemsView.swift in Sources */,
 				C06711F21E5748020047473B /* ViewController.swift in Sources */,
+				C06712141E57492B0047473B /* MyItemsViewController.swift in Sources */,
 				C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */,
+				C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */,
+				C067121C1E574A380047473B /* Constants.swift in Sources */,
+				C067121A1E5749DF0047473B /* Item.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,10 +391,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgain/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ptangen.GetThisAgain;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -360,10 +406,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgain/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ptangen.GetThisAgain;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
