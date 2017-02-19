@@ -8,10 +8,6 @@
 
 import UIKit
 
-//protocol MyItemsViewDelegate: class {
-//    func openItemDetail(_item : Item)
-//}
-
 class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     weak var delegate: ScanViewDelegate?
@@ -34,8 +30,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.myItemsTableView.delegate = self
         self.myItemsTableView.dataSource = self
         self.myItemsTableView.register(MyItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
-        self.myItemsTableView.separatorColor = UIColor.clear
-        self.myItemsTableView.backgroundColor = UIColor.yellow
         
         self.searchController.searchResultsUpdater = self
         self.searchController.dimsBackgroundDuringPresentation = false

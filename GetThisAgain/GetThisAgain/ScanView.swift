@@ -45,6 +45,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             if itemInst.barcode != "error" {
                 DispatchQueue.main.async {
                     self.statusLabel.text = "The item name is: \(itemInst.name)"
+                    self.delegate?.openItemDetail(item: itemInst)
                 }
             } else {
                 // display error message

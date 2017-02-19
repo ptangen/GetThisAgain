@@ -15,7 +15,6 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.myItemsViewInst.delegate = self
-        //self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
     }
     
     override func loadView(){

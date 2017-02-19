@@ -44,7 +44,10 @@ class ScanViewController: UIViewController, ScanViewDelegate {
     }
     
     func openItemDetail(item: Item) {
-        print(item.barcode)
+        print("openItemDetail")
+        let itemDetailViewControllerInst = ItemDetailViewController()
+        itemDetailViewControllerInst.itemInst = item
+        self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
     
     override func didReceiveMemoryWarning() {
