@@ -11,12 +11,16 @@ import SDWebImage
 
 class ItemDetailViewController: UITabBarController {
     
+    let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
     var itemInst: Item!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
+        
+        let saveButton = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveButtonClicked))
+        self.navigationItem.rightBarButtonItems = [saveButton]
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +43,12 @@ class ItemDetailViewController: UITabBarController {
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.itemDetailViewInst.frame = CGRect.zero
         self.view = self.itemDetailViewInst
+    }
+
+    func saveButtonClicked() {
+        self.store.myItems.append(self.itemInst)
+        let itemsTabViewControllerInst = ItemsTabViewController()
+        self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }
 
     override func didReceiveMemoryWarning() {

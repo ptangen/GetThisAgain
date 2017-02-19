@@ -21,16 +21,28 @@ class ItemDetailView: UIView {
         self.getThisAgainLabel.text = "Get This Again"
         
         // configure segmented control to pick status for the measure
-        self.getThisAgainPicker.insertSegment(withTitle: "No", at: 0, animated: true)
-        self.getThisAgainPicker.insertSegment(withTitle: "Unsure", at: 1, animated: true)
-        self.getThisAgainPicker.insertSegment(withTitle: "Yes", at: 2, animated: true)
+        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.no)(), at: 0, animated: true)
+        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.unsure)(), at: 1, animated: true)
+        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.yes)(), at: 2, animated: true)
         self.getThisAgainPicker.selectedSegmentIndex = 1
-        
+
         self.layoutForm()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func statusValueChanged(_ sender:UISegmentedControl!) {
+        
+        switch sender.selectedSegmentIndex {
+        case 0:
+            self.itemInst.setGetThisAgain(status: .no)
+        case 1:
+            self.itemInst.setGetThisAgain(status: .unsure)
+        default:
+            self.itemInst.setGetThisAgain(status: .yes)
+        }
     }
     
     func layoutForm(){

@@ -9,12 +9,14 @@
 import UIKit
 
 class MyItemsViewController: UIViewController, ScanViewDelegate {
-
+    
+    let store = DataStore.sharedInstance
     var myItemsViewInst = MyItemsView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.myItemsViewInst.delegate = self
+        store.myItems.isEmpty ? self.store.getSampleData() : ()
     }
     
     override func loadView(){

@@ -27,6 +27,7 @@
 		C06712201E574C700047473B /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* ScanViewController.swift */; };
 		C06712221E574C9E0047473B /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* ScanView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
+		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C62DA4F975655931B192D62B /* Pods_GetThisAgain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B51790200D6975B2C6AB2BA9 /* Pods_GetThisAgain.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		C067121F1E574C700047473B /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		C06712211E574C9E0047473B /* ScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
+		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 				C06712191E5749DF0047473B /* Item.swift */,
 				C027E0711E578D3800CA6577 /* APIClient.swift */,
 				C027E0731E578D8A00CA6577 /* Secrets.swift */,
+				C0CE94F51E5A1EA400099F61 /* DataStore.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -320,7 +323,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B8D49E4214C5DEE2E3BBAD37 /* [CP] Embed Pods Frameworks */ = {
@@ -346,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
+				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,
 				C06712181E57498F0047473B /* MyItemsView.swift in Sources */,
 				C06711F21E5748020047473B /* ViewController.swift in Sources */,
 				C06712141E57492B0047473B /* MyItemsViewController.swift in Sources */,

@@ -11,8 +11,8 @@ import UIKit
 class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     weak var delegate: ScanViewDelegate?
+    let store = DataStore.sharedInstance
     var filteredItems = [Item]()
-    var myItems = [Item]()
     let myItemsTableView = UITableView()
     var myItemsTableViewInstYConstraintWithHeading = NSLayoutConstraint()
     var myItemsTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
@@ -24,8 +24,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         super.init(frame: frame)
         //self.store.getEquitiesMetadataFromCoreData()
         // barcodeType: .EAN13,
-        let myItem1 = Item(barcode: "0073852009385", name: "Purell H/Sanit Gel Aloe 2oz", categoryText: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false)
-        self.myItems.append(myItem1)
         
         self.myItemsTableView.delegate = self
         self.myItemsTableView.dataSource = self
@@ -48,7 +46,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         if searchController.isActive && searchController.searchBar.text != "" {
             return filteredItems.count
         }
-        return self.myItems.count
+        return self.store.myItems.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
@@ -61,7 +59,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         if searchController.isActive && searchController.searchBar.text != "" {
             myItemCurrent = self.filteredItems[indexPath.row]
         } else {
-            myItemCurrent = self.myItems[indexPath.row]
+            myItemCurrent = self.store.myItems[indexPath.row]
         }
         
         cell.titleLabel.text = myItemCurrent.name
@@ -74,7 +72,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         if searchController.isActive && searchController.searchBar.text != "" {
             self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
-            self.delegate?.openItemDetail(item: self.myItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row])
         }
     }
     
@@ -89,7 +87,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
             self.myItemsTableViewInstYConstraintWithoutHeading.isActive = false
         }
         
-        self.filteredItems = self.myItems.filter { myItem in
+        self.filteredItems = self.store.myItems.filter { myItem in
             var nameAndCategory = String()
             nameAndCategory = myItem.name + myItem.categoryText
             return nameAndCategory.lowercased().contains(searchText.lowercased())

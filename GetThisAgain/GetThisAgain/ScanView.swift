@@ -9,7 +9,6 @@
 import UIKit
 import AVFoundation
 
-
 protocol ScanViewDelegate: class {
     func openItemDetail(item: Item)
 }
@@ -57,7 +56,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     }
     
     func startStopReading(sender: AnyObject) {
-        print("startStopReading \(isSessionStart)")
+        //print("startStopReading \(isSessionStart)")
         
         if isSessionStart == false {
             

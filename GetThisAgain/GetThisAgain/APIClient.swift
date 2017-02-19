@@ -15,7 +15,6 @@ class APIClient {
     class func getItemFromAPI(barcode: String, completion: @escaping (Item) -> Void) {
 
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
-        print(urlString)
         let url = URL(string: urlString)
         var itemInst: Item?
         
@@ -36,11 +35,11 @@ class APIClient {
                                     let imageURL = productDict["image"] as! String
                                     
                                     if let name = productAttributesDict["product"], let category = productAttributesDict["category_text"]  {
-                                        itemInst = Item(barcode: barcode, name: name, categoryText: category, imageURL: imageURL, shoppingList: false)
+                                        itemInst = Item(barcode: barcode, name: name, categoryText: category, imageURL: imageURL, shoppingList: false, getThisAgain: .unsure)
                                     }
                                 } else {
                                     // indicate error
-                                    itemInst = Item(barcode: "error", name: "", categoryText: "", imageURL: "", shoppingList: false)
+                                    itemInst = Item(barcode: "error", name: "", categoryText: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
                                 }
                             }
                         }
