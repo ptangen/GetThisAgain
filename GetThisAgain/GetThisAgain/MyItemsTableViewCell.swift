@@ -14,7 +14,7 @@ class MyItemsTableViewCell: UITableViewCell {
     
     var titleLabel = UILabel()
     var subTitleLabel = UILabel()
-    //let infoIconButton = UIButton()
+    let itemImageView = UIImageView()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -23,35 +23,30 @@ class MyItemsTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        //        //infoImage
-        //        let infoImage = #imageLiteral(resourceName: "info")
-        //        let infoImageView = UIImageView(image: infoImage.withRenderingMode(UIImageRenderingMode.alwaysTemplate))
-        //        self.infoIconButton.setImage(infoImageView.image, for: .normal)
-        //        self.infoIconButton.tintColor = UIColor.orange
-        //
+        //itemImageView
+        contentView.addSubview(self.itemImageView)
+        self.itemImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 6).isActive = true
+        self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 6).isActive = true
+        self.itemImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6).isActive = true
+        self.itemImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
+
         //titleLabel
-        contentView.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(16.0))
+        contentView.addSubview(self.titleLabel)
+        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.titleLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(16.0))
         
-        titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
-        titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -53).isActive = true
+        self.titleLabel.bottomAnchor.constraint(equalTo: self.centerYAnchor, constant: -2).isActive = true
+        self.titleLabel.leftAnchor.constraint(equalTo: self.itemImageView.rightAnchor, constant: 6).isActive = true
+        self.titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
         
         //subTitleLabel
-        contentView.addSubview(subTitleLabel)
-        subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subTitleLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(11.0))
+        contentView.addSubview(self.subTitleLabel)
+        self.subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.subTitleLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(11.0))
         
-        subTitleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8).isActive = true
-        subTitleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
-        subTitleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -53).isActive = true
-        
-        //        //infoIcon
-        //        contentView.addSubview(self.infoIconButton)
-        //        self.infoIconButton.translatesAutoresizingMaskIntoConstraints = false
-        //        self.infoIconButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-        //        self.infoIconButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -30).isActive = true
+        self.subTitleLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
+        self.subTitleLabel.leftAnchor.constraint(equalTo: self.titleLabel.leftAnchor, constant: 0).isActive = true
+        self.subTitleLabel.rightAnchor.constraint(equalTo: self.titleLabel.rightAnchor, constant: 0).isActive = true
     }
-    
 }

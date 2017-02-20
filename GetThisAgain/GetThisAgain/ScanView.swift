@@ -35,8 +35,8 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         super.init(frame: frame)
         self.layoutForm()
         self.btnStartStop.addTarget(self, action: #selector(ScanView.startStopReading), for: UIControlEvents.touchUpInside)
+        self.btnStartStop.setTitleColor(UIColor(named: .disabledText), for: .disabled)
         self.statusLabel.text = "Locate the barcode on the item and then enable the barcode reader."
-        //self.startStopReading(sender: self.btnStartStop)  // when opening the reading on init, the preview does not get the image from the camera.
     }
     
     func getItemInformation(barcodeValue: String) {
@@ -116,15 +116,16 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 captureSession.startRunning()
                 
                 self.statusLabel.text = "Searching for a barcode..."
-                btnStartStop.setTitle(" Stop Barcode Reader ", for: .normal)
+                self.btnStartStop.isEnabled = false
+                self.btnStartStop.backgroundColor = UIColor.gray
+                
                 //print("array \(metaDataOutput.metadataObjectTypes)")
-            }
-            else{
+            } else{
                 btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
                 self.statusLabel.text = "No device found."
             }
         } else {
-            btnStartStop.setTitle(" Start Barcode Reader ", for: .normal)
+            btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
             self.captureSession.stopRunning()
             previewLayer.removeFromSuperlayer()
         }
@@ -208,13 +209,13 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         self.statusLabel.rightAnchor.constraint(equalTo: self.viewReader.rightAnchor, constant: 0).isActive = true
         self.statusLabel.numberOfLines = 0
         
-        // sign in button
+        // btnStartStop button
         self.addSubview(self.btnStartStop)
         self.btnStartStop.translatesAutoresizingMaskIntoConstraints = false
         self.btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
-        self.btnStartStop.backgroundColor = UIColor.brown
+        self.btnStartStop.backgroundColor = UIColor(named: .blue)
         self.btnStartStop.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
-        self.btnStartStop.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -110).isActive = true
+        self.btnStartStop.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
     }
 }
 

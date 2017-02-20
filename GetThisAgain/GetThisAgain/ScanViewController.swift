@@ -34,8 +34,6 @@ class ScanViewController: UIViewController, ScanViewDelegate {
         
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
         self.navigationItem.rightBarButtonItems = [cancelButton]
-        
-        //self.scanViewInst.startStopReading(sender: self.scanViewInst.btnStartStop)
     }
     
     func cancelButtonClicked() {
@@ -45,6 +43,7 @@ class ScanViewController: UIViewController, ScanViewDelegate {
     
     func openItemDetail(item: Item) {
         let itemDetailViewControllerInst = ItemDetailViewController()
+        itemDetailViewControllerInst.editMode = false
         itemDetailViewControllerInst.itemInst = item
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }

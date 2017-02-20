@@ -11,7 +11,7 @@ import UIKit
 class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
     
     let myItemsViewControllerInst = MyItemsViewController()
-    
+    let shoppingListViewControllerInst = ShoppingListViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +31,14 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
         UITabBar.appearance().tintColor = UIColor(named: .statusBarBlue)
         
         // Create MyItems Tab
-        let tabMyItems = UITabBarItem(title: "My Items", image: UIImage(named: "sentiment_satisfied"), selectedImage: UIImage(named: "sentiment_satisfied"))
+        let tabMyItems = UITabBarItem(title: "My Items", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
         self.myItemsViewControllerInst.tabBarItem = tabMyItems
         
-        self.viewControllers = [myItemsViewControllerInst]
+        // Create ShoppingList Tab
+        let tabShoppingList = UITabBarItem(title: "Shopping List", image: UIImage(named: "shoppingCart"), selectedImage: UIImage(named: "shoppingCart"))
+        self.shoppingListViewControllerInst.tabBarItem = tabShoppingList
+        
+        self.viewControllers = [self.myItemsViewControllerInst, self.shoppingListViewControllerInst]
         
         // add controls to nav bar
         self.navigationItem.setHidesBackButton(true, animated:false);

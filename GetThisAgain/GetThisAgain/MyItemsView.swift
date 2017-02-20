@@ -22,7 +22,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        //self.store.getEquitiesMetadataFromCoreData()
         // barcodeType: .EAN13,
         
         self.myItemsTableView.delegate = self
@@ -50,7 +49,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
-        return 50
+        return 72
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -62,8 +61,12 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
             myItemCurrent = self.store.myItems[indexPath.row]
         }
         
-        cell.titleLabel.text = myItemCurrent.name
+        cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getThisAgain.label() + ")"
         cell.subTitleLabel.text = myItemCurrent.categoryText
+        
+        let itemImageURL = URL(string: myItemCurrent.imageURL)
+        cell.itemImageView.sd_setImage(with: itemImageURL)
+        cell.itemImageView.contentMode = .scaleAspectFit
         
         return cell
     }

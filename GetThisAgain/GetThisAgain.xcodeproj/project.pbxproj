@@ -28,6 +28,7 @@
 		C06712221E574C9E0047473B /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* ScanView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
+		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C62DA4F975655931B192D62B /* Pods_GetThisAgain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B51790200D6975B2C6AB2BA9 /* Pods_GetThisAgain.framework */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 		C06712211E574C9E0047473B /* ScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 				C067121F1E574C700047473B /* ScanViewController.swift */,
 				C06712231E574FC30047473B /* ItemsTabViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
+				C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
+				C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */,
 				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,
 				C06712181E57498F0047473B /* MyItemsView.swift in Sources */,
 				C06711F21E5748020047473B /* ViewController.swift in Sources */,
