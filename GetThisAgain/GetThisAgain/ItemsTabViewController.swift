@@ -29,6 +29,8 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
         self.title = "Get This Again"
         self.navigationItem.hidesBackButton = true
         UITabBar.appearance().tintColor = UIColor(named: .statusBarBlue)
+        //self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
+        self.automaticallyAdjustsScrollViewInsets = false
         
         // Create MyItems Tab
         let tabMyItems = UITabBarItem(title: "My Items", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))

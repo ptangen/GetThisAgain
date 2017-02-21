@@ -24,6 +24,7 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.myItemsViewInst.frame = CGRect.zero
         self.view = self.myItemsViewInst
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

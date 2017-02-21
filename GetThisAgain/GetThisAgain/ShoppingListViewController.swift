@@ -8,28 +8,37 @@
 
 import UIKit
 
-class ShoppingListViewController: UIViewController {
+class ShoppingListViewController: UIViewController, ScanViewDelegate {
+    
+    let store = DataStore.sharedInstance
+    var shoppingListViewInst = ShoppingListView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        self.shoppingListViewInst.delegate = self
     }
-
+    
+    override func loadView(){
+        // hide nav bar on login page
+        self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
+        self.shoppingListViewInst.frame = CGRect.zero
+        self.view = self.shoppingListViewInst
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.title = "Shopping List"
+        self.shoppingListViewInst.shoppingListItems = self.store.myItems.filter({ $0.shoppingList == true })
+    }
+    
+    func openItemDetail(item: Item) {
+        let itemDetailViewControllerInst = ItemDetailViewController()
+        itemDetailViewControllerInst.editMode = true
+        itemDetailViewControllerInst.itemInst = item
+        self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

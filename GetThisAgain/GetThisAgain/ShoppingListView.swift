@@ -1,22 +1,23 @@
 //
-//  MyItemsView.swift
+//  ShoppingListView.swift
 //  GetThisAgain
 //
-//  Created by Paul Tangen on 2/17/17.
+//  Created by Paul Tangen on 2/21/17.
 //  Copyright © 2017 Paul Tangen. All rights reserved.
 //
 
 import UIKit
 
-class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
-    
+class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
+
     weak var delegate: ScanViewDelegate?
     let store = DataStore.sharedInstance
+    var shoppingListItems = [Item]()
     var filteredItems = [Item]()
-    let myItemsTableView = UITableView()
-    var myItemsTableViewInstYConstraintWithHeading = NSLayoutConstraint()
-    var myItemsTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
-    var myItemsViewCount = Int()
+    let shoppingListTableView = UITableView()
+    var shoppingListTableViewInstYConstraintWithHeading = NSLayoutConstraint()
+    var shoppingListTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
+    var shoppingListViewCount = Int()
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -24,14 +25,14 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         super.init(frame: frame)
         // barcodeType: .EAN13,
         
-        self.myItemsTableView.delegate = self
-        self.myItemsTableView.dataSource = self
-        self.myItemsTableView.register(MyItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.shoppingListTableView.delegate = self
+        self.shoppingListTableView.dataSource = self
+        self.shoppingListTableView.register(ShoppingListTableViewCell.self, forCellReuseIdentifier: "prototype")
         
         self.searchController.searchResultsUpdater = self
         self.searchController.hidesNavigationBarDuringPresentation = false
         self.searchController.dimsBackgroundDuringPresentation = false
-        self.myItemsTableView.tableHeaderView = self.searchController.searchBar
+        self.shoppingListTableView.tableHeaderView = self.searchController.searchBar
         
         self.pageLayout()
     }
@@ -46,7 +47,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         if searchController.isActive && searchController.searchBar.text != "" {
             return filteredItems.count
         }
-        return self.store.myItems.count
+        return self.shoppingListItems.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
@@ -54,18 +55,18 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = MyItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
-        var myItemCurrent: Item
+        let cell = ShoppingListTableViewCell(style: .default, reuseIdentifier: "prototype")
+        var shoppingItemCurrent: Item
         if searchController.isActive && searchController.searchBar.text != "" {
-            myItemCurrent = self.filteredItems[indexPath.row]
+            shoppingItemCurrent = self.filteredItems[indexPath.row]
         } else {
-            myItemCurrent = self.store.myItems[indexPath.row]
+            shoppingItemCurrent = self.shoppingListItems[indexPath.row]
         }
         
-        cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getThisAgain.label() + ")"
-        cell.subTitleLabel.text = myItemCurrent.categoryText
+        cell.titleLabel.text = shoppingItemCurrent.name  + " (" + shoppingItemCurrent.getThisAgain.label() + ")"
+        cell.subTitleLabel.text = shoppingItemCurrent.categoryText
         
-        let itemImageURL = URL(string: myItemCurrent.imageURL)
+        let itemImageURL = URL(string: shoppingItemCurrent.imageURL)
         cell.itemImageView.sd_setImage(with: itemImageURL)
         cell.itemImageView.contentMode = .scaleAspectFit
         
@@ -76,28 +77,29 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         if searchController.isActive && searchController.searchBar.text != "" {
             self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
-            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.shoppingListItems[indexPath.row])
         }
     }
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
-        self.filteredItems = self.store.myItems.filter { myItem in
+        
+        self.filteredItems = self.shoppingListItems.filter { shoppingItem in
             var nameAndCategory = String()
-            nameAndCategory = myItem.name + myItem.categoryText
+            nameAndCategory = shoppingItem.name + shoppingItem.categoryText
             return nameAndCategory.lowercased().contains(searchText.lowercased())
         }
-        self.myItemsTableView.reloadData()
+        self.shoppingListTableView.reloadData()
     }
     
     func pageLayout() {
         
         // myItemsTableView
-        self.addSubview(self.myItemsTableView)
-        self.myItemsTableView.translatesAutoresizingMaskIntoConstraints = false
-        self.myItemsTableView.topAnchor.constraint(equalTo: self.topAnchor, constant: 64).isActive = true
-        self.myItemsTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
-        self.myItemsTableView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
-        self.myItemsTableView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
+        self.addSubview(self.shoppingListTableView)
+        self.shoppingListTableView.translatesAutoresizingMaskIntoConstraints = false
+        self.shoppingListTableView.topAnchor.constraint(equalTo: self.topAnchor, constant: 64).isActive = true
+        self.shoppingListTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
+        self.shoppingListTableView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
+        self.shoppingListTableView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -105,11 +107,10 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-extension MyItemsView: UISearchResultsUpdating {
+extension ShoppingListView: UISearchResultsUpdating {
     public func updateSearchResults(for searchController: UISearchController) {
         if let searchText = self.searchController.searchBar.text {
             self.filterContentForSearchText(searchText: searchText)
         }
     }
 }
-
