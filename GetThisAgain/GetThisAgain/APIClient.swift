@@ -42,8 +42,8 @@ class APIClient {
                                             if let category = productAttributesDict["category_text"] { itemInst.category = category }
                                         }
                                     }
-                                } else {  // code != 200 - indicate error
-                                    itemInst = Item(barcode: "error", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+                                } else {  // code != 200 - item not found
+                                    itemInst = Item(barcode: "notFound", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
                                 }
                             }
                         }

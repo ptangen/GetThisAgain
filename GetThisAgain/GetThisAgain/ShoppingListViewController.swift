@@ -31,7 +31,7 @@ class ShoppingListViewController: UIViewController, ScanViewDelegate {
         self.shoppingListViewInst.shoppingListItems = self.store.myItems.filter({ $0.shoppingList == true })
     }
     
-    func openItemDetail(item: Item) {
+    func openItemDetail(item: Item, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = true
         itemDetailViewControllerInst.itemInst = item

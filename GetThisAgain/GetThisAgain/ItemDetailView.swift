@@ -69,7 +69,7 @@ class ItemDetailView: UIView {
         self.addSubview(self.nameLabel)
         self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
         self.nameLabel.bottomAnchor.constraint(equalTo: self.itemImageView.centerYAnchor, constant: -2).isActive = true
-        self.nameLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        self.nameLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.nameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.nameLabel.numberOfLines = 0
         

@@ -15,17 +15,25 @@ class ItemDetailViewController: UITabBarController {
     let itemDetailViewInst = ItemDetailView()
     var editMode = Bool()
     var itemInst: Item!
-    var saveButton = UIBarButtonItem()
+    var addButton = UIBarButtonItem()
+    var doneButton = UIBarButtonItem()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
         
-        // save button
-        self.saveButton.style = .plain
-        self.saveButton.target = self
-        self.saveButton.action = #selector(saveButtonClicked)
-        self.navigationItem.rightBarButtonItems = [saveButton]
+        // add button
+        self.addButton.style = .plain
+        self.addButton.target = self
+        self.addButton.action = #selector(addButtonClicked)
+        self.addButton.title = "Add Item"
+        
+        // done button
+        self.doneButton.style = .plain
+        self.doneButton.target = self
+        self.doneButton.title = "Done"
+        self.doneButton.action = #selector(doneButtonClicked)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,10 +42,17 @@ class ItemDetailViewController: UITabBarController {
         self.itemDetailViewInst.nameLabel.text = self.itemInst.name
         self.itemDetailViewInst.categoryLabel.text = self.itemInst.category
         self.itemDetailViewInst.shoppingListSwitch.isOn = self.itemInst.shoppingList
-        self.editMode ? (self.saveButton.title = "Done") : (self.saveButton.title = "Add Item")
+        self.editMode ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
         
-        let itemImageURL = URL(string: self.itemInst.imageURL)
-        self.itemDetailViewInst.itemImageView.sd_setImage(with: itemImageURL)
+       // var imageURLString = String()
+        if self.itemInst.imageURL.isEmpty {
+            // show no image found
+            self.itemDetailViewInst.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
+        } else {
+            // show the image per the URL
+            let itemImageURL = URL(string: self.itemInst.imageURL)
+            self.itemDetailViewInst.itemImageView.sd_setImage(with: itemImageURL)
+        }
         self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
         
         // add cancel button to nav bar
@@ -64,20 +79,13 @@ class ItemDetailViewController: UITabBarController {
         self.itemDetailViewInst.frame = CGRect.zero
         self.view = self.itemDetailViewInst
     }
-    
-    func compareItems(selectedItem : Item) -> Bool {
-        if let itemInst = self.itemInst {
-            return selectedItem.barcode == itemInst.barcode
-        }
-        return false
+
+    func addButtonClicked() {
+        self.store.myItems.append(self.itemInst)
+        self.doneButtonClicked()
     }
 
-    func saveButtonClicked() {
-    
-        if !self.store.myItems.contains(where: compareItems) {
-            self.store.myItems.append(self.itemInst) // item does not exist in myItems, so add it
-        }
-        
+    func doneButtonClicked() {
         let itemsTabViewControllerInst = ItemsTabViewController()
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }

@@ -14,6 +14,15 @@ class DataStore {
     
     var myItems = [Item]()
     
+    func getItemFromBarcode(barcode: String) -> Item? {
+        for item in myItems {
+            if item.barcode == barcode {
+                return item
+            }
+        }
+        return nil
+    }
+    
     func getSampleData() {
         let myItem1 = Item(barcode: "0073852009385", name: "Purell H/Sanit Gel Aloe 2oz", category: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false, getThisAgain: .yes)
         self.myItems.append(myItem1)

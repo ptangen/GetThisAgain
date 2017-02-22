@@ -75,9 +75,9 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row], editMode: true)
         } else {
-            self.delegate?.openItemDetail(item: self.shoppingListItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.shoppingListItems[indexPath.row], editMode: true)
         }
     }
     

@@ -65,8 +65,15 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getThisAgain.label() + ")"
         cell.subTitleLabel.text = myItemCurrent.category
         
-        let itemImageURL = URL(string: myItemCurrent.imageURL)
-        cell.itemImageView.sd_setImage(with: itemImageURL)
+        // var imageURLString = String()
+        if myItemCurrent.imageURL.isEmpty {
+            // show no image found
+            cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
+        } else {
+            // show the image per the URL
+            let itemImageURL = URL(string: myItemCurrent.imageURL)
+            cell.itemImageView.sd_setImage(with: itemImageURL)
+        }
         cell.itemImageView.contentMode = .scaleAspectFit
         
         return cell
@@ -74,9 +81,9 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row], editMode: true)
         } else {
-            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row])
+            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row], editMode: true)
         }
     }
     

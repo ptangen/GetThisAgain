@@ -32,7 +32,7 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
         self.title = "My Items"
     }
     
-    func openItemDetail(item: Item) {
+    func openItemDetail(item: Item, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = true
         itemDetailViewControllerInst.itemInst = item

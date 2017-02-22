@@ -12,6 +12,7 @@
 		C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C027E0791E57A3D000CA6577 /* barcode_sample.jpg */; };
 		C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */; };
 		C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A71E59F8B800A62051 /* ItemDetailView.swift */; };
+		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F21E5748020047473B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711F11E5748020047473B /* ViewController.swift */; };
 		C06711F51E5748020047473B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C06711F31E5748020047473B /* Main.storyboard */; };
@@ -54,6 +55,7 @@
 		C027E0791E57A3D000CA6577 /* barcode_sample.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = barcode_sample.jpg; sourceTree = "<group>"; };
 		C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		C031E5A71E59F8B800A62051 /* ItemDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
+		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C06711F11E5748020047473B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				C06712161E5749670047473B /* Views */,
 				C06711EF1E5748020047473B /* AppDelegate.swift */,
 				C027E0791E57A3D000CA6577 /* barcode_sample.jpg */,
+				C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */,
 				C06711F11E5748020047473B /* ViewController.swift */,
 				C06711F31E5748020047473B /* Main.storyboard */,
 				C06711F91E5748020047473B /* Assets.xcassets */,
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C06711FD1E5748020047473B /* LaunchScreen.storyboard in Resources */,
+				C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */,
 				C06711FA1E5748020047473B /* Assets.xcassets in Resources */,
 				C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */,
 				C06711F51E5748020047473B /* Main.storyboard in Resources */,

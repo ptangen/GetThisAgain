@@ -10,12 +10,13 @@ import UIKit
 import AVFoundation
 
 protocol ScanViewDelegate: class {
-    func openItemDetail(item: Item)
+    func openItemDetail(item: Item, editMode: Bool)
 }
 
 class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     
     weak var delegate: ScanViewDelegate?
+    let store = DataStore.sharedInstance
     let btnStartStop = UIButton()
     let viewReader = UIView()
     let statusLabel = UILabel()
@@ -40,19 +41,27 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     }
     
     func getItemInformation(barcodeValue: String) {
-        APIClient.getItemFromAPI(barcode: barcodeValue, completion: {itemInst in
-            if itemInst.barcode != "error" {
-                DispatchQueue.main.async {
-                    self.statusLabel.text = "The item name is: \(itemInst.name)"
-                    self.delegate?.openItemDetail(item: itemInst)
-                }
-            } else {
-                // display error message
-                DispatchQueue.main.async {
-                    self.statusLabel.text = "The item was not found in the database."
-                }
+        
+        if let itemInst = self.store.getItemFromBarcode(barcode: barcodeValue) {
+            // we have the item that was scanned in the datastore so show the item detail
+            DispatchQueue.main.async {
+                self.delegate?.openItemDetail(item: itemInst, editMode: true)
             }
-        })
+        } else {
+            // we dont have the item in the datastore so fetch it from the API
+            APIClient.getItemFromAPI(barcode: barcodeValue, completion: {itemInst in
+                if itemInst.barcode != "notFound" {
+                    DispatchQueue.main.async {
+                        self.delegate?.openItemDetail(item: itemInst, editMode: false)
+                    }
+                } else {
+                    // display not found message
+                    DispatchQueue.main.async {
+                        self.statusLabel.text = "The item was not found in the database."
+                    }
+                }
+            })
+        }
     }
     
     func startStopReading(sender: AnyObject) {
