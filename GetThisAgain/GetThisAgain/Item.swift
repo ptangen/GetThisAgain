@@ -13,16 +13,16 @@ class Item {
     let barcode: String
     //let barcodeType: Constants.barcodeType
     let name: String
-    let categoryText: String
-    let imageURL: String
+    var category: String
+    var imageURL: String
     var shoppingList: Bool
     var getThisAgain: GetThisAgain
     
-    init (barcode: String, name: String, categoryText: String, imageURL: String, shoppingList: Bool, getThisAgain: GetThisAgain) {
+    init (barcode: String, name: String, category: String, imageURL: String, shoppingList: Bool, getThisAgain: GetThisAgain) {
         self.barcode = barcode
         //self.barcodeType = barcodeType
         self.name = name
-        self.categoryText = categoryText
+        self.category = category
         self.imageURL = imageURL
         self.shoppingList = shoppingList
         self.getThisAgain = getThisAgain

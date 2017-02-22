@@ -29,7 +29,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.myItemsTableView.register(MyItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
         
         self.searchController.searchResultsUpdater = self
-        self.searchController.hidesNavigationBarDuringPresentation = false
+        self.searchController.hidesNavigationBarDuringPresentation = false 
         self.searchController.dimsBackgroundDuringPresentation = false
         self.myItemsTableView.tableHeaderView = self.searchController.searchBar
         
@@ -63,7 +63,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getThisAgain.label() + ")"
-        cell.subTitleLabel.text = myItemCurrent.categoryText
+        cell.subTitleLabel.text = myItemCurrent.category
         
         let itemImageURL = URL(string: myItemCurrent.imageURL)
         cell.itemImageView.sd_setImage(with: itemImageURL)
@@ -83,7 +83,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         self.filteredItems = self.store.myItems.filter { myItem in
             var nameAndCategory = String()
-            nameAndCategory = myItem.name + myItem.categoryText
+            nameAndCategory = myItem.name + myItem.category
             return nameAndCategory.lowercased().contains(searchText.lowercased())
         }
         self.myItemsTableView.reloadData()

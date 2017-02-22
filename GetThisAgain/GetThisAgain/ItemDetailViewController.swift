@@ -32,7 +32,7 @@ class ItemDetailViewController: UITabBarController {
         self.itemDetailViewInst.itemInst = itemInst
         self.title = "Item Detail" // nav bar title
         self.itemDetailViewInst.nameLabel.text = self.itemInst.name
-        self.itemDetailViewInst.categoryLabel.text = self.itemInst.categoryText
+        self.itemDetailViewInst.categoryLabel.text = self.itemInst.category
         self.itemDetailViewInst.shoppingListSwitch.isOn = self.itemInst.shoppingList
         self.editMode ? (self.saveButton.title = "Done") : (self.saveButton.title = "Add Item")
         

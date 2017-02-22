@@ -13,11 +13,11 @@ import CoreData
 class APIClient {
     
     class func getItemFromAPI(barcode: String, completion: @escaping (Item) -> Void) {
-
+        
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: Item?
-        
+
         if let unwrappedUrl = url{
             let session = URLSession.shared
             let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
@@ -25,21 +25,25 @@ class APIClient {
                     do {
                         let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
                         if let responseJSON = responseJSON {
-                            
                             // check the status code and create object
                             let statusDict = responseJSON["status"] as! [String:String]
                             if let code = statusDict["code"] {
                                 if code == "200" {
                                     let productDict = responseJSON["product"] as! [String:Any]
                                     let productAttributesDict = productDict["attributes"] as! [String : String]
-                                    let imageURL = productDict["image"] as! String
                                     
-                                    if let name = productAttributesDict["product"], let category = productAttributesDict["category_text"]  {
-                                        itemInst = Item(barcode: barcode, name: name, categoryText: category, imageURL: imageURL, shoppingList: false, getThisAgain: .unsure)
+                                    // create the item object
+                                    if let name = productAttributesDict["product"] {
+                                        itemInst = Item(barcode: barcode, name: name, category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+                                        
+                                        // set the imageURL and category values if we have them
+                                        if let itemInst = itemInst {
+                                            if let imageURL = productDict["image"] as? String { itemInst.imageURL = imageURL }
+                                            if let category = productAttributesDict["category_text"] { itemInst.category = category }
+                                        }
                                     }
-                                } else {
-                                    // indicate error
-                                    itemInst = Item(barcode: "error", name: "", categoryText: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+                                } else {  // code != 200 - indicate error
+                                    itemInst = Item(barcode: "error", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
                                 }
                             }
                         }
