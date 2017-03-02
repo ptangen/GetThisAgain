@@ -58,6 +58,9 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     // display not found message
                     DispatchQueue.main.async {
                         self.statusLabel.text = "The item was not found in the database."
+                        self.startStopReading(sender: self)
+                        self.btnStartStop.isEnabled = true
+                        self.btnStartStop.backgroundColor = UIColor(named: .blue)
                     }
                 }
             })
@@ -128,7 +131,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 self.btnStartStop.isEnabled = false
                 self.btnStartStop.backgroundColor = UIColor.gray
                 
-                //print("array \(metaDataOutput.metadataObjectTypes)")
+                print("array \(metaDataOutput.metadataObjectTypes)")
             } else{
                 btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
                 self.statusLabel.text = "No device found."

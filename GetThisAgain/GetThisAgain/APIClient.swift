@@ -41,6 +41,7 @@ class APIClient {
                         do {
                             let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String]
                             let results = json?["results"]
+                            print("results: \(results)")
                             
                             if results == "authenticated" {
                                 completion(.authenticated)
@@ -81,16 +82,19 @@ class APIClient {
                             if let code = statusDict["code"] {
                                 if code == "200" {
                                     let productDict = responseJSON["product"] as! [String:Any]
-                                    let productAttributesDict = productDict["attributes"] as! [String : String]
                                     
-                                    // create the item object
-                                    if let name = productAttributesDict["product"] {
-                                        itemInst = Item(barcode: barcode, name: name, category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+                                    if productDict["attributes"] != nil {
+                                        let productAttributesDict = productDict["attributes"] as! [String : String]
+                                    
+                                        // create the item object
+                                        if let name = productAttributesDict["product"] {
+                                            itemInst = Item(barcode: barcode, name: name, category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
                                         
-                                        // set the imageURL and category values if we have them
-                                        if let itemInst = itemInst {
-                                            if let imageURL = productDict["image"] as? String { itemInst.imageURL = imageURL }
-                                            if let category = productAttributesDict["category_text"] { itemInst.category = category }
+                                            // set the imageURL and category values if we have them
+                                            if let itemInst = itemInst {
+                                                if let imageURL = productDict["image"] as? String { itemInst.imageURL = imageURL }
+                                                if let category = productAttributesDict["category_text"] { itemInst.category = category }
+                                            }
                                         }
                                     }
                                 }

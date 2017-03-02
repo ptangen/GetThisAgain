@@ -143,7 +143,7 @@ class SignInView: UIView, UITextFieldDelegate {
         // 3. Check to see if the fingerprint matches, if success, open tab display
         if myKeyChainWrapper.myObject(forKey: "v_Data") != nil {
             if laContext.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error:nil) {
-                laContext.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Logging in with Touch ID", reply: { (success : Bool, error : Error? ) -> Void in
+                laContext.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Sign in with Touch ID", reply: { (success : Bool, error : Error? ) -> Void in
                     
                     DispatchQueue.main.async(execute: {
                         if success {

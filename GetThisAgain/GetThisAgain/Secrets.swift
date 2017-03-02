@@ -13,5 +13,9 @@ struct Secrets {
     static let eandataAPIURL:String = "http://eandata.com/feed/?v=3&mode=json"
     static let keyCode:String = "B42F4A3158A34875"
     
-    static let gtaURL: String = "http://api.getthisagain.com/feed/?v=3&mode=json"
+    static let gtaURL: String = "http://api.getthisagain.com"
+    static let gtaKey:String = "6032768233"
+    
+    static let username = "swift3"
+    static let password = "1234"
 }
