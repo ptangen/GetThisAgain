@@ -12,6 +12,56 @@ import CoreData
 
 class APIClient {
     
+    class func requestAuth(userName: String, password: String, completion: @escaping (apiResponse) -> Void) {
+        guard let userNameSubmitted = userName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed) else {
+            completion(.userNameInvalid)
+            return
+        }
+        
+        guard let passwordSubmitted = password.addingPercentEncoding(withAllowedCharacters: .urlPasswordAllowed) else {
+            completion(.passwordInvalid)
+            return
+        }
+        
+        let urlString = "\(Secrets.gtaURL)/auth.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            let parameterString = "userNameSubmitted=\(userNameSubmitted)&passwordSubmitted=\(passwordSubmitted)"
+            request.httpBody = parameterString.data(using: .utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String]
+                            let results = json?["results"]
+                            
+                            if results == "authenticated" {
+                                completion(.authenticated)
+                            } else if results == "userNameInvalid" {
+                                completion(.userNameInvalid)
+                            } else if results == "passwordInvalid" {
+                                completion(.passwordInvalid)
+                            } else {
+                                completion(.noReply)
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
+        }
+    }
+    
     class func getItemFromAPI(barcode: String, completion: @escaping (Item) -> Void) {
         
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
@@ -56,4 +106,13 @@ class APIClient {
             task.resume()
         }
     }
+}
+
+enum apiResponse {
+    case authenticated
+    case userNameInvalid
+    case passwordInvalid
+    case noReply
+    case ok
+    case failed
 }
