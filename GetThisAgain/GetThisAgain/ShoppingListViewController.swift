@@ -31,12 +31,13 @@ class ShoppingListViewController: UIViewController, ScanViewDelegate {
         self.shoppingListViewInst.shoppingListItems = self.store.myItems.filter({ $0.shoppingList == true })
     }
     
-    func openItemDetail(item: Item, editMode: Bool) {
+    func openItemDetail(item: MyItem, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = true
         itemDetailViewControllerInst.itemInst = item
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

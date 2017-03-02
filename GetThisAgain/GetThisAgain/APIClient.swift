@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import CoreData
 
 class APIClient {
     
@@ -63,12 +62,12 @@ class APIClient {
         }
     }
     
-    class func getItemFromAPI(barcode: String, completion: @escaping (Item) -> Void) {
+    class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
         
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
-        var itemInst: Item?
-        let itemInstNotFound = Item(barcode: "notFound", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+        var itemInst: MyItem?
+        let itemInstNotFound = MyItem(barcode: "notFound", name: "", category: "", imageURL: "", shoppingList: false, getAgain: .unsure)
 
         if let unwrappedUrl = url{
             let session = URLSession.shared
@@ -88,7 +87,7 @@ class APIClient {
                                     
                                         // create the item object
                                         if let name = productAttributesDict["product"] {
-                                            itemInst = Item(barcode: barcode, name: name, category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
+                                            itemInst = MyItem(barcode: barcode, name: name, category: "", imageURL: "", shoppingList: false, getAgain: .unsure)
                                         
                                             // set the imageURL and category values if we have them
                                             if let itemInst = itemInst {
@@ -108,6 +107,66 @@ class APIClient {
                 }
             }
             task.resume()
+        }
+    }
+    
+    class func getMyItems(userName: String, completion: @escaping (Bool) -> Void) {
+        let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.gtaURL)/getMyItems.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)"
+            request.httpBody = parameterString.data(using: .utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let unwrappedData = data {
+                    do {
+                        let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [[String: String]]
+                        if let responseJSON = responseJSON {
+                            for myItemDict in responseJSON {
+                                
+                                 //unwrap the incoming data and create item objects in datastore
+                                if let barcode = myItemDict["barcode"],
+                                    let name = myItemDict["name"],
+                                    let category = myItemDict["category"],
+                                    let imageURL = myItemDict["imageURL"],
+                                    let shoppingListString = myItemDict["shoppingList"],
+                                    let getAgainString = myItemDict["getAgain"] {
+                                    
+                                    // shoppingList
+                                    var shoppingList: Bool!
+                                    shoppingListString == "true" ? (shoppingList = true) : (shoppingList = false)
+                                    
+                                    // getAgain
+                                    var getAgain: GetAgain!
+                                    
+                                    switch getAgainString {
+                                    case ".yes":
+                                        getAgain = GetAgain.yes
+                                    case ".no":
+                                        getAgain = GetAgain.no
+                                    default:
+                                        getAgain = GetAgain.unsure
+                                    }
+                                    
+                                    // add myItem to datastore
+                                    let myItemInst = MyItem(barcode: barcode, name: name, category: category, imageURL: imageURL, shoppingList: shoppingList, getAgain: getAgain)
+                                    store.myItems.append(myItemInst)
+                                }
+                            }
+                        }
+                        completion(true)
+                    } catch {
+                        completion(false) // An error occurred when creating responseJSON
+                    }
+                }
+            }).resume()
         }
     }
 }

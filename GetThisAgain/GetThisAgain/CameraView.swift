@@ -12,7 +12,7 @@ import UIKit
 
 class CameraView: UIView {
     
-    var itemInst: Item!
+    var itemInst: MyItem!
     
     override init(frame: CGRect) {
         super.init(frame: frame)

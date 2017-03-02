@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 protocol ScanViewDelegate: class {
-    func openItemDetail(item: Item, editMode: Bool)
+    func openItemDetail(item: MyItem, editMode: Bool)
 }
 
 class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
@@ -49,7 +49,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             }
         } else {
             // we dont have the item in the datastore so fetch it from the API
-            APIClient.getItemFromAPI(barcode: barcodeValue, completion: {itemInst in
+            APIClient.getEandataFromAPI(barcode: barcodeValue, completion: {itemInst in
                 if itemInst.barcode != "notFound" {
                     DispatchQueue.main.async {
                         self.delegate?.openItemDetail(item: itemInst, editMode: false)

@@ -1,5 +1,5 @@
 //
-//  Item.swift
+//  MyItem.swift
 //  GetThisAgain
 //
 //  Created by Paul Tangen on 2/17/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Item {
+class MyItem {
     
     let barcode: String
     //let barcodeType: Constants.barcodeType
@@ -16,24 +16,24 @@ class Item {
     var category: String
     var imageURL: String
     var shoppingList: Bool
-    var getThisAgain: GetThisAgain
+    var getAgain: GetAgain
     
-    init (barcode: String, name: String, category: String, imageURL: String, shoppingList: Bool, getThisAgain: GetThisAgain) {
+    init (barcode: String, name: String, category: String, imageURL: String, shoppingList: Bool, getAgain: GetAgain) {
         self.barcode = barcode
         //self.barcodeType = barcodeType
         self.name = name
         self.category = category
         self.imageURL = imageURL
         self.shoppingList = shoppingList
-        self.getThisAgain = getThisAgain
+        self.getAgain = getAgain
     }
     
-    func setGetThisAgain(status: GetThisAgain) {
-        self.getThisAgain = status
+    func setGetAgain(status: GetAgain) {
+        self.getAgain = status
     }
 }
 
-enum GetThisAgain: String {
+enum GetAgain: String {
     case yes, no, unsure
     
     // thresholds for each measure

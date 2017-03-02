@@ -41,7 +41,7 @@ class ScanViewController: UIViewController, ScanViewDelegate {
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }
     
-    func openItemDetail(item: Item, editMode: Bool) {
+    func openItemDetail(item: MyItem, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = editMode
         itemDetailViewControllerInst.itemInst = item

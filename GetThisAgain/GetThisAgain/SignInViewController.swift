@@ -45,18 +45,14 @@ class SignInViewController: UIViewController, SignInViewDelegate {
             self.signInViewInst.welcomeLabelYConstraintStart.isActive = false
             self.signInViewInst.welcomeLabelYConstraintEnd.isActive = true
             
-            self.signInViewInst.equityStatusYConstraintStart.isActive = false
-            self.signInViewInst.equityStatusYConstraintEnd.isActive = true
+            self.signInViewInst.productLabelYConstraintStart.isActive = false
+            self.signInViewInst.productLabelYConstraintEnd.isActive = true
             
-            self.signInViewInst.logoImageXConstraintStart.isActive = false
-            self.signInViewInst.logoImageXConstraintEnd.isActive = true
+            self.signInViewInst.logoBackgroundYConstraintStart.isActive = false
+            self.signInViewInst.logoBackgroundYConstraintEnd.isActive = true
+            
             self.signInViewInst.logoImageYConstraintStart.isActive = false
             self.signInViewInst.logoImageYConstraintEnd.isActive = true
-            
-            self.signInViewInst.logoImageWidthConstraintStart.isActive = false
-            self.signInViewInst.logoImageWidthConstraintEnd.isActive = true
-            self.signInViewInst.logoImageHeightConstraintStart.isActive = false
-            self.signInViewInst.logoImageHeightConstraintEnd.isActive = true
             
             self.signInViewInst.signInButtonRightConstraintStart.isActive = false
             self.signInViewInst.signInButtonRightConstraintEnd.isActive = true
@@ -64,5 +60,4 @@ class SignInViewController: UIViewController, SignInViewDelegate {
             self.signInViewInst.layoutIfNeeded()
         }
     }
-
 }

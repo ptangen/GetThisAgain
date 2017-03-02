@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MyItemsViewController: UIViewController, ScanViewDelegate {
+class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     
     let store = DataStore.sharedInstance
     var myItemsViewInst = MyItemsView()
@@ -16,7 +16,7 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.myItemsViewInst.delegate = self
-        store.myItems.isEmpty ? self.store.getSampleData() : ()
+        store.myItems.isEmpty ? self.myItemsViewInst.getMyItemsFromDB() : ()
     }
     
     override func loadView(){
@@ -24,7 +24,10 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.myItemsViewInst.frame = CGRect.zero
         self.view = self.myItemsViewInst
-        
+    }
+    
+    func showAlertMessage(_ message: String) {
+        Utilities.showAlertMessage(message, viewControllerInst: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,7 +35,7 @@ class MyItemsViewController: UIViewController, ScanViewDelegate {
         self.title = "My Items"
     }
     
-    func openItemDetail(item: Item, editMode: Bool) {
+    func openItemDetail(item: MyItem, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = true
         itemDetailViewControllerInst.itemInst = item

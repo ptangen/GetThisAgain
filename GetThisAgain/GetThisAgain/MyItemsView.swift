@@ -8,11 +8,16 @@
 
 import UIKit
 
+protocol MyItemsViewDelegate: class {
+    func openItemDetail(item: MyItem, editMode: Bool)
+    func showAlertMessage(_: String)
+}
+
 class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
-    weak var delegate: ScanViewDelegate?
+    weak var delegate: MyItemsViewDelegate?
     let store = DataStore.sharedInstance
-    var filteredItems = [Item]()
+    var filteredItems = [MyItem]()
     let myItemsTableView = UITableView()
     var myItemsTableViewInstYConstraintWithHeading = NSLayoutConstraint()
     var myItemsTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
@@ -55,14 +60,14 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = MyItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
-        var myItemCurrent: Item
+        var myItemCurrent: MyItem!
         if searchController.isActive && searchController.searchBar.text != "" {
             myItemCurrent = self.filteredItems[indexPath.row]
         } else {
             myItemCurrent = self.store.myItems[indexPath.row]
         }
         
-        cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getThisAgain.label() + ")"
+        cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getAgain.label() + ")"
         cell.subTitleLabel.text = myItemCurrent.category
         
         // var imageURLString = String()
@@ -109,6 +114,39 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func getMyItemsFromDB() {
+        APIClient.getMyItems(userName: "ptangen") { isSuccessful in
+            if isSuccessful {
+                OperationQueue.main.addOperation {
+                    self.myItemsTableView.reloadData()
+                }
+            } else {
+                OperationQueue.main.addOperation {
+                    //self.activityIndicator.isHidden = true
+                }
+                self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
+            }
+        }
+        
+        
+        
+        //        let myItem1 = Item(barcode: "0073852009385", name: "Purell H/Sanit Gel Aloe 2oz", category: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false, getAgain: .yes)
+        //        self.myItems.append(myItem1)
+        //
+        //        let myItem2 = Item(barcode: "0037600106245", name: "Skippy Peanut Butter Creamy, 28 oz", category: "Food", imageURL: "http://eandata.com/image/products/003/760/010/0037600106245.jpg", shoppingList: false, getAgain: .yes)
+        //        self.myItems.append(myItem2)
+        //
+        //        let myItem3 = Item(barcode: "0072940748007", name: "Redpack Tomato Paste 6 Oz", category: "Food", imageURL: "http://eandata.com/image/products/007/294/074/0072940748007.jpg", shoppingList: true, getAgain: .yes)
+        //        self.myItems.append(myItem3)
+        //
+        //        let myItem4 = Item(barcode: "0787780770193", name: "French Vanilla Decaffeinated, Ground, 10-Ounce Bags, New England", category: "Food", imageURL: "http://eandata.com/image/products/078/778/077/0787780770193.jpg", shoppingList: false, getAgain: .no)
+        //        self.myItems.append(myItem4)
+        //
+        //        let myItem5 = Item(barcode: "0711381000083", name: "Stonewall Stonewall Wld Maine Blubr 13 Oz", category: "Food", imageURL: "http://eandata.com/image/products/071/138/100/0711381000083.jpg", shoppingList: true, getAgain: .yes)
+        //        self.myItems.append(myItem5)
+        
     }
 }
 

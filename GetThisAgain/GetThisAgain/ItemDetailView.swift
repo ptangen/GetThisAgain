@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ItemDetailViewDelegate: class {
-    func openCamera(item: Item)
+    func openCamera(item: MyItem)
 }
 
 class ItemDetailView: UIView {
@@ -17,25 +17,25 @@ class ItemDetailView: UIView {
     weak var delegate: ItemDetailViewDelegate?
     let nameLabel = UILabel()
     let categoryLabel = UILabel()
-    let getThisAgainLabel = UILabel()
+    let getAgainLabel = UILabel()
     let shoppingListLabel = UILabel()
     let shoppingListSwitch = UISwitch()
-    var getThisAgainPicker = UISegmentedControl()
+    var getAgainPicker = UISegmentedControl()
     let itemImageView = UIImageView()
-    var itemInst: Item!
+    var itemInst: MyItem!
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.getThisAgainLabel.text = "Get This Again"
+        self.getAgainLabel.text = "Get This Again"
         self.shoppingListLabel.text = "Add to Shopping List"
         
         // configure segmented control to pick status for the measure
-        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.no)(), at: 0, animated: false)
-        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.unsure)(), at: 1, animated: false)
-        self.getThisAgainPicker.insertSegment(withTitle: GetThisAgain.label(.yes)(), at: 2, animated: false)
-        self.getThisAgainPicker.selectedSegmentIndex = 1
+        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.no)(), at: 0, animated: false)
+        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.unsure)(), at: 1, animated: false)
+        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.yes)(), at: 2, animated: false)
+        self.getAgainPicker.selectedSegmentIndex = 1
         
-        self.getThisAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
+        self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
         self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
         
         // gesture recognizer for image
@@ -54,11 +54,11 @@ class ItemDetailView: UIView {
         
         switch sender.selectedSegmentIndex {
         case 0:
-            self.itemInst.setGetThisAgain(status: .no)
+            self.itemInst.setGetAgain(status: .no)
         case 1:
-            self.itemInst.setGetThisAgain(status: .unsure)
+            self.itemInst.setGetAgain(status: .unsure)
         default:
-            self.itemInst.setGetThisAgain(status: .yes)
+            self.itemInst.setGetAgain(status: .yes)
         }
     }
     
@@ -96,29 +96,29 @@ class ItemDetailView: UIView {
         self.categoryLabel.numberOfLines = 0
         self.categoryLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(12.0))
         
-        // getThisAgainLabel
-        self.addSubview(self.getThisAgainLabel)
-        self.getThisAgainLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.getThisAgainLabel.topAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: 24).isActive = true
-        self.getThisAgainLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
+        // getAgainLabel
+        self.addSubview(self.getAgainLabel)
+        self.getAgainLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.getAgainLabel.topAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: 24).isActive = true
+        self.getAgainLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
         
-        // getThisAgainSwitch
+        // getAgainButtons
         let segmentButtonWidth = ((UIScreen.main.bounds.width/2) / 3) - 3
-        self.getThisAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 0)
-        self.getThisAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 1)
-        self.getThisAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 2)
-        self.getThisAgainPicker.tintColor = UIColor(named: .blue)
+        self.getAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 0)
+        self.getAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 1)
+        self.getAgainPicker.setWidth(segmentButtonWidth, forSegmentAt: 2)
+        self.getAgainPicker.tintColor = UIColor(named: .blue)
         
-        self.addSubview(self.getThisAgainPicker)
-        self.getThisAgainPicker.translatesAutoresizingMaskIntoConstraints = false
-        self.getThisAgainPicker.centerYAnchor.constraint(equalTo: self.getThisAgainLabel.centerYAnchor, constant: 0).isActive = true
-        self.getThisAgainPicker.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
-        self.getThisAgainPicker.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        self.addSubview(self.getAgainPicker)
+        self.getAgainPicker.translatesAutoresizingMaskIntoConstraints = false
+        self.getAgainPicker.centerYAnchor.constraint(equalTo: self.getAgainLabel.centerYAnchor, constant: 0).isActive = true
+        self.getAgainPicker.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        self.getAgainPicker.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         // shoppingListLabel
         self.addSubview(self.shoppingListLabel)
         self.shoppingListLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.shoppingListLabel.topAnchor.constraint(equalTo: self.getThisAgainLabel.bottomAnchor, constant: 36).isActive = true
+        self.shoppingListLabel.topAnchor.constraint(equalTo: self.getAgainLabel.bottomAnchor, constant: 36).isActive = true
         self.shoppingListLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
         
         // shoppingListSwitch

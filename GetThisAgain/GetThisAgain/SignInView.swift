@@ -20,7 +20,7 @@ class SignInView: UIView, UITextFieldDelegate {
     
     // controls
     let welcomeLabel = UILabel()
-    let equityStatusLabel = UILabel()
+    let productLabel = UILabel()
     let userNameField = UITextField()
     let passwordField = UITextField()
     let signInButton = UIButton()
@@ -28,6 +28,7 @@ class SignInView: UIView, UITextFieldDelegate {
     var logoImage = UIImageView()
     var userNamePopulated:Bool = false
     var passwordPopulated:Bool = false
+    let logoBackground = UIView()
     
     let myKeyChainWrapper = KeychainWrapper()
     var laContext = LAContext()
@@ -36,17 +37,13 @@ class SignInView: UIView, UITextFieldDelegate {
     var welcomeLabelYConstraintStart = NSLayoutConstraint()
     var welcomeLabelYConstraintEnd = NSLayoutConstraint()
     
-    var equityStatusYConstraintStart = NSLayoutConstraint()
-    var equityStatusYConstraintEnd = NSLayoutConstraint()
+    var productLabelYConstraintStart = NSLayoutConstraint()
+    var productLabelYConstraintEnd = NSLayoutConstraint()
     
-    var logoImageXConstraintStart = NSLayoutConstraint()
-    var logoImageXConstraintEnd = NSLayoutConstraint()
+    var logoBackgroundYConstraintStart = NSLayoutConstraint()
+    var logoBackgroundYConstraintEnd = NSLayoutConstraint()
     var logoImageYConstraintStart = NSLayoutConstraint()
     var logoImageYConstraintEnd = NSLayoutConstraint()
-    var logoImageWidthConstraintStart = NSLayoutConstraint()
-    var logoImageWidthConstraintEnd = NSLayoutConstraint()
-    var logoImageHeightConstraintStart = NSLayoutConstraint()
-    var logoImageHeightConstraintEnd = NSLayoutConstraint()
     
     var signInButtonRightConstraintStart = NSLayoutConstraint()
     var signInButtonRightConstraintEnd = NSLayoutConstraint()
@@ -221,6 +218,7 @@ class SignInView: UIView, UITextFieldDelegate {
     
     func layoutForm(){
         self.backgroundColor = UIColor(named: .blue)
+        self.logoBackground.backgroundColor = UIColor.white
         
         // welcome label
         self.addSubview(self.welcomeLabel)
@@ -236,46 +234,49 @@ class SignInView: UIView, UITextFieldDelegate {
         self.welcomeLabelYConstraintEnd = self.welcomeLabel.bottomAnchor.constraint(equalTo: self.topAnchor, constant: UIScreen.main.bounds.height / 10)
         self.welcomeLabelYConstraintStart.isActive = true
         
-        // equity status label
-        self.equityStatusLabel.text = "Get This Again"
-        self.equityStatusLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.equityStatusLabel.textAlignment = .center
-        self.equityStatusLabel.textColor = UIColor.white
-        self.equityStatusLabel.font = UIFont(name: Constants.appFont.bold.rawValue, size: Constants.fontSize.xlarge.rawValue)
-        self.addSubview(self.equityStatusLabel)
+        // productLabel
+        self.productLabel.text = "Get This Again"
+        self.productLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.productLabel.textAlignment = .center
+        self.productLabel.textColor = UIColor.white
+        self.productLabel.font = UIFont(name: Constants.appFont.bold.rawValue, size: Constants.fontSize.xlarge.rawValue)
+        self.addSubview(self.productLabel)
         
-        self.equityStatusLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        self.equityStatusLabel.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        self.productLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        self.productLabel.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         
-        self.equityStatusYConstraintStart = self.equityStatusLabel.bottomAnchor.constraint(equalTo: self.topAnchor, constant: -130)
-        self.equityStatusYConstraintStart.isActive = true
-        self.equityStatusYConstraintEnd = self.equityStatusLabel.bottomAnchor.constraint(equalTo: self.topAnchor, constant: UIScreen.main.bounds.height / 5)
-        self.equityStatusYConstraintEnd.isActive = false
+        self.productLabelYConstraintStart = self.productLabel.bottomAnchor.constraint(equalTo: self.topAnchor, constant: -130)
+        self.productLabelYConstraintStart.isActive = true
+        self.productLabelYConstraintEnd = self.productLabel.bottomAnchor.constraint(equalTo: self.topAnchor, constant: UIScreen.main.bounds.height / 5)
+        self.productLabelYConstraintEnd.isActive = false
+        
+        // logoBackground
+        self.addSubview(self.logoBackground)
+        self.logoBackground.translatesAutoresizingMaskIntoConstraints = false
+        //self.logoBackground.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
+        self.logoBackground.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+        self.logoBackground.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
+        self.logoBackground.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
+        
+        self.logoBackgroundYConstraintStart = self.logoBackground.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height)
+        self.logoBackgroundYConstraintStart.isActive = true
+        self.logoBackgroundYConstraintEnd = self.logoBackground.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/2)
+        self.logoBackgroundYConstraintEnd.isActive = false
         
         // logo
         self.logoImage.image = UIImage(named: "doubleArrows60-3x.png")
         self.addSubview(self.logoImage)
         self.logoImage.translatesAutoresizingMaskIntoConstraints = false
         
-        logoImageXConstraintStart = self.logoImage.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0)
-        logoImageXConstraintStart.isActive = true
-        logoImageXConstraintEnd = self.logoImage.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0)
-        logoImageXConstraintEnd.isActive = false
+        self.logoImage.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
         
-        logoImageYConstraintStart = self.logoImage.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
+        logoImageYConstraintStart = self.logoImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
         logoImageYConstraintStart.isActive = true
-        logoImageYConstraintEnd = self.logoImage.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
+        logoImageYConstraintEnd = self.logoImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: UIScreen.main.bounds.height/4)
         logoImageYConstraintEnd.isActive = false
         
-        self.logoImageWidthConstraintStart = self.logoImage.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 3)
-        self.logoImageWidthConstraintStart.isActive = true
-        self.logoImageWidthConstraintEnd = self.logoImage.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 1.5)
-        self.logoImageWidthConstraintEnd.isActive = false
-        
-        self.logoImageHeightConstraintStart = self.logoImage.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height)
-        self.logoImageHeightConstraintStart.isActive = true
-        self.logoImageHeightConstraintEnd = self.logoImage.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height / 2)
-        self.logoImageHeightConstraintEnd.isActive = false
+        self.logoImage.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        self.logoImage.heightAnchor.constraint(equalToConstant: 180).isActive = true
         
         // sign in button
         self.addSubview(self.signInButton)
@@ -330,7 +331,7 @@ class SignInView: UIView, UITextFieldDelegate {
         self.touchIDButton.widthAnchor.constraint(equalToConstant: 36).isActive = true
         self.touchIDButton.rightAnchor.constraint(equalTo: self.signInButton.leftAnchor, constant: -20).isActive = true
         self.touchIDButton.topAnchor.constraint(equalTo: self.signInButton.topAnchor, constant: 0).isActive = true
-        
+
         // all
         self.layoutIfNeeded()
     }

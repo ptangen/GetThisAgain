@@ -14,7 +14,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
     var editMode = Bool()
-    var itemInst: Item!
+    var itemInst: MyItem!
     var addButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
 
@@ -61,13 +61,13 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.editMode ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
         
         // set the getThisAgainControl
-        switch self.itemInst.getThisAgain.label() {
+        switch self.itemInst.getAgain.label() {
         case "No" :
-            self.itemDetailViewInst.getThisAgainPicker.selectedSegmentIndex = 0
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 0
         case "Unsure" :
-            self.itemDetailViewInst.getThisAgainPicker.selectedSegmentIndex = 1
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 1
         case "Yes" :
-            self.itemDetailViewInst.getThisAgainPicker.selectedSegmentIndex = 2
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 2
         default:
             break
         }
@@ -100,7 +100,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }
     
-    func openCamera(item: Item) {
+    func openCamera(item: MyItem) {
         let cameraViewControllerInst = CameraViewController()
         cameraViewControllerInst.cameraViewInst.itemInst = item
         self.navigationController?.pushViewController(cameraViewControllerInst, animated: false)

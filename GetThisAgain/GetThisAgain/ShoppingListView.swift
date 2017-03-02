@@ -12,8 +12,8 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
     weak var delegate: ScanViewDelegate?
     let store = DataStore.sharedInstance
-    var shoppingListItems = [Item]()
-    var filteredItems = [Item]()
+    var shoppingListItems = [MyItem]()
+    var filteredItems = [MyItem]()
     let shoppingListTableView = UITableView()
     var shoppingListTableViewInstYConstraintWithHeading = NSLayoutConstraint()
     var shoppingListTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
@@ -56,14 +56,14 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = ShoppingListTableViewCell(style: .default, reuseIdentifier: "prototype")
-        var shoppingItemCurrent: Item
+        var shoppingItemCurrent: MyItem
         if searchController.isActive && searchController.searchBar.text != "" {
             shoppingItemCurrent = self.filteredItems[indexPath.row]
         } else {
             shoppingItemCurrent = self.shoppingListItems[indexPath.row]
         }
         
-        cell.titleLabel.text = shoppingItemCurrent.name  + " (" + shoppingItemCurrent.getThisAgain.label() + ")"
+        cell.titleLabel.text = shoppingItemCurrent.name  + " (" + shoppingItemCurrent.getAgain.label() + ")"
         cell.subTitleLabel.text = shoppingItemCurrent.category
         
         let itemImageURL = URL(string: shoppingItemCurrent.imageURL)
