@@ -8,8 +8,13 @@
 
 import UIKit
 
+protocol ItemDetailViewDelegate: class {
+    func openCamera(item: Item)
+}
+
 class ItemDetailView: UIView {
 
+    weak var delegate: ItemDetailViewDelegate?
     let nameLabel = UILabel()
     let categoryLabel = UILabel()
     let getThisAgainLabel = UILabel()
@@ -32,6 +37,11 @@ class ItemDetailView: UIView {
         
         self.getThisAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
         self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
+        
+        // gesture recognizer for image
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onTapItemImageView))
+        itemImageView.addGestureRecognizer(tap)
+        itemImageView.isUserInteractionEnabled = true
 
         self.layoutForm()
     }
@@ -50,6 +60,10 @@ class ItemDetailView: UIView {
         default:
             self.itemInst.setGetThisAgain(status: .yes)
         }
+    }
+    
+    func onTapItemImageView() {
+        self.delegate?.openCamera(item: self.itemInst)
     }
     
     func switchStateDidChange(_ sender:UISwitch!) {
@@ -77,7 +91,7 @@ class ItemDetailView: UIView {
         self.addSubview(self.categoryLabel)
         self.categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         self.categoryLabel.topAnchor.constraint(equalTo: self.itemImageView.centerYAnchor, constant: 2).isActive = true
-        self.categoryLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        self.categoryLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.categoryLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.categoryLabel.numberOfLines = 0
         self.categoryLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(12.0))

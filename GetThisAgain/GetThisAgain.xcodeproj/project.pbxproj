@@ -28,6 +28,8 @@
 		C06712201E574C700047473B /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* ScanViewController.swift */; };
 		C06712221E574C9E0047473B /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* ScanView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
+		C0A232CE1E67880F00FB1617 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CD1E67880F00FB1617 /* CameraViewController.swift */; };
+		C0A232D01E67882A00FB1617 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CF1E67882A00FB1617 /* CameraView.swift */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
@@ -75,6 +77,8 @@
 		C067121F1E574C700047473B /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		C06712211E574C9E0047473B /* ScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
+		C0A232CD1E67880F00FB1617 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		C0A232CF1E67882A00FB1617 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 				C067121F1E574C700047473B /* ScanViewController.swift */,
 				C06712231E574FC30047473B /* ItemsTabViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
+				C0A232CD1E67880F00FB1617 /* CameraViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 				C0CE94FB1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift */,
 				C06712211E574C9E0047473B /* ScanView.swift */,
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
+				C0A232CF1E67882A00FB1617 /* CameraView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -362,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */,
+				C0A232CE1E67880F00FB1617 /* CameraViewController.swift in Sources */,
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
 				C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */,
 				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,
@@ -375,6 +382,7 @@
 				C067121C1E574A380047473B /* Constants.swift in Sources */,
 				C067121A1E5749DF0047473B /* Item.swift in Sources */,
 				C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */,
+				C0A232D01E67882A00FB1617 /* CameraView.swift in Sources */,
 				C06712221E574C9E0047473B /* ScanView.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* ScanViewController.swift in Sources */,
@@ -518,7 +526,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1A312362C3ECF6270120F103 /* Pods-GetThisAgain.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-phone";
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgain/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -534,7 +542,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 148DC204A7A02501A3FEFAA4 /* Pods-GetThisAgain.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-phone";
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgain/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

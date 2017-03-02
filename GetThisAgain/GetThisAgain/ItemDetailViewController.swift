@@ -9,7 +9,7 @@
 import UIKit
 import SDWebImage
 
-class ItemDetailViewController: UITabBarController {
+class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
@@ -20,6 +20,7 @@ class ItemDetailViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.itemDetailViewInst.delegate = self
         self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
         
         // add button
@@ -33,7 +34,6 @@ class ItemDetailViewController: UITabBarController {
         self.doneButton.target = self
         self.doneButton.title = "Done"
         self.doneButton.action = #selector(doneButtonClicked)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,5 +98,11 @@ class ItemDetailViewController: UITabBarController {
     func cancelButtonClicked() {
         let itemsTabViewControllerInst = ItemsTabViewController()
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+    }
+    
+    func openCamera(item: Item) {
+        let cameraViewControllerInst = CameraViewController()
+        cameraViewControllerInst.cameraViewInst.itemInst = item
+        self.navigationController?.pushViewController(cameraViewControllerInst, animated: false)
     }
 }

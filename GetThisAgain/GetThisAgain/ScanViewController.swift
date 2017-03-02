@@ -42,7 +42,6 @@ class ScanViewController: UIViewController, ScanViewDelegate {
     }
     
     func openItemDetail(item: Item, editMode: Bool) {
-        print("openItemDetail")
         let itemDetailViewControllerInst = ItemDetailViewController()
         itemDetailViewControllerInst.editMode = editMode
         itemDetailViewControllerInst.itemInst = item

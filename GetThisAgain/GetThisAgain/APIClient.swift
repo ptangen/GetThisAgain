@@ -17,6 +17,7 @@ class APIClient {
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: Item?
+        let itemInstNotFound = Item(barcode: "notFound", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
 
         if let unwrappedUrl = url{
             let session = URLSession.shared
@@ -42,14 +43,11 @@ class APIClient {
                                             if let category = productAttributesDict["category_text"] { itemInst.category = category }
                                         }
                                     }
-                                } else {  // code != 200 - item not found
-                                    itemInst = Item(barcode: "notFound", name: "", category: "", imageURL: "", shoppingList: false, getThisAgain: .unsure)
                                 }
                             }
                         }
-                        if let itemInst = itemInst {
-                            completion(itemInst)
-                        }
+                        let itemInstUnwrapped = itemInst ?? itemInstNotFound
+                        completion(itemInstUnwrapped)
                     } catch {
                         print("An error occured when creating responseJSON")
                     }
