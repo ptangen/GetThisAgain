@@ -157,18 +157,15 @@
 				C06712151E5749490047473B /* ViewControllers */,
 				C06712161E5749670047473B /* Views */,
 				C06711EF1E5748020047473B /* AppDelegate.swift */,
-				C027E0791E57A3D000CA6577 /* barcode_sample.jpg */,
-				C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */,
-				C06711F91E5748020047473B /* Assets.xcassets */,
+				C0A232DB1E6865C000FB1617 /* Utilities.swift */,
+				C067121B1E574A380047473B /* Constants.swift */,
+				C0A232DD1E68D0A700FB1617 /* images */,
 				C06711FB1E5748020047473B /* LaunchScreen.storyboard */,
-				C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */,
 				C0A232D81E6862BD00FB1617 /* KeychainWrapper.h */,
 				C0A232D61E6862B200FB1617 /* KeychainWrapper.m */,
 				C06711FE1E5748020047473B /* Info.plist */,
 				C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */,
-				C067121B1E574A380047473B /* Constants.swift */,
 				C0A232D51E6862B100FB1617 /* GetThisAgain-Bridging-Header.h */,
-				C0A232DB1E6865C000FB1617 /* Utilities.swift */,
 			);
 			path = GetThisAgain;
 			sourceTree = "<group>";
@@ -197,10 +194,10 @@
 			isa = PBXGroup;
 			children = (
 				C0A232D11E68619E00FB1617 /* SignInViewController.swift */,
+				C06712231E574FC30047473B /* ItemsTabViewController.swift */,
 				C06712131E57492B0047473B /* MyItemsViewController.swift */,
 				C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */,
 				C067121F1E574C700047473B /* ScanViewController.swift */,
-				C06712231E574FC30047473B /* ItemsTabViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
 				C0A232CD1E67880F00FB1617 /* CameraViewController.swift */,
 			);
@@ -220,6 +217,17 @@
 				C0A232CF1E67882A00FB1617 /* CameraView.swift */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		C0A232DD1E68D0A700FB1617 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				C027E0791E57A3D000CA6577 /* barcode_sample.jpg */,
+				C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */,
+				C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */,
+				C06711F91E5748020047473B /* Assets.xcassets */,
+			);
+			name = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

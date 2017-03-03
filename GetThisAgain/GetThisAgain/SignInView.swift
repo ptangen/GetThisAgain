@@ -253,10 +253,9 @@ class SignInView: UIView, UITextFieldDelegate {
         // logoBackground
         self.addSubview(self.logoBackground)
         self.logoBackground.translatesAutoresizingMaskIntoConstraints = false
-        //self.logoBackground.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-        self.logoBackground.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
-        self.logoBackground.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
-        self.logoBackground.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
+        self.logoBackground.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.logoBackground.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+        self.logoBackground.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
         
         self.logoBackgroundYConstraintStart = self.logoBackground.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height)
         self.logoBackgroundYConstraintStart.isActive = true
@@ -268,15 +267,14 @@ class SignInView: UIView, UITextFieldDelegate {
         self.addSubview(self.logoImage)
         self.logoImage.translatesAutoresizingMaskIntoConstraints = false
         
-        self.logoImage.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        self.logoImage.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        self.logoImage.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        self.logoImage.heightAnchor.constraint(equalToConstant: 180).isActive = true
         
-        logoImageYConstraintStart = self.logoImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
+        logoImageYConstraintStart = self.logoImage.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         logoImageYConstraintStart.isActive = true
         logoImageYConstraintEnd = self.logoImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: UIScreen.main.bounds.height/4)
         logoImageYConstraintEnd.isActive = false
-        
-        self.logoImage.widthAnchor.constraint(equalToConstant: 180).isActive = true
-        self.logoImage.heightAnchor.constraint(equalToConstant: 180).isActive = true
         
         // sign in button
         self.addSubview(self.signInButton)

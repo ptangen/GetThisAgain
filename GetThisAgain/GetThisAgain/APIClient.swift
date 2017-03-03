@@ -40,7 +40,6 @@ class APIClient {
                         do {
                             let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String]
                             let results = json?["results"]
-                            print("results: \(results)")
                             
                             if results == "authenticated" {
                                 completion(.authenticated)
@@ -50,6 +49,46 @@ class APIClient {
                                 completion(.passwordInvalid)
                             } else {
                                 completion(.noReply)
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
+        }
+    }
+    
+    class func insertMyItem(itemInst: MyItem, completion: @escaping (apiResponse) -> Void) {
+        let urlString = "\(Secrets.gtaURL)/insertMyItem.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            var parameterString = String()
+            if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let categoryUnwrapped = itemInst.category.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
+                parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&category=\(categoryUnwrapped)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+            }
+            request.httpBody = parameterString.data(using: .utf8)
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Int]
+                            if let results = json?["results"] {
+                                if results == 1 {
+                                    completion(.ok)
+                                } else if results == -1 {
+                                    completion(.failed)
+                                } else {
+                                    completion(.noReply)
+                                }
                             }
                         } catch {
                             completion(.noReply)
@@ -110,9 +149,9 @@ class APIClient {
         }
     }
     
-    class func getMyItems(userName: String, completion: @escaping (Bool) -> Void) {
+    class func selectMyItems(userName: String, completion: @escaping (Bool) -> Void) {
         let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.gtaURL)/getMyItems.php"
+        let urlString = "\(Secrets.gtaURL)/selectMyItems.php"
         let url = URL(string: urlString)
         if let url = url {
             var request = URLRequest(url: url)

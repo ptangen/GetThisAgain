@@ -81,8 +81,16 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     }
 
     func addButtonClicked() {
-        self.store.myItems.append(self.itemInst)
-        self.doneButtonClicked()
+        print("addButtonClicked")
+        APIClient.insertMyItem(itemInst: self.itemInst) { (results) in
+            print(results)
+            if results == apiResponse.ok {
+                self.store.myItems.append(self.itemInst)
+                self.doneButtonClicked()
+            } else {
+                print("error")
+            }
+        }
     }
 
     func doneButtonClicked() {

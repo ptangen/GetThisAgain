@@ -108,8 +108,8 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.myItemsTableView.translatesAutoresizingMaskIntoConstraints = false
         self.myItemsTableView.topAnchor.constraint(equalTo: self.topAnchor, constant: 64).isActive = true
         self.myItemsTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
-        self.myItemsTableView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0).isActive = true
-        self.myItemsTableView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
+        self.myItemsTableView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+        self.myItemsTableView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -117,7 +117,8 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func getMyItemsFromDB() {
-        APIClient.getMyItems(userName: "ptangen") { isSuccessful in
+        let userName = UserDefaults.standard.value(forKey: "username") as! String
+        APIClient.selectMyItems(userName: userName) { isSuccessful in
             if isSuccessful {
                 OperationQueue.main.addOperation {
                     self.myItemsTableView.reloadData()
@@ -129,24 +130,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
                 self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
             }
         }
-        
-        
-        
-        //        let myItem1 = Item(barcode: "0073852009385", name: "Purell H/Sanit Gel Aloe 2oz", category: "Bath / Beauty / Hygiene", imageURL: "http://eandata.com/image/products/007/385/200/0073852009385.jpg", shoppingList: false, getAgain: .yes)
-        //        self.myItems.append(myItem1)
-        //
-        //        let myItem2 = Item(barcode: "0037600106245", name: "Skippy Peanut Butter Creamy, 28 oz", category: "Food", imageURL: "http://eandata.com/image/products/003/760/010/0037600106245.jpg", shoppingList: false, getAgain: .yes)
-        //        self.myItems.append(myItem2)
-        //
-        //        let myItem3 = Item(barcode: "0072940748007", name: "Redpack Tomato Paste 6 Oz", category: "Food", imageURL: "http://eandata.com/image/products/007/294/074/0072940748007.jpg", shoppingList: true, getAgain: .yes)
-        //        self.myItems.append(myItem3)
-        //
-        //        let myItem4 = Item(barcode: "0787780770193", name: "French Vanilla Decaffeinated, Ground, 10-Ounce Bags, New England", category: "Food", imageURL: "http://eandata.com/image/products/078/778/077/0787780770193.jpg", shoppingList: false, getAgain: .no)
-        //        self.myItems.append(myItem4)
-        //
-        //        let myItem5 = Item(barcode: "0711381000083", name: "Stonewall Stonewall Wld Maine Blubr 13 Oz", category: "Food", imageURL: "http://eandata.com/image/products/071/138/100/0711381000083.jpg", shoppingList: true, getAgain: .yes)
-        //        self.myItems.append(myItem5)
-        
     }
 }
 
