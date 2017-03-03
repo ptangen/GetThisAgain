@@ -16,7 +16,6 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.myItemsViewInst.delegate = self
-        store.myItems.isEmpty ? self.myItemsViewInst.getMyItemsFromDB() : ()
     }
     
     override func loadView(){
@@ -33,6 +32,7 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "My Items"
+        store.myItems.isEmpty ? self.myItemsViewInst.getMyItemsFromDB() : ()
     }
     
     func openItemDetail(item: MyItem, editMode: Bool) {

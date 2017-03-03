@@ -10,8 +10,10 @@
 		C027E0721E578D3800CA6577 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0711E578D3800CA6577 /* APIClient.swift */; };
 		C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0731E578D8A00CA6577 /* Secrets.swift */; };
 		C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C027E0791E57A3D000CA6577 /* barcode_sample.jpg */; };
+		C028D5161E69CDA60087392C /* ic_insert_photo_black_24px.svg in Resources */ = {isa = PBXBuildFile; fileRef = C028D5151E69CDA60087392C /* ic_insert_photo_black_24px.svg */; };
 		C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */; };
 		C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A71E59F8B800A62051 /* ItemDetailView.swift */; };
+		C03E7A571E69E4390066BC94 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = C03E7A561E69E4390066BC94 /* camera.png */; };
 		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */; };
@@ -58,8 +60,10 @@
 		C027E0711E578D3800CA6577 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		C027E0731E578D8A00CA6577 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		C027E0791E57A3D000CA6577 /* barcode_sample.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = barcode_sample.jpg; sourceTree = "<group>"; };
+		C028D5151E69CDA60087392C /* ic_insert_photo_black_24px.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ic_insert_photo_black_24px.svg; sourceTree = "<group>"; };
 		C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		C031E5A71E59F8B800A62051 /* ItemDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
+		C03E7A561E69E4390066BC94 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
 		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -223,6 +227,8 @@
 			isa = PBXGroup;
 			children = (
 				C027E0791E57A3D000CA6577 /* barcode_sample.jpg */,
+				C03E7A561E69E4390066BC94 /* camera.png */,
+				C028D5151E69CDA60087392C /* ic_insert_photo_black_24px.svg */,
 				C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */,
 				C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */,
 				C06711F91E5748020047473B /* Assets.xcassets */,
@@ -320,9 +326,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C06711FD1E5748020047473B /* LaunchScreen.storyboard in Resources */,
+				C03E7A571E69E4390066BC94 /* camera.png in Resources */,
 				C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */,
 				C06711FA1E5748020047473B /* Assets.xcassets in Resources */,
 				C027E07A1E57A3D000CA6577 /* barcode_sample.jpg in Resources */,
+				C028D5161E69CDA60087392C /* ic_insert_photo_black_24px.svg in Resources */,
 				C0A232DA1E68648C00FB1617 /* doubleArrows60-3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

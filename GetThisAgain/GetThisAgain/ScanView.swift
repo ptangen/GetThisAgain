@@ -17,9 +17,12 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     
     weak var delegate: ScanViewDelegate?
     let store = DataStore.sharedInstance
-    let btnStartStop = UIButton()
-    let viewReader = UIView()
-    let statusLabel = UILabel()
+    let barcodeReader = UIView()
+    let barcodeStatusLabel = UILabel()
+    let barcodeReaderBorderWidth: CGFloat = 8.0
+    
+    let snapshotView = UIView()
+    let snapshotStatusLabel = UILabel()
     
     // Create a session object.
     var captureSession = AVCaptureSession()
@@ -27,17 +30,36 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     // Create output object.
     var metaDataOutput = AVCaptureMetadataOutput()
     
-    var previewLayer = AVCaptureVideoPreviewLayer()
+    var barcodePreviewLayer = AVCaptureVideoPreviewLayer()
     var captureDevice : AVCaptureDevice?
     
-    var isSessionStart = false
+    var isBarcodeSessionStart = false
+    var isSnapshotSessionStart = false
+    
+    // camera
+    var captureSessionCamera:AVCaptureSession?
+    var snapshotPreviewLayer:AVCaptureVideoPreviewLayer?
+    var videoCaptureDevice: AVCaptureDevice?
+    var input: AnyObject?
     
     override init(frame:CGRect){
         super.init(frame: frame)
         self.layoutForm()
-        self.btnStartStop.addTarget(self, action: #selector(ScanView.startStopReading), for: UIControlEvents.touchUpInside)
-        self.btnStartStop.setTitleColor(UIColor(named: .disabledText), for: .disabled)
-        self.statusLabel.text = "Locate the barcode on the item and then enable the barcode reader."
+        self.barcodeStatusLabel.text = "Locate the barcode on the item and then enable the barcode reader."
+        
+        // gesture recognizer for barcodeReader
+        let tapReader = UITapGestureRecognizer(target: self, action: #selector(startStopBarcodePreview))
+        self.barcodeReader.addGestureRecognizer(tapReader)
+        self.barcodeReader.isUserInteractionEnabled = true
+        self.barcodeReader.layer.borderWidth = 8
+        self.barcodeReader.layer.borderColor = UIColor.white.cgColor
+        
+        // gesture recognizer for snapshotView
+        let tapCamera = UITapGestureRecognizer(target: self, action: #selector(startStopSnapshotPreview))
+        self.snapshotView.addGestureRecognizer(tapCamera)
+        self.snapshotView.isUserInteractionEnabled = true
+        self.snapshotView.layer.borderWidth = 8
+        self.snapshotView.layer.borderColor = UIColor.white.cgColor
     }
     
     func getItemInformation(barcodeValue: String) {
@@ -57,21 +79,48 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 } else {
                     // display not found message
                     DispatchQueue.main.async {
-                        self.statusLabel.text = "The item was not found in the database."
-                        self.startStopReading(sender: self)
-                        self.btnStartStop.isEnabled = true
-                        self.btnStartStop.backgroundColor = UIColor(named: .blue)
+                        self.barcodeStatusLabel.text = "The item was not found in the database."
+                        self.startStopBarcodePreview()
                     }
                 }
             })
         }
     }
     
-    func startStopReading(sender: AnyObject) {
-        //print("startStopReading \(isSessionStart)")
+    func startStopSnapshotPreview() {
+        //print("startStopSnapshotPreview \(isSnapshotSessionStart)")
         
-        if isSessionStart == false {
+        if isSnapshotSessionStart == false {
+            self.isBarcodeSessionStart ? self.startStopBarcodePreview() : () // stop the barcode preview
             
+            self.videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+            do {
+                input = try AVCaptureDeviceInput(device: self.videoCaptureDevice)
+            } catch {
+                print("video device error")
+            }
+            self.captureSessionCamera = AVCaptureSession()
+            self.captureSessionCamera?.addInput(input as! AVCaptureInput)
+            self.snapshotPreviewLayer = AVCaptureVideoPreviewLayer(session: self.captureSessionCamera)
+            self.snapshotPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.snapshotPreviewLayer?.frame = CGRect(x: 0, y: 0, width: self.snapshotView.frame.width, height: self.snapshotView.frame.height)
+            self.captureSessionCamera?.startRunning()
+            self.snapshotView.layer.addSublayer(self.snapshotPreviewLayer!)
+
+        } else {
+            print("stop camera")
+            self.captureSessionCamera?.stopRunning()
+            self.snapshotPreviewLayer?.removeFromSuperlayer()
+        }
+        isSnapshotSessionStart = !isSnapshotSessionStart
+    }
+    
+    func startStopBarcodePreview() {
+        //print("startStopBarcodePreview \(isBarcodeSessionStart)")
+        
+        if isBarcodeSessionStart == false {
+            
+            self.isSnapshotSessionStart ? self.startStopSnapshotPreview() : () // stop the snapshot preview
             captureSession.sessionPreset = AVCaptureSessionPresetHigh
             
             if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
@@ -115,33 +164,30 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 metaDataOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
                 
                 // Add previewLayer and have it show the video data.
-                previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                // print("preview layer: \(previewLayer.session)") // this output changes when function is called from init
+                barcodePreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                // print("preview layer: \(barcodePreviewLayer.session)") // this output changes when function is called from init
                 
-                let bounds:CGRect = self.viewReader.layer.bounds
-                previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                previewLayer.bounds = bounds
-                previewLayer.position = CGPoint(x: bounds.midX, y:bounds.midY)
-                viewReader.layer.addSublayer(previewLayer)
+                let bounds = CGRect(x: 0, y: 0, width: self.barcodeReader.layer.bounds.width - (barcodeReaderBorderWidth * 2),
+                                    height: self.barcodeReader.layer.bounds.height - (barcodeReaderBorderWidth * 2))
+                barcodePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                barcodePreviewLayer.bounds = bounds
+                barcodePreviewLayer.position = CGPoint(x: bounds.midX + barcodeReaderBorderWidth, y:bounds.midY + barcodeReaderBorderWidth)
+                barcodeReader.layer.addSublayer(barcodePreviewLayer)
                 
-                viewReader.isHidden = false
+                barcodeReader.isHidden = false
                 captureSession.startRunning()
                 
-                self.statusLabel.text = "Searching for a barcode..."
-                self.btnStartStop.isEnabled = false
-                self.btnStartStop.backgroundColor = UIColor.gray
+                self.barcodeStatusLabel.text = "Searching for a barcode..."
                 
                 print("array \(metaDataOutput.metadataObjectTypes)")
-            } else{
-                btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
-                self.statusLabel.text = "No device found."
+            } else {
+                self.barcodeStatusLabel.text = "No device found."
             }
         } else {
-            btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
             self.captureSession.stopRunning()
-            previewLayer.removeFromSuperlayer()
+            barcodePreviewLayer.removeFromSuperlayer()
         }
-        isSessionStart = !isSessionStart
+        isBarcodeSessionStart = !isBarcodeSessionStart
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -180,18 +226,20 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             for barcodeType in barCodeTypes {
                 
                 if (metadata as AnyObject).type == barcodeType {
-                    barCodeObject = self.previewLayer.transformedMetadataObject(for: metadata as! AVMetadataMachineReadableCodeObject)
+                    barCodeObject = self.barcodePreviewLayer.transformedMetadataObject(for: metadata as! AVMetadataMachineReadableCodeObject)
                     strDetected = (metadata as! AVMetadataMachineReadableCodeObject).stringValue
                     self.captureSession.stopRunning()
                     
                     if let strDetected = strDetected {
                         self.getItemInformation(barcodeValue: strDetected)
                         DispatchQueue.main.async {
-                            self.statusLabel.text = "Barcode captured. Searching for product information..."
+                            self.barcodeStatusLabel.text = "Barcode captured. Searching for product information..."
+                            self.barcodeReader.layer.borderWidth = 8
+                            self.barcodeReader.layer.borderColor = UIColor.green.cgColor
                         }
                     } else {
                         DispatchQueue.main.async {
-                            self.statusLabel.text = "Failed to capture barcode, try again."
+                            self.barcodeStatusLabel.text = "Failed to capture barcode, try again."
                         }
                     }
                     break
@@ -203,31 +251,33 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     func layoutForm(){
         self.backgroundColor = UIColor.lightGray
         
-        // view reader
-        self.addSubview(self.viewReader)
-        self.viewReader.translatesAutoresizingMaskIntoConstraints = false
-        self.viewReader.backgroundColor = UIColor.white
-        self.viewReader.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "barcode_sample.jpg"))
-        self.viewReader.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
-        self.viewReader.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        self.viewReader.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        self.viewReader.bottomAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        // barcode reader
+        self.addSubview(self.barcodeReader)
+        self.barcodeReader.translatesAutoresizingMaskIntoConstraints = false
+        self.barcodeReader.backgroundColor = UIColor.white
+        self.barcodeReader.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "barcode_sample.jpg"))
+        self.barcodeReader.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
+        self.barcodeReader.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        self.barcodeReader.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        self.barcodeReader.bottomAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
-        // statusLabel
-        self.addSubview(self.statusLabel)
-        self.statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.statusLabel.topAnchor.constraint(equalTo: self.viewReader.bottomAnchor, constant: 20).isActive = true
-        self.statusLabel.leftAnchor.constraint(equalTo: self.viewReader.leftAnchor, constant: 0).isActive = true
-        self.statusLabel.rightAnchor.constraint(equalTo: self.viewReader.rightAnchor, constant: 0).isActive = true
-        self.statusLabel.numberOfLines = 0
+        // barcodeStatusLabel
+        self.addSubview(self.barcodeStatusLabel)
+        self.barcodeStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.barcodeStatusLabel.topAnchor.constraint(equalTo: self.barcodeReader.bottomAnchor, constant: 20).isActive = true
+        self.barcodeStatusLabel.leftAnchor.constraint(equalTo: self.barcodeReader.leftAnchor, constant: 0).isActive = true
+        self.barcodeStatusLabel.rightAnchor.constraint(equalTo: self.barcodeReader.rightAnchor, constant: 0).isActive = true
+        self.barcodeStatusLabel.numberOfLines = 0
         
-        // btnStartStop button
-        self.addSubview(self.btnStartStop)
-        self.btnStartStop.translatesAutoresizingMaskIntoConstraints = false
-        self.btnStartStop.setTitle(" Enable Barcode Reader ", for: .normal)
-        self.btnStartStop.backgroundColor = UIColor(named: .blue)
-        self.btnStartStop.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20).isActive = true
-        self.btnStartStop.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        // snapshotView
+        self.addSubview(self.snapshotView)
+        self.snapshotView.translatesAutoresizingMaskIntoConstraints = false
+        self.snapshotView.backgroundColor = UIColor.white
+        self.snapshotView.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "camera.png"))
+        self.snapshotView.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 60).isActive = true
+        self.snapshotView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        self.snapshotView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        self.snapshotView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
     }
 }
 
