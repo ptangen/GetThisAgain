@@ -27,7 +27,7 @@ class ScanViewController: UIViewController, ScanViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.title = "Scan the barcode"
+        self.title = "Capture the Item"
         
         // add cancel button to nav bar
         self.navigationItem.setHidesBackButton(true, animated:false);

@@ -17,49 +17,79 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     
     weak var delegate: ScanViewDelegate?
     let store = DataStore.sharedInstance
+    let previewBorderWidth: CGFloat = 8.0
+    
+    // barcodeReader
     let barcodeReader = UIView()
     let barcodeStatusLabel = UILabel()
-    let barcodeReaderBorderWidth: CGFloat = 8.0
+    var captureSessionBarcode = AVCaptureSession()
+    var metaDataOutputBarcode = AVCaptureMetadataOutput() // Create output object.
+    var previewLayerBarcode = AVCaptureVideoPreviewLayer()
+    var captureDeviceBarcode : AVCaptureDevice?
+    let backgroundImageBarcode: UIImageView = UIImageView(image: #imageLiteral(resourceName: "barcode_sample.png")) // barcode_sample.png
+    var isBarcodeSessionStart = false
     
+    // snapshot
     let snapshotView = UIView()
     let snapshotStatusLabel = UILabel()
-    
-    // Create a session object.
-    var captureSession = AVCaptureSession()
-    
-    // Create output object.
-    var metaDataOutput = AVCaptureMetadataOutput()
-    
-    var barcodePreviewLayer = AVCaptureVideoPreviewLayer()
-    var captureDevice : AVCaptureDevice?
-    
-    var isBarcodeSessionStart = false
+    var captureSessionSnapshot = AVCaptureSession()
+    var previewLayerSnapshot = AVCaptureVideoPreviewLayer()
+    var captureDeviceSnapshot: AVCaptureDevice?
+    var inputSnapshot: AnyObject?
+    let backgroundImageCamera: UIImageView = UIImageView(image: #imageLiteral(resourceName: "camera.png")) // camera.png
     var isSnapshotSessionStart = false
     
-    // camera
-    var captureSessionCamera:AVCaptureSession?
-    var snapshotPreviewLayer:AVCaptureVideoPreviewLayer?
-    var videoCaptureDevice: AVCaptureDevice?
-    var input: AnyObject?
+    var barcodeReaderTopConstraintInitial = NSLayoutConstraint()
+    var barcodeReaderTopConstraintActive = NSLayoutConstraint()
+    var barcodeReaderTopConstraintInactive = NSLayoutConstraint()
+    
+    var barcodeReaderHeightConstraintInitial = NSLayoutConstraint()
+    var barcodeReaderHeightConstraintActive = NSLayoutConstraint()
+    var barcodeReaderHeightConstraintInactive = NSLayoutConstraint()
+    
+    var barcodeReaderWidthConstraintInitial = NSLayoutConstraint()
+    var barcodeReaderWidthConstraintActive = NSLayoutConstraint()
+    var barcodeReaderWidthConstraintInactive = NSLayoutConstraint()
+    
+    var snapshotViewHeightConstraintInitial = NSLayoutConstraint()
+    var snapshotViewHeightConstraintActive = NSLayoutConstraint()
+    var snapshotViewHeightConstraintInactive = NSLayoutConstraint()
+
+    var snapshotViewWidthConstraintInitial = NSLayoutConstraint()
+    var snapshotViewWidthConstraintActive = NSLayoutConstraint()
+    var snapshotViewWidthConstraintInactive = NSLayoutConstraint()
+    
+    var snapshotViewBottomConstraintInitial = NSLayoutConstraint()
+    var snapshotViewBottomConstraintActive = NSLayoutConstraint()
+    var snapshotViewBottomConstraintInactive = NSLayoutConstraint()
     
     override init(frame:CGRect){
         super.init(frame: frame)
         self.layoutForm()
-        self.barcodeStatusLabel.text = "Locate the barcode on the item and then enable the barcode reader."
+        self.barcodeStatusLabel.text = "Scan the Barcode"
+        self.snapshotStatusLabel.text = "Take a Snapshot"
         
         // gesture recognizer for barcodeReader
         let tapReader = UITapGestureRecognizer(target: self, action: #selector(startStopBarcodePreview))
         self.barcodeReader.addGestureRecognizer(tapReader)
         self.barcodeReader.isUserInteractionEnabled = true
         self.barcodeReader.layer.borderWidth = 8
-        self.barcodeReader.layer.borderColor = UIColor.white.cgColor
+        self.barcodeReader.layer.borderColor = UIColor.clear.cgColor
         
         // gesture recognizer for snapshotView
         let tapCamera = UITapGestureRecognizer(target: self, action: #selector(startStopSnapshotPreview))
         self.snapshotView.addGestureRecognizer(tapCamera)
         self.snapshotView.isUserInteractionEnabled = true
         self.snapshotView.layer.borderWidth = 8
-        self.snapshotView.layer.borderColor = UIColor.white.cgColor
+        self.snapshotView.layer.borderColor = UIColor.clear.cgColor
+    }
+    
+    func addSnapshotViewCameraImage(){
+        let backgroundImage: UIImageView = UIImageView(frame: self.snapshotView.bounds)  //centerView.bounds)
+        backgroundImage.clipsToBounds = true
+        backgroundImage.image = #imageLiteral(resourceName: "camera.png")
+        backgroundImage.contentMode = .scaleAspectFill
+        self.snapshotView.addSubview(backgroundImage)
     }
     
     func getItemInformation(barcodeValue: String) {
@@ -93,24 +123,81 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         if isSnapshotSessionStart == false {
             self.isBarcodeSessionStart ? self.startStopBarcodePreview() : () // stop the barcode preview
             
-            self.videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-            do {
-                input = try AVCaptureDeviceInput(device: self.videoCaptureDevice)
-            } catch {
-                print("video device error")
+            if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
+                                                                                 mediaType: AVMediaTypeVideo,
+                                                                                 position: AVCaptureDevicePosition.unspecified) {
+                // Set the captureDevice.
+                for device in deviceDescoverySession.devices {
+                    // Make sure this particular device supports video
+                    if ((device as AnyObject).hasMediaType(AVMediaTypeVideo)) {
+                        // Finally check the position and confirm we've got the back camera
+                        if((device as AnyObject).position == AVCaptureDevicePosition.back) {
+                            self.captureDeviceSnapshot = device
+                        }
+                    }
+                }
             }
-            self.captureSessionCamera = AVCaptureSession()
-            self.captureSessionCamera?.addInput(input as! AVCaptureInput)
-            self.snapshotPreviewLayer = AVCaptureVideoPreviewLayer(session: self.captureSessionCamera)
-            self.snapshotPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
-            self.snapshotPreviewLayer?.frame = CGRect(x: 0, y: 0, width: self.snapshotView.frame.width, height: self.snapshotView.frame.height)
-            self.captureSessionCamera?.startRunning()
-            self.snapshotView.layer.addSublayer(self.snapshotPreviewLayer!)
+
+            if self.captureDeviceSnapshot != nil {
+                
+                let input : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: self.captureDeviceSnapshot) // Create input object
+                
+                if (self.captureSessionSnapshot.canAddInput(input)) {  // add input to session
+                    self.captureSessionSnapshot.addInput(input)
+                    
+                }
+                
+                UIView.animate(withDuration: 0.75, animations: {  // display the preview
+                    // resize the snapshotview -> Active
+                    self.snapshotViewHeightConstraintInitial.isActive = false
+                    self.snapshotViewHeightConstraintInactive.isActive = false
+                    self.snapshotViewHeightConstraintActive.isActive = true
+                    
+                    self.snapshotViewWidthConstraintInitial.isActive = false
+                    self.snapshotViewWidthConstraintInactive.isActive = false
+                    self.snapshotViewWidthConstraintActive.isActive = true
+                    
+                    self.snapshotViewBottomConstraintInitial.isActive = false
+                    self.snapshotViewBottomConstraintInactive.isActive = false
+                    self.snapshotViewBottomConstraintActive.isActive = true
+                    
+                    // resize the barcode view -? Inactive
+                    self.barcodeReaderTopConstraintInitial.isActive = false
+                    self.barcodeReaderTopConstraintActive.isActive = false
+                    self.barcodeReaderTopConstraintInactive.isActive = true
+                    
+                    self.barcodeReaderHeightConstraintInitial.isActive = false
+                    self.barcodeReaderHeightConstraintActive.isActive = false
+                    self.barcodeReaderHeightConstraintInactive.isActive = true
+                    
+                    self.barcodeReaderWidthConstraintInitial.isActive = false
+                    self.barcodeReaderWidthConstraintActive.isActive = false
+                    self.barcodeReaderWidthConstraintInactive.isActive = true
+                    
+                    self.barcodeStatusLabel.text = nil
+                    self.barcodeReader.layer.borderColor = UIColor.clear.cgColor
+                    
+                    self.layoutIfNeeded()
+                    
+                }, completion: { (true) in
+                    self.previewLayerSnapshot = AVCaptureVideoPreviewLayer(session: self.captureSessionSnapshot)
+                    self.previewLayerSnapshot.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.previewLayerSnapshot.frame = CGRect(x: self.previewBorderWidth, y: self.previewBorderWidth, width: self.snapshotView.frame.width - (self.previewBorderWidth * 2), height: self.snapshotView.frame.height - (self.previewBorderWidth * 2))
+
+                    self.snapshotView.layer.addSublayer(self.previewLayerSnapshot)
+                    self.captureSessionSnapshot.startRunning()
+                    
+                    // show label and frame
+                    self.snapshotStatusLabel.text = "Take a Snapshot"
+                    self.snapshotView.layer.borderColor = UIColor.white.cgColor
+                })
+            } else {
+                self.snapshotStatusLabel.text = "No device found."
+            }
 
         } else {
-            print("stop camera")
-            self.captureSessionCamera?.stopRunning()
-            self.snapshotPreviewLayer?.removeFromSuperlayer()
+            self.captureSessionSnapshot.stopRunning()
+            self.previewLayerSnapshot.removeFromSuperlayer()
         }
         isSnapshotSessionStart = !isSnapshotSessionStart
     }
@@ -121,71 +208,95 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         if isBarcodeSessionStart == false {
             
             self.isSnapshotSessionStart ? self.startStopSnapshotPreview() : () // stop the snapshot preview
-            captureSession.sessionPreset = AVCaptureSessionPresetHigh
+            captureSessionBarcode.sessionPreset = AVCaptureSessionPresetHigh
             
             if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
                                                                                  mediaType: AVMediaTypeVideo,
                                                                                  position: AVCaptureDevicePosition.unspecified) {
-                
                 // Set the captureDevice.
                 for device in deviceDescoverySession.devices {
                     // Make sure this particular device supports video
                     if ((device as AnyObject).hasMediaType(AVMediaTypeVideo)) {
                         // Finally check the position and confirm we've got the back camera
                         if((device as AnyObject).position == AVCaptureDevicePosition.back) {
-                            captureDevice = device
+                            self.captureDeviceBarcode = device
                         }
                     }
                 }
             }
             
-            if captureDevice != nil {
+            if self.captureDeviceBarcode != nil {
 
                 // Create input object.
-                let input : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: captureDevice)
+                let input : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: self.captureDeviceBarcode)
                 
                 //Session
-                if captureSession.canAddOutput(metaDataOutput) && captureSession.canAddInput(input) {
-                    //print("adding output to session ")
-                    // Add input to the session.
-                    captureSession.addInput(input)
-                    
-                    // Add output to the session.
-                    captureSession.addOutput(metaDataOutput)
+                if captureSessionBarcode.canAddOutput(metaDataOutputBarcode) && captureSessionBarcode.canAddInput(input) {
+                    captureSessionBarcode.addInput(input)
+                    captureSessionBarcode.addOutput(metaDataOutputBarcode)
                 }
                 
                 //output
                 let metadataQueue = DispatchQueue(label: "com.mainqueue.reder")
                 
                 // Send captured data to the delegate object via a serial queue.
-                metaDataOutput.setMetadataObjectsDelegate( self, queue: metadataQueue)
+                metaDataOutputBarcode.setMetadataObjectsDelegate( self, queue: metadataQueue)
                 
                 // Set barcode type for which to scan: EAN-13.
-                metaDataOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
+                //metaDataOutputBarcode.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
+            
+                UIView.animate(withDuration: 0.75, animations: {
+                    // resize the barcode preview - Active
+                    self.barcodeReaderTopConstraintInitial.isActive = false
+                    self.barcodeReaderTopConstraintInactive.isActive = false
+                    self.barcodeReaderTopConstraintActive.isActive = true
+                    
+                    self.barcodeReaderHeightConstraintInitial.isActive = false
+                    self.barcodeReaderHeightConstraintInactive.isActive = false
+                    self.barcodeReaderHeightConstraintActive.isActive = true
+
+                    self.barcodeReaderWidthConstraintInitial.isActive = false
+                    self.barcodeReaderWidthConstraintInactive.isActive = false
+                    self.barcodeReaderWidthConstraintActive.isActive = true
                 
-                // Add previewLayer and have it show the video data.
-                barcodePreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                // print("preview layer: \(barcodePreviewLayer.session)") // this output changes when function is called from init
+                    // resize the snapshot preview - Inactive
+                    self.snapshotViewHeightConstraintInitial.isActive = false
+                    self.snapshotViewHeightConstraintActive.isActive = false
+                    self.snapshotViewHeightConstraintInactive.isActive = true
+                    
+                    self.snapshotViewWidthConstraintInitial.isActive = false
+                    self.snapshotViewWidthConstraintActive.isActive = false
+                    self.snapshotViewWidthConstraintInactive.isActive = true
+                    
+                    self.snapshotViewBottomConstraintInitial.isActive = false
+                    self.snapshotViewBottomConstraintActive.isActive = false
+                    self.snapshotViewBottomConstraintInactive.isActive = true
+                    
+                    self.snapshotStatusLabel.text = nil
+                    self.snapshotView.layer.borderColor = UIColor.clear.cgColor
+                    
+                    self.layoutIfNeeded()
+                }, completion: { (true) in
+                    // Add previewLayer and show the preview
+                    self.previewLayerBarcode = AVCaptureVideoPreviewLayer(session: self.captureSessionBarcode)
+                    self.previewLayerBarcode.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.previewLayerBarcode.frame = CGRect(x: self.previewBorderWidth, y: self.previewBorderWidth, width: self.barcodeReader.frame.width - (self.previewBorderWidth * 2), height: self.barcodeReader.frame.height - (self.previewBorderWidth * 2))
+                    self.barcodeReader.layer.addSublayer(self.previewLayerBarcode)
+                    
+                    self.barcodeReader.isHidden = false
+                    self.captureSessionBarcode.startRunning()
+                    
+                    self.barcodeStatusLabel.text = "Searching for a barcode..."
+                    self.barcodeReader.layer.borderColor = UIColor.white.cgColor
+                })
                 
-                let bounds = CGRect(x: 0, y: 0, width: self.barcodeReader.layer.bounds.width - (barcodeReaderBorderWidth * 2),
-                                    height: self.barcodeReader.layer.bounds.height - (barcodeReaderBorderWidth * 2))
-                barcodePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                barcodePreviewLayer.bounds = bounds
-                barcodePreviewLayer.position = CGPoint(x: bounds.midX + barcodeReaderBorderWidth, y:bounds.midY + barcodeReaderBorderWidth)
-                barcodeReader.layer.addSublayer(barcodePreviewLayer)
-                
-                barcodeReader.isHidden = false
-                captureSession.startRunning()
-                
-                self.barcodeStatusLabel.text = "Searching for a barcode..."
-                
-                print("array \(metaDataOutput.metadataObjectTypes)")
+                //print("array \(metaDataOutputBarcode.metadataObjectTypes)")
             } else {
                 self.barcodeStatusLabel.text = "No device found."
             }
         } else {
-            self.captureSession.stopRunning()
-            barcodePreviewLayer.removeFromSuperlayer()
+            self.captureSessionBarcode.stopRunning()
+            previewLayerBarcode.removeFromSuperlayer()
         }
         isBarcodeSessionStart = !isBarcodeSessionStart
     }
@@ -197,9 +308,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     //MARK:- AVCaptureMetadataOutputObjectsDelegate
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
-        
-        //print("processing output")
-        
+
         var barCodeObject: AVMetadataObject!
         var strDetected: String?
         
@@ -226,9 +335,9 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             for barcodeType in barCodeTypes {
                 
                 if (metadata as AnyObject).type == barcodeType {
-                    barCodeObject = self.barcodePreviewLayer.transformedMetadataObject(for: metadata as! AVMetadataMachineReadableCodeObject)
+                    barCodeObject = self.previewLayerBarcode.transformedMetadataObject(for: metadata as! AVMetadataMachineReadableCodeObject)
                     strDetected = (metadata as! AVMetadataMachineReadableCodeObject).stringValue
-                    self.captureSession.stopRunning()
+                    self.captureSessionBarcode.stopRunning()
                     
                     if let strDetected = strDetected {
                         self.getItemInformation(barcodeValue: strDetected)
@@ -254,30 +363,86 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         // barcode reader
         self.addSubview(self.barcodeReader)
         self.barcodeReader.translatesAutoresizingMaskIntoConstraints = false
-        self.barcodeReader.backgroundColor = UIColor.white
-        self.barcodeReader.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "barcode_sample.jpg"))
-        self.barcodeReader.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
-        self.barcodeReader.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        self.barcodeReader.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        self.barcodeReader.bottomAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        self.barcodeReader.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        self.barcodeReaderTopConstraintInitial = self.barcodeReader.topAnchor.constraint(equalTo: self.topAnchor, constant: (UIScreen.main.bounds.height/8))
+        self.barcodeReaderTopConstraintInitial.isActive = true
+        self.barcodeReaderTopConstraintActive = self.barcodeReader.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
+        self.barcodeReaderTopConstraintActive.isActive = false
+        self.barcodeReaderTopConstraintInactive = self.barcodeReader.topAnchor.constraint(equalTo: self.topAnchor, constant: (UIScreen.main.bounds.height/12))
+        self.barcodeReaderTopConstraintInactive.isActive = false
+        
+        self.barcodeReaderWidthConstraintInitial = self.barcodeReader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width/2)
+        self.barcodeReaderWidthConstraintInitial.isActive = true
+        self.barcodeReaderWidthConstraintActive = self.barcodeReader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+        self.barcodeReaderWidthConstraintActive.isActive = false
+        self.barcodeReaderWidthConstraintInactive = self.barcodeReader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width/4)
+        self.barcodeReaderWidthConstraintInactive.isActive = false
+        
+        self.barcodeReaderHeightConstraintInitial = self.barcodeReader.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/4)
+        self.barcodeReaderHeightConstraintInitial.isActive = true
+        self.barcodeReaderHeightConstraintActive = self.barcodeReader.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/2)
+        self.barcodeReaderHeightConstraintActive.isActive = false
+        self.barcodeReaderHeightConstraintInactive = self.barcodeReader.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/8)
+        self.barcodeReaderHeightConstraintInactive.isActive = false
+        
+        // backgroundImageBarcode
+        self.barcodeReader.addSubview(self.backgroundImageBarcode)
+        self.backgroundImageBarcode.contentMode = .scaleAspectFit
+        self.backgroundImageBarcode.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundImageBarcode.topAnchor.constraint(equalTo: self.barcodeReader.topAnchor).isActive = true
+        self.backgroundImageBarcode.leftAnchor.constraint(equalTo: self.barcodeReader.leftAnchor).isActive = true
+        self.backgroundImageBarcode.rightAnchor.constraint(equalTo: self.barcodeReader.rightAnchor).isActive = true
+        self.backgroundImageBarcode.bottomAnchor.constraint(equalTo: self.barcodeReader.bottomAnchor).isActive = true
         
         // barcodeStatusLabel
         self.addSubview(self.barcodeStatusLabel)
         self.barcodeStatusLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.barcodeStatusLabel.topAnchor.constraint(equalTo: self.barcodeReader.bottomAnchor, constant: 20).isActive = true
-        self.barcodeStatusLabel.leftAnchor.constraint(equalTo: self.barcodeReader.leftAnchor, constant: 0).isActive = true
-        self.barcodeStatusLabel.rightAnchor.constraint(equalTo: self.barcodeReader.rightAnchor, constant: 0).isActive = true
+        self.barcodeStatusLabel.topAnchor.constraint(equalTo: self.barcodeReader.bottomAnchor, constant: 4).isActive = true
+        self.barcodeStatusLabel.leftAnchor.constraint(equalTo: self.barcodeReader.leftAnchor, constant: self.previewBorderWidth).isActive = true
         self.barcodeStatusLabel.numberOfLines = 0
         
         // snapshotView
         self.addSubview(self.snapshotView)
         self.snapshotView.translatesAutoresizingMaskIntoConstraints = false
-        self.snapshotView.backgroundColor = UIColor.white
-        self.snapshotView.backgroundColor = UIColor(patternImage: #imageLiteral(resourceName: "camera.png"))
-        self.snapshotView.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 60).isActive = true
-        self.snapshotView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        self.snapshotView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        self.snapshotView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
+        self.snapshotView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        self.snapshotViewHeightConstraintInitial = self.snapshotView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/4)
+        self.snapshotViewHeightConstraintInitial.isActive = true
+        self.snapshotViewHeightConstraintActive = self.snapshotView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/2)
+        self.snapshotViewHeightConstraintActive.isActive = false
+        self.snapshotViewHeightConstraintInactive = self.snapshotView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/8)
+        self.snapshotViewHeightConstraintInactive.isActive = false
+        
+        self.snapshotViewWidthConstraintInitial = self.snapshotView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width/2)
+        self.snapshotViewWidthConstraintInitial.isActive = true
+        self.snapshotViewWidthConstraintActive = self.snapshotView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+        self.snapshotViewWidthConstraintActive.isActive = false
+        self.snapshotViewWidthConstraintInactive = self.snapshotView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width/4)
+        self.snapshotViewWidthConstraintInactive.isActive = false
+        
+        self.snapshotViewBottomConstraintInitial = self.snapshotView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: (UIScreen.main.bounds.height/8 * -1))
+        self.snapshotViewBottomConstraintInitial.isActive = true
+        self.snapshotViewBottomConstraintActive = self.snapshotView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
+        self.snapshotViewBottomConstraintActive.isActive = false
+        self.snapshotViewBottomConstraintInactive = self.snapshotView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: (UIScreen.main.bounds.height/12 * -1))
+        self.snapshotViewBottomConstraintInactive.isActive = false
+        
+        // backgroundImageCamera
+        self.snapshotView.addSubview(self.backgroundImageCamera)
+        self.backgroundImageCamera.contentMode = .scaleAspectFit
+        self.backgroundImageCamera.translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundImageCamera.topAnchor.constraint(equalTo: self.snapshotView.topAnchor).isActive = true
+        self.backgroundImageCamera.leftAnchor.constraint(equalTo: self.snapshotView.leftAnchor).isActive = true
+        self.backgroundImageCamera.rightAnchor.constraint(equalTo: self.snapshotView.rightAnchor).isActive = true
+        self.backgroundImageCamera.bottomAnchor.constraint(equalTo: self.snapshotView.bottomAnchor).isActive = true
+        
+        // snapshotStatusLabel
+        self.addSubview(self.snapshotStatusLabel)
+        self.snapshotStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.snapshotStatusLabel.bottomAnchor.constraint(equalTo: self.snapshotView.topAnchor, constant: -4).isActive = true
+        self.snapshotStatusLabel.leftAnchor.constraint(equalTo: self.snapshotView.leftAnchor, constant: self.previewBorderWidth).isActive = true
+        self.snapshotStatusLabel.numberOfLines = 0
     }
 }
 
