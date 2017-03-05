@@ -21,7 +21,7 @@ class ItemDetailView: UIView {
     let shoppingListLabel = UILabel()
     let shoppingListSwitch = UISwitch()
     var getAgainPicker = UISegmentedControl()
-    let itemImageView = UIImageView()
+    var itemImageView = UIImageView()
     var itemInst: MyItem!
     
     override init(frame:CGRect){

@@ -14,7 +14,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
     var editMode = Bool()
-    var itemInst: MyItem!
+    var itemInst: MyItem?
     var addButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
 
@@ -39,37 +39,40 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         self.itemDetailViewInst.itemInst = itemInst
         self.title = "Item Detail" // nav bar title
-        self.itemDetailViewInst.nameLabel.text = self.itemInst.name
-        self.itemDetailViewInst.categoryLabel.text = self.itemInst.category
-        self.itemDetailViewInst.shoppingListSwitch.isOn = self.itemInst.shoppingList
-        self.editMode ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
         
-       // var imageURLString = String()
-        if self.itemInst.imageURL.isEmpty {
-            // show no image found
-            self.itemDetailViewInst.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
-        } else {
-            // show the image per the URL
-            let itemImageURL = URL(string: self.itemInst.imageURL)
-            self.itemDetailViewInst.itemImageView.sd_setImage(with: itemImageURL)
-        }
-        self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
+        if let itemInst = self.itemInst {
+            self.itemDetailViewInst.nameLabel.text = itemInst.name
+            self.itemDetailViewInst.categoryLabel.text = itemInst.category
+            self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
+            self.editMode ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
         
-        // add cancel button to nav bar
-        self.navigationItem.setHidesBackButton(true, animated:false);
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
-        self.editMode ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
+            // var imageURLString = String()
+            if itemInst.imageURL.isEmpty {
+                // show no image found
+                self.itemDetailViewInst.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
+            } else {
+                // show the image per the URL
+                let itemImageURL = URL(string: itemInst.imageURL)
+                self.itemDetailViewInst.itemImageView.sd_setImage(with: itemImageURL)
+            }
+            self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
         
-        // set the getThisAgainControl
-        switch self.itemInst.getAgain.label() {
-        case "No" :
-            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 0
-        case "Unsure" :
-            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 1
-        case "Yes" :
-            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 2
-        default:
-            break
+            // add cancel button to nav bar
+            self.navigationItem.setHidesBackButton(true, animated:false);
+            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
+            self.editMode ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
+        
+            // set the getThisAgainControl
+            switch itemInst.getAgain.label() {
+            case "No" :
+                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 0
+            case "Unsure" :
+                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 1
+            case "Yes" :
+                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 2
+            default:
+                break
+            }
         }
     }
     
@@ -81,14 +84,16 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     }
 
     func addButtonClicked() {
-        print("addButtonClicked")
-        APIClient.insertMyItem(itemInst: self.itemInst) { (results) in
-            print(results)
-            if results == apiResponse.ok {
-                self.store.myItems.append(self.itemInst)
-                self.doneButtonClicked()
-            } else {
-                print("error")
+        
+        if let itemInst = self.itemInst {
+            APIClient.insertMyItem(itemInst: itemInst) { (results) in
+                print(results)
+                if results == apiResponse.ok {
+                    self.store.myItems.append(itemInst)
+                    self.doneButtonClicked()
+                } else {
+                    print("error")
+                }
             }
         }
     }

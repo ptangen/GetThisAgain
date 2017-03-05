@@ -8,9 +8,14 @@
 
 import UIKit
 
+protocol ShoppingListViewDelegate: class {
+    func openItemDetail(item: MyItem)
+}
+
+
 class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
-    weak var delegate: ScanViewDelegate?
+    weak var delegate: ShoppingListViewDelegate?
     let store = DataStore.sharedInstance
     var shoppingListItems = [MyItem]()
     var filteredItems = [MyItem]()
@@ -75,9 +80,9 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row], editMode: true)
+            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
-            self.delegate?.openItemDetail(item: self.shoppingListItems[indexPath.row], editMode: true)
+            self.delegate?.openItemDetail(item: self.shoppingListItems[indexPath.row])
         }
     }
     

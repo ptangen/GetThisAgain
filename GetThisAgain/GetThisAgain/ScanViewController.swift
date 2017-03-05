@@ -48,6 +48,13 @@ class ScanViewController: UIViewController, ScanViewDelegate {
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
     
+    func openItemPreview(capturedImageView: UIImageView) {
+        let itemDetailViewControllerInst = ItemDetailViewController()
+        itemDetailViewControllerInst.editMode = true
+        itemDetailViewControllerInst.itemDetailViewInst.itemImageView.image = capturedImageView.image
+        self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

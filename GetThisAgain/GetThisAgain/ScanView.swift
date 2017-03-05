@@ -11,9 +11,10 @@ import AVFoundation
 
 protocol ScanViewDelegate: class {
     func openItemDetail(item: MyItem, editMode: Bool)
+    func openItemPreview(capturedImageView: UIImageView)
 }
 
-class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
+class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapturePhotoCaptureDelegate {
     
     weak var delegate: ScanViewDelegate?
     let store = DataStore.sharedInstance
@@ -33,11 +34,14 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     let snapshotView = UIView()
     let snapshotStatusLabel = UILabel()
     var captureSessionSnapshot = AVCaptureSession()
+    var outputSnapshot = AVCapturePhotoOutput()
     var previewLayerSnapshot = AVCaptureVideoPreviewLayer()
     var captureDeviceSnapshot: AVCaptureDevice?
     var inputSnapshot: AnyObject?
     let backgroundImageCamera: UIImageView = UIImageView(image: #imageLiteral(resourceName: "camera.png")) // camera.png
     var isSnapshotSessionStart = false
+    let buttonSnapshot = UIButton()
+    let snapshotCaptured = UIImageView()
     
     var barcodeReaderTopConstraintInitial = NSLayoutConstraint()
     var barcodeReaderTopConstraintActive = NSLayoutConstraint()
@@ -68,6 +72,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         self.layoutForm()
         self.barcodeStatusLabel.text = "Scan the Barcode"
         self.snapshotStatusLabel.text = "Take a Snapshot"
+        self.outputSnapshot = AVCapturePhotoOutput()
         
         // gesture recognizer for barcodeReader
         let tapReader = UITapGestureRecognizer(target: self, action: #selector(startStopBarcodePreview))
@@ -82,8 +87,56 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         self.snapshotView.isUserInteractionEnabled = true
         self.snapshotView.layer.borderWidth = 8
         self.snapshotView.layer.borderColor = UIColor.clear.cgColor
+        
+        let cameraImage  = UIImage(named: "camera.png")
+        self.buttonSnapshot.setImage(cameraImage, for: .normal)
+        buttonSnapshot.addTarget(self, action: #selector(tapButtonSnapshot), for:.touchUpInside)
+        self.addSubview(buttonSnapshot)
+        self.buttonSnapshot.isHidden = true
     }
     
+    func tapButtonSnapshot() {
+        
+        let settings = AVCapturePhotoSettings()
+        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
+        let previewFormat = [
+            kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
+            kCVPixelBufferWidthKey as String: 160,
+            kCVPixelBufferHeightKey as String: 160
+        ]
+        settings.previewPhotoFormat = previewFormat
+        self.outputSnapshot.capturePhoto(with: settings, delegate: self)
+        
+    }
+    
+    // capture snapshot output and show in item detail page
+    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        
+        if let error = error {
+            print("error occured : \(error.localizedDescription)")
+        }
+        
+        if  let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage =  AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer:  sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
+            
+            if let dataProvider = CGDataProvider(data: dataImage as CFData) {
+                let cgImageRef: CGImage = CGImage(jpegDataProviderSource: dataProvider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)!
+                let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
+            
+                // after the image exists we can create a version with the height needed
+                let maximumHeight: CGFloat = 200 // consistent with image from barcode API
+                let cgImage: CGImage = image.cgImage!
+                let imageScaled = UIImage(cgImage: cgImage, scale: image.size.height / maximumHeight, orientation: image.imageOrientation)
+
+                self.snapshotCaptured.image = imageScaled
+                if let delegate = self.delegate {
+                    delegate.openItemPreview(capturedImageView: self.snapshotCaptured) // open item detail and show image
+                }
+            }
+        } else {
+            print("error: unable to capture image")
+        }
+    }
+
     func addSnapshotViewCameraImage(){
         let backgroundImage: UIImageView = UIImageView(frame: self.snapshotView.bounds)  //centerView.bounds)
         backgroundImage.clipsToBounds = true
@@ -118,14 +171,17 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     }
     
     func startStopSnapshotPreview() {
-        //print("startStopSnapshotPreview \(isSnapshotSessionStart)")
+        //print("isSnapshotSessionStart \(isSnapshotSessionStart)")
         
         if isSnapshotSessionStart == false {
-            self.isBarcodeSessionStart ? self.startStopBarcodePreview() : () // stop the barcode preview
+            print("isSnapshotSessionStart was false so we will start it")
             
-            if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
-                                                                                 mediaType: AVMediaTypeVideo,
-                                                                                 position: AVCaptureDevicePosition.unspecified) {
+            // stop the barcode preview
+            self.captureSessionBarcode.stopRunning()
+            self.isBarcodeSessionStart = false
+            previewLayerBarcode.removeFromSuperlayer()
+            
+            if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified) {
                 // Set the captureDevice.
                 for device in deviceDescoverySession.devices {
                     // Make sure this particular device supports video
@@ -137,14 +193,17 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     }
                 }
             }
-
+ 
             if self.captureDeviceSnapshot != nil {
+                print("self.captureDeviceSnapshot != nil")
                 
-                let input : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: self.captureDeviceSnapshot) // Create input object
+                let inputSnapshot : AVCaptureDeviceInput = try! AVCaptureDeviceInput(device: self.captureDeviceSnapshot) // Create input object
                 
-                if (self.captureSessionSnapshot.canAddInput(input)) {  // add input to session
-                    self.captureSessionSnapshot.addInput(input)
-                    
+                if (self.captureSessionSnapshot.canAddOutput(self.outputSnapshot)) && (self.captureSessionSnapshot.canAddInput(inputSnapshot)) {  // add input to session
+                    print("can add input and output")
+                    self.captureSessionSnapshot.addInput(inputSnapshot)
+                    self.captureSessionSnapshot.addOutput(self.outputSnapshot)
+                    self.captureSessionSnapshot.sessionPreset = AVCaptureSessionPresetPhoto
                 }
                 
                 UIView.animate(withDuration: 0.75, animations: {  // display the preview
@@ -186,6 +245,8 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
 
                     self.snapshotView.layer.addSublayer(self.previewLayerSnapshot)
                     self.captureSessionSnapshot.startRunning()
+                    self.isSnapshotSessionStart = true
+                    self.buttonSnapshot.isHidden = false
                     
                     // show label and frame
                     self.snapshotStatusLabel.text = "Take a Snapshot"
@@ -194,12 +255,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             } else {
                 self.snapshotStatusLabel.text = "No device found."
             }
-
-        } else {
-            self.captureSessionSnapshot.stopRunning()
-            self.previewLayerSnapshot.removeFromSuperlayer()
         }
-        isSnapshotSessionStart = !isSnapshotSessionStart
     }
     
     func startStopBarcodePreview() {
@@ -207,12 +263,14 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         
         if isBarcodeSessionStart == false {
             
-            self.isSnapshotSessionStart ? self.startStopSnapshotPreview() : () // stop the snapshot preview
+            // stop the snapshot preview
+            self.captureSessionSnapshot.stopRunning()
+            self.isSnapshotSessionStart = false
+            self.previewLayerSnapshot.removeFromSuperlayer()
+            
             captureSessionBarcode.sessionPreset = AVCaptureSessionPresetHigh
             
-            if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera],
-                                                                                 mediaType: AVMediaTypeVideo,
-                                                                                 position: AVCaptureDevicePosition.unspecified) {
+            if let deviceDescoverySession = AVCaptureDeviceDiscoverySession.init(deviceTypes: [AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified) {
                 // Set the captureDevice.
                 for device in deviceDescoverySession.devices {
                     // Make sure this particular device supports video
@@ -243,7 +301,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                 metaDataOutputBarcode.setMetadataObjectsDelegate( self, queue: metadataQueue)
                 
                 // Set barcode type for which to scan: EAN-13.
-                //metaDataOutputBarcode.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
+                metaDataOutputBarcode.metadataObjectTypes = [AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code]
             
                 UIView.animate(withDuration: 0.75, animations: {
                     // resize the barcode preview - Active
@@ -260,6 +318,8 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     self.barcodeReaderWidthConstraintActive.isActive = true
                 
                     // resize the snapshot preview - Inactive
+                    self.buttonSnapshot.isHidden = true
+                    
                     self.snapshotViewHeightConstraintInitial.isActive = false
                     self.snapshotViewHeightConstraintActive.isActive = false
                     self.snapshotViewHeightConstraintInactive.isActive = true
@@ -276,6 +336,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     self.snapshotView.layer.borderColor = UIColor.clear.cgColor
                     
                     self.layoutIfNeeded()
+                    
                 }, completion: { (true) in
                     // Add previewLayer and show the preview
                     self.previewLayerBarcode = AVCaptureVideoPreviewLayer(session: self.captureSessionBarcode)
@@ -285,6 +346,7 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
                     
                     self.barcodeReader.isHidden = false
                     self.captureSessionBarcode.startRunning()
+                    self.isBarcodeSessionStart = true
                     
                     self.barcodeStatusLabel.text = "Searching for a barcode..."
                     self.barcodeReader.layer.borderColor = UIColor.white.cgColor
@@ -294,19 +356,14 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
             } else {
                 self.barcodeStatusLabel.text = "No device found."
             }
-        } else {
-            self.captureSessionBarcode.stopRunning()
-            previewLayerBarcode.removeFromSuperlayer()
         }
-        isBarcodeSessionStart = !isBarcodeSessionStart
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    //MARK:- AVCaptureMetadataOutputObjectsDelegate
-    
+    // capture barcode reader output
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
 
         var barCodeObject: AVMetadataObject!
@@ -443,6 +500,13 @@ class ScanView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         self.snapshotStatusLabel.bottomAnchor.constraint(equalTo: self.snapshotView.topAnchor, constant: -4).isActive = true
         self.snapshotStatusLabel.leftAnchor.constraint(equalTo: self.snapshotView.leftAnchor, constant: self.previewBorderWidth).isActive = true
         self.snapshotStatusLabel.numberOfLines = 0
+        
+        // snapshotButton
+        self.addSubview(self.buttonSnapshot)
+        self.buttonSnapshot.translatesAutoresizingMaskIntoConstraints = false
+        self.buttonSnapshot.bottomAnchor.constraint(equalTo: self.snapshotView.topAnchor, constant: -4).isActive = true
+        self.buttonSnapshot.rightAnchor.constraint(equalTo: self.snapshotView.rightAnchor, constant: -4).isActive = true
+        self.buttonSnapshot.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        self.buttonSnapshot.widthAnchor.constraint(equalToConstant: 48).isActive = true
     }
 }
-
