@@ -53,8 +53,8 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
     }
     
     func addButtonClicked() {
-        let scanViewControllerInst = ScanViewController()
-        self.navigationController?.pushViewController(scanViewControllerInst, animated: true) // show destination with nav bar
+        let captureItemViewControllerInst = CaptureItemViewController()
+        self.navigationController?.pushViewController(captureItemViewControllerInst, animated: true) // show destination with nav bar
     }
     
     func menuButtonClicked(sender: UIBarButtonItem) {
@@ -67,7 +67,7 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
             self.navigationController?.pushViewController(signInControllerInst, animated: true) // show destination with nav bar
         })
         
-        let addAction = UIAlertAction(title: "Add Item with Barcode", style: .default, handler: { (alert: UIAlertAction!) -> Void in
+        let addAction = UIAlertAction(title: "Add Item", style: .default, handler: { (alert: UIAlertAction!) -> Void in
             self.addButtonClicked()
         })
         

@@ -23,13 +23,13 @@
 		C067121A1E5749DF0047473B /* MyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712191E5749DF0047473B /* MyItem.swift */; };
 		C067121C1E574A380047473B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121B1E574A380047473B /* Constants.swift */; };
 		C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */; };
-		C06712201E574C700047473B /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* ScanViewController.swift */; };
-		C06712221E574C9E0047473B /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* ScanView.swift */; };
+		C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* CaptureItemViewController.swift */; };
+		C06712221E574C9E0047473B /* CaptureItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* CaptureItemView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
 		C09C04D21E6B62E700DCFF64 /* barcode_sample.png in Resources */ = {isa = PBXBuildFile; fileRef = C09C04D11E6B62E700DCFF64 /* barcode_sample.png */; };
 		C09C04D41E6B63AC00DCFF64 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = C09C04D31E6B63AC00DCFF64 /* camera.png */; };
-		C0A232CE1E67880F00FB1617 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CD1E67880F00FB1617 /* CameraViewController.swift */; };
-		C0A232D01E67882A00FB1617 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CF1E67882A00FB1617 /* CameraView.swift */; };
+		C0A232CE1E67880F00FB1617 /* EditNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */; };
+		C0A232D01E67882A00FB1617 /* EditNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CF1E67882A00FB1617 /* EditNameView.swift */; };
 		C0A232D21E68619E00FB1617 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232D11E68619E00FB1617 /* SignInViewController.swift */; };
 		C0A232D41E6861BC00FB1617 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232D31E6861BC00FB1617 /* SignInView.swift */; };
 		C0A232D71E6862B200FB1617 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A232D61E6862B200FB1617 /* KeychainWrapper.m */; };
@@ -77,13 +77,13 @@
 		C06712191E5749DF0047473B /* MyItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItem.swift; sourceTree = "<group>"; };
 		C067121B1E574A380047473B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsTableViewCell.swift; sourceTree = "<group>"; };
-		C067121F1E574C700047473B /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
-		C06712211E574C9E0047473B /* ScanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		C067121F1E574C700047473B /* CaptureItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemViewController.swift; sourceTree = "<group>"; };
+		C06712211E574C9E0047473B /* CaptureItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
 		C09C04D11E6B62E700DCFF64 /* barcode_sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = barcode_sample.png; sourceTree = "<group>"; };
 		C09C04D31E6B63AC00DCFF64 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
-		C0A232CD1E67880F00FB1617 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
-		C0A232CF1E67882A00FB1617 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditNameViewController.swift; sourceTree = "<group>"; };
+		C0A232CF1E67882A00FB1617 /* EditNameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditNameView.swift; sourceTree = "<group>"; };
 		C0A232D11E68619E00FB1617 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		C0A232D31E6861BC00FB1617 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		C0A232D51E6862B100FB1617 /* GetThisAgain-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GetThisAgain-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -201,9 +201,9 @@
 				C06712231E574FC30047473B /* ItemsTabViewController.swift */,
 				C06712131E57492B0047473B /* MyItemsViewController.swift */,
 				C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */,
-				C067121F1E574C700047473B /* ScanViewController.swift */,
+				C067121F1E574C700047473B /* CaptureItemViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
-				C0A232CD1E67880F00FB1617 /* CameraViewController.swift */,
+				C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -216,9 +216,9 @@
 				C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */,
 				C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */,
 				C0CE94FB1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift */,
-				C06712211E574C9E0047473B /* ScanView.swift */,
+				C06712211E574C9E0047473B /* CaptureItemView.swift */,
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
-				C0A232CF1E67882A00FB1617 /* CameraView.swift */,
+				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -249,6 +249,7 @@
 				C06711EA1E5748020047473B /* Resources */,
 				B8D49E4214C5DEE2E3BBAD37 /* [CP] Embed Pods Frameworks */,
 				4CD3225A02B89A2CE0554510 /* [CP] Copy Pods Resources */,
+				C09C04D51E6C9D6500DCFF64 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -390,6 +391,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GetThisAgain/Pods-GetThisAgain-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C09C04D51E6C9D6500DCFF64 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 1057742f8d4b0549abd353869782cdba7380f941 97f01795f94bc6b660fb09d79f071b44b86cc905f11f3f0feba7f108420a2a17";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -399,7 +413,7 @@
 			files = (
 				C0A232D21E68619E00FB1617 /* SignInViewController.swift in Sources */,
 				C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */,
-				C0A232CE1E67880F00FB1617 /* CameraViewController.swift in Sources */,
+				C0A232CE1E67880F00FB1617 /* EditNameViewController.swift in Sources */,
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
 				C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */,
 				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,
@@ -415,10 +429,10 @@
 				C067121A1E5749DF0047473B /* MyItem.swift in Sources */,
 				C0A232D41E6861BC00FB1617 /* SignInView.swift in Sources */,
 				C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */,
-				C0A232D01E67882A00FB1617 /* CameraView.swift in Sources */,
-				C06712221E574C9E0047473B /* ScanView.swift in Sources */,
+				C0A232D01E67882A00FB1617 /* EditNameView.swift in Sources */,
+				C06712221E574C9E0047473B /* CaptureItemView.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
-				C06712201E574C700047473B /* ScanViewController.swift in Sources */,
+				C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */,
 				C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */,
 				C027E0721E578D3800CA6577 /* APIClient.swift in Sources */,
 			);
@@ -477,7 +491,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;

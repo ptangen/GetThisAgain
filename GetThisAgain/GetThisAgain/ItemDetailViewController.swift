@@ -13,7 +13,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
-    var editMode = Bool()
+    var itemExistsInDatastore = Bool()
     var itemInst: MyItem?
     var addButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
@@ -44,7 +44,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             self.itemDetailViewInst.nameLabel.text = itemInst.name
             self.itemDetailViewInst.categoryLabel.text = itemInst.category
             self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
-            self.editMode ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
+            self.itemExistsInDatastore ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
         
             // var imageURLString = String()
             if itemInst.imageURL.isEmpty {
@@ -60,7 +60,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             // add cancel button to nav bar
             self.navigationItem.setHidesBackButton(true, animated:false);
             let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
-            self.editMode ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
+            self.itemExistsInDatastore ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
         
             // set the getThisAgainControl
             switch itemInst.getAgain.label() {
@@ -113,9 +113,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }
     
-    func openCamera(item: MyItem) {
-        let cameraViewControllerInst = CameraViewController()
-        cameraViewControllerInst.cameraViewInst.itemInst = item
-        self.navigationController?.pushViewController(cameraViewControllerInst, animated: false)
+    func openEditName(item: MyItem) {
+        let editNameViewControllerInst = EditNameViewController()
+        //editNameViewControllerInst.editNameViewInst.itemInst = item
+        self.navigationController?.pushViewController(editNameViewControllerInst, animated: false)
     }
 }

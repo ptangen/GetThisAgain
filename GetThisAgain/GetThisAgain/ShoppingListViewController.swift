@@ -33,7 +33,7 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
     
     func openItemDetail(item: MyItem) {
         let itemDetailViewControllerInst = ItemDetailViewController()
-        itemDetailViewControllerInst.editMode = true
+        itemDetailViewControllerInst.itemExistsInDatastore = true
         itemDetailViewControllerInst.itemInst = item
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }

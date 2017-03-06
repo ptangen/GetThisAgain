@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ItemDetailViewDelegate: class {
-    func openCamera(item: MyItem)
+    func openEditName(item: MyItem)
 }
 
 class ItemDetailView: UIView {
@@ -63,7 +63,7 @@ class ItemDetailView: UIView {
     }
     
     func onTapItemImageView() {
-        self.delegate?.openCamera(item: self.itemInst)
+        self.delegate?.openEditName(item: self.itemInst)
     }
     
     func switchStateDidChange(_ sender:UISwitch!) {

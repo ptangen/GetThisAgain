@@ -102,7 +102,6 @@ class APIClient {
     }
     
     class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
-        
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?

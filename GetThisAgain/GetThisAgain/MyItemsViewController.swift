@@ -37,7 +37,7 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     
     func openItemDetail(item: MyItem, editMode: Bool) {
         let itemDetailViewControllerInst = ItemDetailViewController()
-        itemDetailViewControllerInst.editMode = true
+        itemDetailViewControllerInst.itemExistsInDatastore = true
         itemDetailViewControllerInst.itemInst = item
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
