@@ -14,7 +14,8 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
     var itemExistsInDatastore = Bool()
-    var itemInst: MyItem?
+    var itemInst: MyItem!
+    var itemInstImage: UIImage?
     var addButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
 
@@ -40,13 +41,15 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.itemDetailViewInst.itemInst = itemInst
         self.title = "Item Detail" // nav bar title
         
-        if let itemInst = self.itemInst {
-            self.itemDetailViewInst.nameLabel.text = itemInst.name
-            self.itemDetailViewInst.categoryLabel.text = itemInst.category
-            self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
-            self.itemExistsInDatastore ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
-        
-            // var imageURLString = String()
+        self.itemDetailViewInst.nameLabel.text = itemInst.name
+        self.itemDetailViewInst.categoryLabel.text = itemInst.category.rawValue
+        self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
+        self.itemExistsInDatastore ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
+
+        if let itemInstImage = self.itemInstImage {
+            // image came from a snapshot
+            self.itemDetailViewInst.itemImageView.image = itemInstImage
+        } else {
             if itemInst.imageURL.isEmpty {
                 // show no image found
                 self.itemDetailViewInst.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
@@ -55,7 +58,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                 let itemImageURL = URL(string: itemInst.imageURL)
                 self.itemDetailViewInst.itemImageView.sd_setImage(with: itemImageURL)
             }
-            self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
+        }
+
+        self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
         
             // add cancel button to nav bar
             self.navigationItem.setHidesBackButton(true, animated:false);
@@ -73,7 +78,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             default:
                 break
             }
-        }
+        //}
     }
     
     override func loadView(){
@@ -84,9 +89,8 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     }
 
     func addButtonClicked() {
-        
         if let itemInst = self.itemInst {
-            APIClient.insertMyItem(itemInst: itemInst) { (results) in
+            APIClient.insertMyItem(itemInst: itemInst, image: self.itemInstImage) { (results) in
                 print(results)
                 if results == apiResponse.ok {
                     self.store.myItems.append(itemInst)

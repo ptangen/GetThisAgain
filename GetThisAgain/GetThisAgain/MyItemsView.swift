@@ -68,7 +68,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getAgain.label() + ")"
-        cell.subTitleLabel.text = myItemCurrent.category
+        cell.subTitleLabel.text = myItemCurrent.category.rawValue
         
         // var imageURLString = String()
         if myItemCurrent.imageURL.isEmpty {
@@ -95,7 +95,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         self.filteredItems = self.store.myItems.filter { myItem in
             var nameAndCategory = String()
-            nameAndCategory = myItem.name + myItem.category
+            nameAndCategory = myItem.name + myItem.category.rawValue
             return nameAndCategory.lowercased().contains(searchText.lowercased())
         }
         self.myItemsTableView.reloadData()

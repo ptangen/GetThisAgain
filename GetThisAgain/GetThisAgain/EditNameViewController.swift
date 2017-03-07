@@ -26,6 +26,8 @@ class EditNameViewController: UIViewController {
         // next button
         let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextButtonClicked))
         self.navigationItem.rightBarButtonItems = [nextButton]
+        
+        editNameViewInst.itemImageView.image = UIImage(named: "jam.jpeg")
     }
     
     override func loadView(){
@@ -37,8 +39,9 @@ class EditNameViewController: UIViewController {
     
     func nextButtonClicked() {
         let itemDetailViewControllerInst = ItemDetailViewController()
-//        itemDetailViewControllerInst.editMode = true
-//        itemDetailViewControllerInst.itemInst = self.itemDetailViewControllerInst.itemInst
+        let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, category: self.editNameViewInst.categorySelected, imageURL: "", shoppingList: false, getAgain: .unsure)
+        itemDetailViewControllerInst.itemInst = itemInst
+        itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
     

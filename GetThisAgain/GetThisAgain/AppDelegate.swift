@@ -29,13 +29,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // set the initial view controller
         
         //let signInViewControllerInst = SignInViewController()
-        let itemsTabViewControllerInst = ItemsTabViewController()
+        //let itemsTabViewControllerInst = ItemsTabViewController()
+        let editNameViewControllerInst = EditNameViewController()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         if let window = self.window {
             window.backgroundColor = UIColor.white
             //let navigationController = UINavigationController(rootViewController: signInViewControllerInst)
-            let navigationController = UINavigationController(rootViewController: itemsTabViewControllerInst)
+            //let navigationController = UINavigationController(rootViewController: itemsTabViewControllerInst)
+            let navigationController = UINavigationController(rootViewController: editNameViewControllerInst)
             navigationController.view.addSubview(statusBarBackground)
             navigationController.navigationBar.tintColor = UIColor.white
             
