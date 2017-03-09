@@ -56,6 +56,7 @@ struct Constants{
         case bath =         "Bath / Beauty / Hygiene"
         case beverages =    "Beverages"
         case book =         "Book / Magazine / Publication"
+        case canned =         "Canned Vegetables"
         case cleaning =     "Cleaning Supplies / Equipment"
         case electronics =  "Electronics / Photography"
         case food =         "Food"
@@ -78,6 +79,7 @@ struct Constants{
         case "bath": return Constants.ItemCategory.bath
         case "beverages": return Constants.ItemCategory.beverages
         case "book": return Constants.ItemCategory.book
+        case "canned": return Constants.ItemCategory.canned
         case "cleaning": return Constants.ItemCategory.cleaning
         case "electronics": return Constants.ItemCategory.electronics
         case "food": return Constants.ItemCategory.food

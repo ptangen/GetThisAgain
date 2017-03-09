@@ -10,9 +10,9 @@ import Foundation
 
 class MyItem {
     
-    let barcode: String
+    var barcode: String
     //let barcodeType: Constants.barcodeType
-    let name: String
+    var name: String
     var category: Constants.ItemCategory
     var imageURL: String
     var shoppingList: Bool

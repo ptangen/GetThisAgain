@@ -61,14 +61,9 @@ class APIClient {
         }
     }
     
-    func generateBoundaryString() -> String {
-        return "Boundary-\(NSUUID().uuidString)"
-    }
-    
-    class func insertMyItem(itemInst: MyItem, image: UIImage?, completion: @escaping (apiResponse) -> Void) {
+    class func insertMyItem(itemInst: MyItem, image: UIImage?, completion: @escaping (apiResponse, String, String) -> Void) {
         
         // prepare image for upload
-    
         
         let urlString = "\(Secrets.gtaURL)/insertMyItem.php"
         let url = URL(string: urlString)
@@ -78,69 +73,78 @@ class APIClient {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             
-            var parameterString = String()
-            if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
-                parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&category=\(itemInst.category)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
-            }
-            
-            if let image = image {
-
-                // if we have an image to upload
-                let boundary = "Boundary-\(UUID().uuidString)"
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            
-                let image_data = UIImageJPEGRepresentation(image, 1.0)
+            if let image = image {  // create request with image and parameters
                 
-                if let image_data = image_data {
-            
-                    let body = NSMutableData()
-                    let fname = "test.jpeg"
-                    let mimetype = "image/jpeg"
-            
-                    //define the data post parameter
-                    body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                    body.append("Content-Disposition:form-data; name=\"test\"\r\n\r\n".data(using: .utf8)!)
-                    body.append("hi\r\n".data(using: String.Encoding.utf8)!)
-            
-                    body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                    body.append("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".data(using: .utf8)!)
-                    body.append("Content-Disposition:form-data; key=\"\(Secrets.gtaKey)\"; userName=\"ptangen\"\r\n".data(using: .utf8)!)
-            
-                    //body.append(parameterString.data(using: .utf8)!) // other metadata
-
-                    body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
-                    body.append(image_data)
-                    body.append("\r\n".data(using: .utf8)!)
+                let boundary = "Boundary-\(NSUUID().uuidString)"
+                let body = NSMutableData();
+                
+                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                
+                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
+                
+                    let param = [
+                        "userName"      : userName,
+                        "name"          : nameUnwrapped,
+                        "category"      : String(describing: itemInst.category),
+                        "shoppingList"  : String(itemInst.shoppingList),
+                        "getAgain"      : String(describing: itemInst.getAgain),
+                        "key"           : Secrets.gtaKey
+                    ]
+                
+                    // add key value pairs to the body of the request
+                    for (key, value) in param {
+                        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                        body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+                        body.append("\(value)\r\n".data(using: .utf8)!)
+                    }
+                
+                    if let imageData = UIImageJPEGRepresentation(image, 1) {
+                        // append the file
+                        let filename = "itemsImage.jpg"
+                        let mimetype = "image/jpg"
+                        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+                        body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
+                        body.append(imageData as Data)
+                        body.append("\r\n".data(using: .utf8)!)
+                    }
+                
                     body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-                    
-                    print(body)
-            
                     request.httpBody = body as Data
                 }
-            } else {
-                // create request without image
+            } else {   // create request without image
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-                request.httpBody = parameterString.data(using: .utf8)
+                var parameterString = String()
+                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
+                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&category=\(itemInst.category)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+                    }
+                    request.httpBody = parameterString.data(using: .utf8)
             }
-            
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 if let data = data {
-                    print("2")
                     DispatchQueue.main.async {
                         do {
-                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Int]
-                            if let results = json?["results"] {
-                                print("3")
+                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
+                            if let results = json?["results"] as! Int? {
                                 if results == 1 {
-                                    completion(.ok)
+                                    // extract the imageURL and barcode from the results so we can creare the object in all cases
+                                    if let barcode = json?["barcode"] as! String? {
+                                        var imageURLString = String() // sometimes there is no image
+                                        if let imageURL = json?["imageURL"] {
+                                            imageURLString = (imageURL as? String)!
+                                        } else {
+                                            imageURLString = ""
+                                        }
+                                        completion(.ok, imageURLString, barcode)
+                                    }
                                 } else if results == -1 {
-                                    completion(.failed)
+                                    completion(.failed, "", "")
                                 } else {
-                                    completion(.noReply)
+                                    completion(.noReply, "", "")
                                 }
                             }
                         } catch {
-                            completion(.noReply)
+                            completion(.noReply, "", "")
                         }
                     }
                 }
@@ -148,6 +152,31 @@ class APIClient {
         } else {
             print("error: unable to unwrap url")
         }
+    }
+    
+    func createBodyWithParametersX(parameters: [String: String]?, filePathKey: String?, imageDataKey: NSData, boundary: String) -> Data {
+        let body = NSMutableData();
+        
+        if parameters != nil {
+            for (key, value) in parameters! {
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append("\(value)\r\n".data(using: .utf8)!)
+            }
+        }
+        
+        let filename = "user-profile.jpg"
+        let mimetype = "image/jpg"
+        
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
+        body.append(imageDataKey as Data)
+        body.append("\r\n".data(using: .utf8)!)
+        
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        return body as Data
     }
     
     class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
@@ -168,17 +197,18 @@ class APIClient {
                             if let code = statusDict["code"] {
                                 if code == "200" {
                                     let productDict = responseJSON["product"] as! [String:Any]
-                                    
                                     if productDict["attributes"] != nil {
                                         let productAttributesDict = productDict["attributes"] as! [String : String]
-                                    
+                                        
                                         // create the item object
                                         if let name = productAttributesDict["product"] {
                                             itemInst = MyItem(barcode: barcode, name: name, category: .none, imageURL: "", shoppingList: false, getAgain: .unsure)
-                                        
                                             // set the imageURL and category values if we have them
                                             if let itemInst = itemInst {
-                                                if let imageURL = productDict["image"] as? String { itemInst.imageURL = imageURL }
+                                                if let imageURL = productDict["image"] as? String {
+                                                    itemInst.imageURL = imageURL
+                                                }
+                                                
                                                 if let category = productAttributesDict["category_text"] {
                                                     itemInst.category = Constants.ItemCategory(rawValue: category)!
                                                 }
@@ -222,11 +252,14 @@ class APIClient {
                                 
                                  //unwrap the incoming data and create item objects in datastore
                                 if let barcode = myItemDict["barcode"],
-                                    let name = myItemDict["name"],
+                                    var name = myItemDict["name"],
                                     let categoryString = myItemDict["category"],
                                     let imageURL = myItemDict["imageURL"],
                                     let shoppingListString = myItemDict["shoppingList"],
                                     let getAgainString = myItemDict["getAgain"] {
+                                    
+                                    // clean html from the names
+                                    name = self.decodeCharactersIn(string: name)
                                     
                                     // shoppingList
                                     var shoppingList: Bool!
@@ -246,6 +279,7 @@ class APIClient {
                                     
                                     // add myItem to datastore
                                     let category = Constants.getItemCategoryFromString(categoryString: categoryString)
+
                                     let myItemInst = MyItem(barcode: barcode, name: name, category: category, imageURL: imageURL, shoppingList: shoppingList, getAgain: getAgain)
                                     store.myItems.append(myItemInst)
                                 }
@@ -258,6 +292,15 @@ class APIClient {
                 }
             }).resume()
         }
+    }
+    
+    static func decodeCharactersIn(string: String) -> String {
+        var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“"]
+        for (code, character) in characters {
+            string = string.replacingOccurrences(of: code, with: character, options: .caseInsensitive, range: nil)
+        }
+        return string
     }
 }
 

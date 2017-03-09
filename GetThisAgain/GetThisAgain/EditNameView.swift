@@ -20,7 +20,6 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categorySelected: Constants.ItemCategory = .none
     
     var itemExistsInDatastore = false
-    //var itemInst: MyItem?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -94,7 +93,6 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.categorySelected = Constants.ItemCategory.allValues[indexPath.row]
-        print(self.categorySelected)
     }
 
     func layoutPage() {

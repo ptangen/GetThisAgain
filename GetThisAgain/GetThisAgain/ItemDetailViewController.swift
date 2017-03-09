@@ -62,23 +62,22 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
 
         self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
         
-            // add cancel button to nav bar
-            self.navigationItem.setHidesBackButton(true, animated:false);
-            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
-            self.itemExistsInDatastore ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
+        // add cancel button to nav bar
+        self.navigationItem.setHidesBackButton(true, animated:false);
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
+        self.itemExistsInDatastore ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
         
-            // set the getThisAgainControl
-            switch itemInst.getAgain.label() {
-            case "No" :
-                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 0
-            case "Unsure" :
-                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 1
-            case "Yes" :
-                self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 2
-            default:
-                break
-            }
-        //}
+        // set the getThisAgainControl
+        switch itemInst.getAgain.label() {
+        case "No" :
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 0
+        case "Unsure" :
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 1
+        case "Yes" :
+            self.itemDetailViewInst.getAgainPicker.selectedSegmentIndex = 2
+        default:
+            break
+        }
     }
     
     override func loadView(){
@@ -90,9 +89,10 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
 
     func addButtonClicked() {
         if let itemInst = self.itemInst {
-            APIClient.insertMyItem(itemInst: itemInst, image: self.itemInstImage) { (results) in
-                print(results)
+            APIClient.insertMyItem(itemInst: itemInst, image: self.itemInstImage) { (results, imageURL, barcode) in
                 if results == apiResponse.ok {
+                    itemInst.barcode = barcode
+                    itemInst.imageURL = imageURL
                     self.store.myItems.append(itemInst)
                     self.doneButtonClicked()
                 } else {

@@ -27,7 +27,8 @@ class EditNameViewController: UIViewController {
         let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextButtonClicked))
         self.navigationItem.rightBarButtonItems = [nextButton]
         
-        editNameViewInst.itemImageView.image = UIImage(named: "jam.jpeg")
+        // hardcode the image if needed for testing
+        //editNameViewInst.itemImageView.image = UIImage(named: "jam.jpeg")
     }
     
     override func loadView(){
