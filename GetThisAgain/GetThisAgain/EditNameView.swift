@@ -26,6 +26,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.nameLabel.text = "Name"
         self.categoryLabel.text = "Category"
         self.nameTextView.delegate = self
+        self.nameTextView.returnKeyType = .done
         self.layoutPage()
         
         self.categoryTableView.delegate = self
@@ -37,43 +38,22 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
     }
     
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // dismiss keyboard when user clicks return/done, the return button is changed to a done button during init
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    func setTextInNameView(textToDisplay: String) {
-        // set the comment in the qAnswerView
-        if textToDisplay.isEmpty {
-            self.nameTextView.text = "Comments"
-            self.nameTextView.textColor = UIColor(named: .disabledText)
-        } else {
-            self.nameTextView.text = textToDisplay
-            self.nameTextView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidBeginEditing(_ nameTextView: UITextView) {
-        if nameTextView.textColor == UIColor(named: .disabledText) {
-            self.nameTextView.text = nil
-            self.nameTextView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidChange(_ nameTextView: UITextView) {
-        self.nameTextViewDidChange = true
-    }
-    
-    func textViewDidEndEditing(_ nameTextView: UITextView) {
-        // send text to the DB
-        //self.nameTextViewDidChange ? self.updateQAnswer(answer: textView.text) : ()
-        if nameTextView.text.isEmpty {
-            nameTextView.text = "Comment"
-            nameTextView.textColor = UIColor(named: .disabledText)
-        }
-    }
-    
+
     // tableview
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
