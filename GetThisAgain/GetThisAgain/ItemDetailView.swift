@@ -27,7 +27,7 @@ class ItemDetailView: UIView {
     override init(frame:CGRect){
         super.init(frame: frame)
         self.getAgainLabel.text = "Get This Again"
-        self.shoppingListLabel.text = "Add to Shopping List"
+        self.shoppingListLabel.text = "On Shopping List"
         
         // configure segmented control to pick status for the measure
         self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.no)(), at: 0, animated: false)
@@ -76,6 +76,7 @@ class ItemDetailView: UIView {
         self.addSubview(self.itemImageView)
         self.itemImageView.translatesAutoresizingMaskIntoConstraints = false
         self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
+        self.itemImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
         self.itemImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.48).isActive = true
         

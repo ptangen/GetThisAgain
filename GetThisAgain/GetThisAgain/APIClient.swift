@@ -38,17 +38,18 @@ class APIClient {
                 if let data = data {
                     DispatchQueue.main.async {
                         do {
-                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String]
-                            let results = json?["results"]
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                                let results = json["results"]
                             
-                            if results == "authenticated" {
-                                completion(.authenticated)
-                            } else if results == "userNameInvalid" {
-                                completion(.userNameInvalid)
-                            } else if results == "passwordInvalid" {
-                                completion(.passwordInvalid)
-                            } else {
-                                completion(.noReply)
+                                if results == "authenticated" {
+                                    completion(.authenticated)
+                                } else if results == "userNameInvalid" {
+                                    completion(.userNameInvalid)
+                                } else if results == "passwordInvalid" {
+                                    completion(.passwordInvalid)
+                                } else {
+                                    completion(.noReply)
+                                }
                             }
                         } catch {
                             completion(.noReply)
@@ -124,23 +125,24 @@ class APIClient {
                 if let data = data {
                     DispatchQueue.main.async {
                         do {
-                            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
-                            if let results = json?["results"] as! Int? {
-                                if results == 1 {
-                                    // extract the imageURL and barcode from the results so we can creare the object in all cases
-                                    if let barcode = json?["barcode"] as! String? {
-                                        var imageURLString = String() // sometimes there is no image
-                                        if let imageURL = json?["imageURL"] {
-                                            imageURLString = (imageURL as? String)!
-                                        } else {
-                                            imageURLString = ""
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                                if let results = json["results"] as! Int? {
+                                    if results == 1 {
+                                        // extract the imageURL and barcode from the results so we can creare the object in all cases
+                                        if let barcode = json["barcode"] as! String? {
+                                            var imageURLString = String() // sometimes there is no image
+                                            if let imageURL = json["imageURL"] {
+                                                imageURLString = (imageURL as? String)!
+                                            } else {
+                                                imageURLString = ""
+                                            }
+                                            completion(.ok, imageURLString, barcode)
                                         }
-                                        completion(.ok, imageURLString, barcode)
+                                    } else if results == -1 {
+                                        completion(.failed, "", "")
+                                    } else {
+                                        completion(.noReply, "", "")
                                     }
-                                } else if results == -1 {
-                                    completion(.failed, "", "")
-                                } else {
-                                    completion(.noReply, "", "")
                                 }
                             }
                         } catch {
@@ -154,30 +156,48 @@ class APIClient {
         }
     }
     
-    func createBodyWithParametersX(parameters: [String: String]?, filePathKey: String?, imageDataKey: NSData, boundary: String) -> Data {
-        let body = NSMutableData();
+    class func deleteMyItem(userName: String, barcode: String, imageURL: String, completion: @escaping (apiResponse) -> Void) {
         
-        if parameters != nil {
-            for (key, value) in parameters! {
-                body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
-                body.append("\(value)\r\n".data(using: .utf8)!)
-            }
+        let urlString = "\(Secrets.gtaURL)/deleteMyItem.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            let parameterString = "userName=\(userName)&barcode=\(barcode)&imageURL=\(imageURL)&key=\(Secrets.gtaKey)"
+            request.httpBody = parameterString.data(using: .utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+
+                                if let results = json["results"] {
+                            
+                                    if results == "1" {
+                                        completion(.ok)
+                                    } else if results == "-1" {
+                                        completion(.failed)
+                                    } else {
+                                        completion(.noReply)
+                                    }
+                                }
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
         }
-        
-        let filename = "user-profile.jpg"
-        let mimetype = "image/jpg"
-        
-        body.append("--\(boundary)\r\n".data(using: .utf8)!)
-        body.append("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-        body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: .utf8)!)
-        body.append(imageDataKey as Data)
-        body.append("\r\n".data(using: .utf8)!)
-        
-        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        return body as Data
     }
+    
     
     class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
@@ -296,7 +316,7 @@ class APIClient {
     
     static func decodeCharactersIn(string: String) -> String {
         var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
-        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“"]
+        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " "]
         for (code, character) in characters {
             string = string.replacingOccurrences(of: code, with: character, options: .caseInsensitive, range: nil)
         }

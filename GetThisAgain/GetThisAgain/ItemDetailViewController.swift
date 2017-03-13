@@ -17,7 +17,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     var itemInst: MyItem!
     var itemInstImage: UIImage?
     var addButton = UIBarButtonItem()
+    var cancelButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
+    var deleteButton = UIBarButtonItem()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +32,23 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.addButton.action = #selector(addButtonClicked)
         self.addButton.title = "Add Item"
         
+        // cancel button
+        self.cancelButton.style = .plain
+        self.cancelButton.target = self
+        self.cancelButton.action = #selector(cancelButtonClicked)
+        self.cancelButton.title = "Cancel"
+        
         // done button
         self.doneButton.style = .plain
         self.doneButton.target = self
         self.doneButton.title = "Done"
         self.doneButton.action = #selector(doneButtonClicked)
+        
+        // delete button
+        self.deleteButton.style = .plain
+        self.deleteButton.target = self
+        self.deleteButton.title = "Delete"
+        self.deleteButton.action = #selector(deleteButtonClicked)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,7 +58,20 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.itemDetailViewInst.nameLabel.text = itemInst.name
         self.itemDetailViewInst.categoryLabel.text = itemInst.category.rawValue
         self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
-        self.itemExistsInDatastore ? (self.navigationItem.rightBarButtonItems = [doneButton]) : (self.navigationItem.rightBarButtonItems = [addButton])
+        
+        if self.itemExistsInDatastore {
+            // done button
+            self.navigationItem.rightBarButtonItems = [doneButton]
+            // delete button
+            self.navigationItem.leftBarButtonItems = [deleteButton]
+        } else {
+            // add button
+            self.navigationItem.rightBarButtonItems = [addButton]
+            // cancel button
+            self.navigationItem.setHidesBackButton(true, animated:false);
+            
+            self.navigationItem.leftBarButtonItems = [cancelButton]
+        }
 
         if let itemInstImage = self.itemInstImage {
             // image came from a snapshot
@@ -61,11 +88,6 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         }
 
         self.itemDetailViewInst.itemImageView.contentMode = .scaleAspectFit
-        
-        // add cancel button to nav bar
-        self.navigationItem.setHidesBackButton(true, animated:false);
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
-        self.itemExistsInDatastore ? () : (self.navigationItem.leftBarButtonItems = [cancelButton])
         
         // set the getThisAgainControl
         switch itemInst.getAgain.label() {
@@ -94,6 +116,19 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                     itemInst.barcode = barcode
                     itemInst.imageURL = imageURL
                     self.store.myItems.append(itemInst)
+                    self.doneButtonClicked()
+                } else {
+                    print("error")
+                }
+            }
+        }
+    }
+    
+    func deleteButtonClicked() {
+        if let itemInst = self.itemInst {
+            APIClient.deleteMyItem(userName: UserDefaults.standard.value(forKey: "username") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
+                if results == apiResponse.ok {
+                    self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
                 } else {
                     print("error")
