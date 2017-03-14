@@ -81,7 +81,7 @@ class APIClient {
                 
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 
-                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
+                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
                 
                     let param = [
                         "userName"      : userName,
@@ -116,7 +116,7 @@ class APIClient {
             } else {   // create request without image
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
-                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "username") as? String {
+                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
                     parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&category=\(itemInst.category)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
                     }
                     request.httpBody = parameterString.data(using: .utf8)
@@ -198,6 +198,50 @@ class APIClient {
         }
     }
     
+    class func updateMyItem(barcode: String, name: String, category: String, completion: @escaping (apiResponse) -> Void) {
+        
+        if let nameEncoded = name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+        
+            let urlString = "\(Secrets.gtaURL)/updateMyItem.php"
+            let url = URL(string: urlString)
+            if let url = url {
+                var request = URLRequest(url: url)
+                
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Accept")
+                request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                
+                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&category=\(category)&key=\(Secrets.gtaKey)"
+                request.httpBody = parameterString.data(using: .utf8)
+                
+                URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                    if let data = data {
+                        DispatchQueue.main.async {
+                            do {
+                                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                                    if let results = json["results"] {
+                                        
+                                        if results == "1" {
+                                            completion(.ok)
+                                        } else if results == "0" {
+                                            completion(.failed)
+                                        } else {
+                                            completion(.noReply)
+                                        }
+                                    }
+                                }
+                            } catch {
+                                completion(.noReply)
+                            }
+                        }
+                    }
+                }).resume()
+            } else {
+                print("error: unable to unwrap url")
+            }
+        }
+    }
+    
     
     class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
@@ -210,9 +254,9 @@ class APIClient {
             let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
                 if let unwrappedData = data {
                     do {
-                        let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
-                        if let responseJSON = responseJSON {
+                        if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
                             // check the status code and create object
+                            
                             let statusDict = responseJSON["status"] as! [String:String]
                             if let code = statusDict["code"] {
                                 if code == "200" {
@@ -228,8 +272,8 @@ class APIClient {
                                                 if let imageURL = productDict["image"] as? String {
                                                     itemInst.imageURL = imageURL
                                                 }
-                                                
                                                 if let category = productAttributesDict["category_text"] {
+                                                    //print("category_text: \(category)")
                                                     itemInst.category = Constants.ItemCategory(rawValue: category)!
                                                 }
                                             }

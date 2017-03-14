@@ -21,25 +21,26 @@ struct Constants{
         case xxlarge =      48
     }
     
-//    enum iconLibrary: String {
+    enum iconLibrary: String {
 //        case menu =             "\u{E5D2}"
 //        case faCheckCircle =    "\u{f058}"
 //        case faTimesCircle =    "\u{f057}"
 //        case faCircleO =        "\u{f10c}"
 //        case faInfoCircle =     "\u{f05a}"
-//    }
-//    
-//    enum iconSize: CGFloat {
-//        case xsmall = 20
-//        case small = 24
-//        case medium = 36
-//        case large = 72
-//    }
-//    
-//    enum iconFont: String {
-//        case material = "MaterialIcons-Regular"
-//        case fontAwesome = "FontAwesome"
-//    }
+        case mode_edit =     "\u{E254}"
+    }
+    
+    enum iconSize: CGFloat {
+        case xsmall = 20
+        case small = 24
+        case medium = 36
+        case large = 72
+    }
+    
+    enum iconFont: String {
+        case material = "MaterialIcons-Regular"
+        case fontAwesome = "FontAwesome"
+    }
     
     enum appFont: String {
         case regular =  "HelveticaNeue"
@@ -60,6 +61,7 @@ struct Constants{
         case cleaning =     "Cleaning Supplies / Equipment"
         case electronics =  "Electronics / Photography"
         case food =         "Food"
+        case frozen =       "Frozen"
         case garden =       "Garden"
         case hardware =     "Hardware"
         case linnen =       "Linnen / Bath"
@@ -69,8 +71,6 @@ struct Constants{
         case wine =         "Wine / Champagne"
         
         static let allValues = [none, automotive, bath, beverages, book, cleaning, electronics, food, garden, hardware, linnen, movie, office, sports, wine]
-        
-
     }
     
     static func getItemCategoryFromString(categoryString: String) -> ItemCategory {
@@ -83,6 +83,7 @@ struct Constants{
         case "cleaning": return Constants.ItemCategory.cleaning
         case "electronics": return Constants.ItemCategory.electronics
         case "food": return Constants.ItemCategory.food
+        case "frozen": return Constants.ItemCategory.frozen
         case "garden": return Constants.ItemCategory.garden
         case "hardware": return Constants.ItemCategory.hardware
         case "linnen": return Constants.ItemCategory.linnen

@@ -64,9 +64,9 @@ class SignInView: UIView, UITextFieldDelegate {
         self.signInButton.addTarget(self, action: #selector(SignInView.onClickSignIn), for: UIControlEvents.touchUpInside)
         self.touchIDButton.addTarget(self, action: #selector(SignInView.touchIDLoginAction), for: UIControlEvents.touchUpInside)
         
-        // if we have a stored username, populate the username field with that value.
-        if let storedUsername = UserDefaults.standard.value(forKey: "username") as? String {
-            userNameField.text = storedUsername as String
+        // if we have a stored userName, populate the userName field with that value.
+        if let storedUserName = UserDefaults.standard.value(forKey: "userName") as? String {
+            userNameField.text = storedUserName as String
             self.userNamePopulated = true
         }
         
@@ -92,10 +92,10 @@ class SignInView: UIView, UITextFieldDelegate {
         if let userName = self.userNameField.text {
             if let password = self.passwordField.text {
                 
-                UserDefaults.standard.setValue(self.userNameField.text, forKey: "username")
+                UserDefaults.standard.setValue(self.userNameField.text, forKey: "userName")
                 
                 if password == myKeyChainWrapper.myObject(forKey: "v_Data") as? String &&
-                    userName == UserDefaults.standard.value(forKey: "username") as? String {
+                    userName == UserDefaults.standard.value(forKey: "userName") as? String {
                     //creds match the keychain and user defaults
                     self.delegate?.openTabDisplay()
                 } else {
@@ -150,7 +150,7 @@ class SignInView: UIView, UITextFieldDelegate {
                         if let error = error {
                             switch(error._code) {
                             case LAError.authenticationFailed.rawValue:
-                                self.delegate?.showAlertMessage("Unable to login with fingerprint. Signin with your username and password.")
+                                self.delegate?.showAlertMessage("Unable to login with fingerprint. Sign in with your user name and password.")
                                 break;
                             default:
                                 self.delegate?.showAlertMessage("Touch ID may not be configured")
@@ -179,7 +179,7 @@ class SignInView: UIView, UITextFieldDelegate {
         self.signInButton.alpha = 0.3
     }
     
-    // monitors the username/password fields and handles the client side validation
+    // monitors the userName/password fields and handles the client side validation
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         switch textField.tag {
         case 100:   // check to see if email has a value

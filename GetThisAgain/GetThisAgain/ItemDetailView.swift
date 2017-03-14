@@ -23,6 +23,7 @@ class ItemDetailView: UIView {
     var getAgainPicker = UISegmentedControl()
     var itemImageView = UIImageView()
     var itemInst: MyItem!
+    var editTextButton = UIButton()
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -34,14 +35,19 @@ class ItemDetailView: UIView {
         self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.unsure)(), at: 1, animated: false)
         self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.yes)(), at: 2, animated: false)
         self.getAgainPicker.selectedSegmentIndex = 1
-        
         self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
+        
         self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
         
-        // gesture recognizer for image
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onTapItemImageView))
-        itemImageView.addGestureRecognizer(tap)
-        itemImageView.isUserInteractionEnabled = true
+        self.editTextButton.addTarget(self, action: #selector(self.onTapItemNameOrIcon), for: UIControlEvents.touchUpInside)
+        self.editTextButton.setTitle(Constants.iconLibrary.mode_edit.rawValue, for: .normal)
+        self.editTextButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
+        self.editTextButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        
+        // gesture recognizer for nameLabel
+        let tapNameLabel = UITapGestureRecognizer(target: self, action: #selector(self.onTapItemNameOrIcon))
+        nameLabel.addGestureRecognizer(tapNameLabel)
+        nameLabel.isUserInteractionEnabled = true
 
         self.layoutForm()
     }
@@ -62,7 +68,7 @@ class ItemDetailView: UIView {
         }
     }
     
-    func onTapItemImageView() {
+    func onTapItemNameOrIcon() {
         self.delegate?.openEditName(item: self.itemInst)
     }
     
@@ -77,8 +83,8 @@ class ItemDetailView: UIView {
         self.itemImageView.translatesAutoresizingMaskIntoConstraints = false
         self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
         self.itemImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
-        self.itemImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.48).isActive = true
+        self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -4).isActive = true
+        self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
         
         // nameLabel
         self.addSubview(self.nameLabel)
@@ -87,6 +93,12 @@ class ItemDetailView: UIView {
         self.nameLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.nameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.nameLabel.numberOfLines = 0
+        
+        // editTextButton
+        self.addSubview(self.editTextButton)
+        self.editTextButton.translatesAutoresizingMaskIntoConstraints = false
+        self.editTextButton.bottomAnchor.constraint(equalTo: self.nameLabel.topAnchor, constant: -2).isActive = true
+        self.editTextButton.rightAnchor.constraint(equalTo: self.nameLabel.rightAnchor, constant: -6).isActive = true
         
         // categoryLabel
         self.addSubview(self.categoryLabel)

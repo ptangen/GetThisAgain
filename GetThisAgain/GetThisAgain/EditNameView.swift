@@ -18,8 +18,9 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categoryLabel = UILabel()
     var categoryTableViewTopBorder = UIView()
     var categorySelected: Constants.ItemCategory = .none
+    var itemInst: MyItem?
     
-    var itemExistsInDatastore = false
+    //var itemExistsInDatastore = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -81,16 +82,17 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.addSubview(self.itemImageView)
         self.itemImageView.translatesAutoresizingMaskIntoConstraints = false
         self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
+        self.itemImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -4).isActive = true
         self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
 
         // nameTextView
         self.addSubview(self.nameTextView)
         self.nameTextView.translatesAutoresizingMaskIntoConstraints = false
-        self.nameTextView.topAnchor.constraint(equalTo: self.topAnchor, constant: 80).isActive = true
-        self.nameTextView.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 4).isActive = true
+        self.nameTextView.topAnchor.constraint(equalTo: self.topAnchor, constant: 74).isActive = true
+        self.nameTextView.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 2).isActive = true
         self.nameTextView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8).isActive = true
-        self.nameTextView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.nameTextView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         self.nameTextView.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
         self.nameTextView.layer.borderColor = UIColor(named: .blue).cgColor

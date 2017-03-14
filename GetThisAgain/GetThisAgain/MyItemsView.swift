@@ -117,7 +117,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func getMyItemsFromDB() {
-        let userName = UserDefaults.standard.value(forKey: "username") as! String
+        let userName = UserDefaults.standard.value(forKey: "userName") as! String
         APIClient.selectMyItems(userName: userName) { isSuccessful in
             if isSuccessful {
                 OperationQueue.main.addOperation {

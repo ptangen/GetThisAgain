@@ -126,7 +126,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     func deleteButtonClicked() {
         if let itemInst = self.itemInst {
-            APIClient.deleteMyItem(userName: UserDefaults.standard.value(forKey: "username") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
+            APIClient.deleteMyItem(userName: UserDefaults.standard.value(forKey: "userName") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
                 if results == apiResponse.ok {
                     self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
@@ -154,7 +154,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     func openEditName(item: MyItem) {
         let editNameViewControllerInst = EditNameViewController()
-        //editNameViewControllerInst.editNameViewInst.itemInst = item
+        editNameViewControllerInst.editNameViewInst.itemInst = item
         self.navigationController?.pushViewController(editNameViewControllerInst, animated: false)
     }
 }

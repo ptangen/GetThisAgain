@@ -36,6 +36,8 @@
 		C0A232D71E6862B200FB1617 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A232D61E6862B200FB1617 /* KeychainWrapper.m */; };
 		C0A232DA1E68648C00FB1617 /* doubleArrows60-3x.png in Resources */ = {isa = PBXBuildFile; fileRef = C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */; };
 		C0A232DC1E6865C000FB1617 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232DB1E6865C000FB1617 /* Utilities.swift */; };
+		C0BDF9E11E785FEB003796CF /* MaterialIcons-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */; };
+		C0BDF9E31E786004003796CF /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E21E786004003796CF /* FontAwesome.otf */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
@@ -93,6 +95,8 @@
 		C0A232D81E6862BD00FB1617 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
 		C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "doubleArrows60-3x.png"; sourceTree = "<group>"; };
 		C0A232DB1E6865C000FB1617 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MaterialIcons-Regular.otf"; sourceTree = "<group>"; };
+		C0BDF9E21E786004003796CF /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
@@ -235,6 +239,8 @@
 				C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */,
 				C0A232D91E68648C00FB1617 /* doubleArrows60-3x.png */,
 				C06711F91E5748020047473B /* Assets.xcassets */,
+				C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */,
+				C0BDF9E21E786004003796CF /* FontAwesome.otf */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -335,7 +341,9 @@
 				C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */,
 				C024452A1E6DE65800DF78B3 /* jam.jpeg in Resources */,
 				C06711FA1E5748020047473B /* Assets.xcassets in Resources */,
+				C0BDF9E31E786004003796CF /* FontAwesome.otf in Resources */,
 				C028D5161E69CDA60087392C /* ic_insert_photo_black_24px.svg in Resources */,
+				C0BDF9E11E785FEB003796CF /* MaterialIcons-Regular.otf in Resources */,
 				C0A232DA1E68648C00FB1617 /* doubleArrows60-3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
