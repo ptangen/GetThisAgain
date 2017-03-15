@@ -10,9 +10,10 @@ import UIKit
 
 class EditNameViewController: UIViewController {
     
+    let store = DataStore.sharedInstance
     let editNameViewInst = EditNameView()
     var nameInitial = String()
-    var categoryInitial:Constants.ItemCategory!
+    var categoryInitial = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +32,11 @@ class EditNameViewController: UIViewController {
                 self.editNameViewInst.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
             }
             // set the category
-            let indexPath = self.getCategoryIndex(category: itemInst.category)
+            let indexPath = self.getCategoryIndex(categoryID: itemInst.categoryID)
+            //let indexPath = IndexPath(item: 0, section: 0)
             self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
-            self.editNameViewInst.categorySelected = Constants.ItemCategory.allValues[indexPath.row]
-            self.categoryInitial = Constants.ItemCategory.allValues[indexPath.row]
+            self.editNameViewInst.categorySelected = self.editNameViewInst.itemInst!.categoryID
+            self.categoryInitial = self.editNameViewInst.itemInst!.categoryID
 
         } else {
             print("no itemInst passed in")
@@ -48,10 +50,10 @@ class EditNameViewController: UIViewController {
         self.navigationItem.rightBarButtonItems = [nextButton]
     }
     
-    func getCategoryIndex(category: Constants.ItemCategory) -> IndexPath {
+    func getCategoryIndex(categoryID: Int) -> IndexPath {
         var indexPath = IndexPath()
-        for (i, categoryInList) in Constants.ItemCategory.allValues.enumerated() {
-            if category == categoryInList {
+        for (i, categoryInList) in self.store.myCategories.enumerated() {
+            if categoryID == categoryInList.id {
                 indexPath = IndexPath(item: i, section: 0)
                 break
             }
@@ -77,9 +79,7 @@ class EditNameViewController: UIViewController {
                     if results == apiResponse.ok {
                         // database updated successfully, so update the object
                         itemInst.name = self.editNameViewInst.nameTextView.text
-                        if let categorySelected = Constants.ItemCategory(rawValue: self.editNameViewInst.categorySelected.rawValue) {
-                            itemInst.category = categorySelected
-                        }
+                        itemDetailViewControllerInst.itemInst.categoryID = self.editNameViewInst.categorySelected
                         itemDetailViewControllerInst.itemInst = itemInst
                         itemDetailViewControllerInst.itemExistsInDatastore = true
                         itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
@@ -97,7 +97,7 @@ class EditNameViewController: UIViewController {
             }
         } else {
             // we dont have an itemInst, so create one
-            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, category: self.editNameViewInst.categorySelected, imageURL: "", shoppingList: false, getAgain: .unsure)
+            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: 0, imageURL: "", shoppingList: false, getAgain: .unsure)
             itemDetailViewControllerInst.itemInst = itemInst
             itemDetailViewControllerInst.itemExistsInDatastore = false
             itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image

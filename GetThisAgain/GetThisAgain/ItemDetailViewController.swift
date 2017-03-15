@@ -56,7 +56,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.title = "Item Detail" // nav bar title
         
         self.itemDetailViewInst.nameLabel.text = itemInst.name
-        self.itemDetailViewInst.categoryLabel.text = itemInst.category.rawValue
+        self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: itemInst.categoryID)
         self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
         
         if self.itemExistsInDatastore {

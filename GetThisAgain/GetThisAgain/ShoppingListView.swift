@@ -69,7 +69,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.titleLabel.text = shoppingItemCurrent.name  + " (" + shoppingItemCurrent.getAgain.label() + ")"
-        cell.subTitleLabel.text = shoppingItemCurrent.category.rawValue
+        cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: shoppingItemCurrent.categoryID)
         
         let itemImageURL = URL(string: shoppingItemCurrent.imageURL)
         cell.itemImageView.sd_setImage(with: itemImageURL)
@@ -90,7 +90,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         self.filteredItems = self.shoppingListItems.filter { shoppingItem in
             var nameAndCategory = String()
-            nameAndCategory = shoppingItem.name + shoppingItem.category.rawValue
+            nameAndCategory = shoppingItem.name + self.store.getCategoryLabelFromID(id: shoppingItem.categoryID)
             return nameAndCategory.lowercased().contains(searchText.lowercased())
         }
         self.shoppingListTableView.reloadData()

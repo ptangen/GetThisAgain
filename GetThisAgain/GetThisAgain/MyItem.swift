@@ -11,18 +11,16 @@ import Foundation
 class MyItem {
     
     var barcode: String
-    //let barcodeType: Constants.barcodeType
     var name: String
-    var category: Constants.ItemCategory
+    var categoryID: Int
     var imageURL: String
     var shoppingList: Bool
     var getAgain: GetAgain
     
-    init (barcode: String, name: String, category: Constants.ItemCategory, imageURL: String, shoppingList: Bool, getAgain: GetAgain) {
+    init (barcode: String, name: String, categoryID: Int, imageURL: String, shoppingList: Bool, getAgain: GetAgain) {
         self.barcode = barcode
-        //self.barcodeType = barcodeType
         self.name = name
-        self.category = category
+        self.categoryID = categoryID
         self.imageURL = imageURL
         self.shoppingList = shoppingList
         self.getAgain = getAgain

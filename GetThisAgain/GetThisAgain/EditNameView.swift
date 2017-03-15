@@ -10,6 +10,7 @@ import UIKit
 
 class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
+    let store = DataStore.sharedInstance
     var itemImageView = UIImageView()
     var nameLabel = UILabel()
     var nameTextView = UITextView()
@@ -17,7 +18,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categoryTableView = UITableView()
     var categoryLabel = UILabel()
     var categoryTableViewTopBorder = UIView()
-    var categorySelected: Constants.ItemCategory = .none
+    var categorySelected = Int()
     var itemInst: MyItem?
     
     //var itemExistsInDatastore = false
@@ -36,7 +37,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         
         // select the first category by default
         let indexPath = IndexPath(item: 0, section: 0)
-        self.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        self.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
     }
     
     
@@ -60,20 +61,19 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Constants.ItemCategory.allValues.count
+        return self.store.myCategories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "prototype")
-        let category: Constants.ItemCategory = Constants.ItemCategory.allValues[indexPath.row]
         if let textLabel = cell.textLabel {
-            textLabel.text = category.rawValue
+            textLabel.text = self.store.myCategories[indexPath.row].label
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.categorySelected = Constants.ItemCategory.allValues[indexPath.row]
+        self.categorySelected = self.store.myCategories[indexPath.row].id
     }
 
     func layoutPage() {

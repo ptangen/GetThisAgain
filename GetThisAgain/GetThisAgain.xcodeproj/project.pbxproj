@@ -38,6 +38,7 @@
 		C0A232DC1E6865C000FB1617 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232DB1E6865C000FB1617 /* Utilities.swift */; };
 		C0BDF9E11E785FEB003796CF /* MaterialIcons-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */; };
 		C0BDF9E31E786004003796CF /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E21E786004003796CF /* FontAwesome.otf */; };
+		C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0BDF9E41E78AF9A003796CF /* MyCategory.swift */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
@@ -97,6 +98,7 @@
 		C0A232DB1E6865C000FB1617 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MaterialIcons-Regular.otf"; sourceTree = "<group>"; };
 		C0BDF9E21E786004003796CF /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
+		C0BDF9E41E78AF9A003796CF /* MyCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCategory.swift; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				C06712191E5749DF0047473B /* MyItem.swift */,
+				C0BDF9E41E78AF9A003796CF /* MyCategory.swift */,
 				C027E0711E578D3800CA6577 /* APIClient.swift */,
 				C027E0731E578D8A00CA6577 /* Secrets.swift */,
 				C0CE94F51E5A1EA400099F61 /* DataStore.swift */,
@@ -446,6 +449,7 @@
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */,
 				C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */,
+				C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */,
 				C027E0721E578D3800CA6577 /* APIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

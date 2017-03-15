@@ -51,49 +51,49 @@ struct Constants{
         case EAN13, UPCA
     }
     
-    enum ItemCategory: String {
-        case none =         "none"
-        case automotive =   "Automotive"
-        case bath =         "Bath / Beauty / Hygiene"
-        case beverages =    "Beverages"
-        case book =         "Book / Magazine / Publication"
-        case canned =         "Canned Vegetables"
-        case cleaning =     "Cleaning Supplies / Equipment"
-        case electronics =  "Electronics / Photography"
-        case food =         "Food"
-        case frozen =       "Frozen"
-        case garden =       "Garden"
-        case hardware =     "Hardware"
-        case linnen =       "Linnen / Bath"
-        case movie =        "Movie"
-        case office =       "Office / School Supplies"
-        case sports =       "Sports / Exercise"
-        case wine =         "Wine / Champagne"
-        
-        static let allValues = [none, automotive, bath, beverages, book, cleaning, electronics, food, garden, hardware, linnen, movie, office, sports, wine]
-    }
-    
-    static func getItemCategoryFromString(categoryString: String) -> ItemCategory {
-        switch categoryString {
-        case "automotive": return Constants.ItemCategory.automotive
-        case "bath": return Constants.ItemCategory.bath
-        case "beverages": return Constants.ItemCategory.beverages
-        case "book": return Constants.ItemCategory.book
-        case "canned": return Constants.ItemCategory.canned
-        case "cleaning": return Constants.ItemCategory.cleaning
-        case "electronics": return Constants.ItemCategory.electronics
-        case "food": return Constants.ItemCategory.food
-        case "frozen": return Constants.ItemCategory.frozen
-        case "garden": return Constants.ItemCategory.garden
-        case "hardware": return Constants.ItemCategory.hardware
-        case "linnen": return Constants.ItemCategory.linnen
-        case "movie": return Constants.ItemCategory.movie
-        case "office": return Constants.ItemCategory.office
-        case "sports": return Constants.ItemCategory.sports
-        case "wine": return Constants.ItemCategory.wine
-        default: return Constants.ItemCategory.none
-        }
-    }
+//    enum ItemCategory: String {
+//        case none =         "none"
+//        case automotive =   "Automotive"
+//        case bath =         "Bath / Beauty / Hygiene"
+//        case beverages =    "Beverages"
+//        case book =         "Book / Magazine / Publication"
+//        case canned =       "Canned Vegetables"
+//        case cleaning =     "Cleaning Supplies / Equipment"
+//        case electronics =  "Electronics / Photography"
+//        case food =         "Food"
+//        case frozen =       "Frozen"
+//        case garden =       "Garden"
+//        case hardware =     "Hardware"
+//        case linnen =       "Linnen / Bath"
+//        case movie =        "Movie"
+//        case office =       "Office / School Supplies"
+//        case sports =       "Sports / Exercise"
+//        case wine =         "Wine / Champagne"
+//        
+//        static let allValues = [none, automotive, bath, beverages, book, cleaning, electronics, food, garden, hardware, linnen, movie, office, sports, wine]
+//    }
+//    
+//    static func getItemCategoryFromString(categoryString: String) -> ItemCategory {
+//        switch categoryString {
+//        case "automotive": return Constants.ItemCategory.automotive
+//        case "bath": return Constants.ItemCategory.bath
+//        case "beverages": return Constants.ItemCategory.beverages
+//        case "book": return Constants.ItemCategory.book
+//        case "canned": return Constants.ItemCategory.canned
+//        case "cleaning": return Constants.ItemCategory.cleaning
+//        case "electronics": return Constants.ItemCategory.electronics
+//        case "food": return Constants.ItemCategory.food
+//        case "frozen": return Constants.ItemCategory.frozen
+//        case "garden": return Constants.ItemCategory.garden
+//        case "hardware": return Constants.ItemCategory.hardware
+//        case "linnen": return Constants.ItemCategory.linnen
+//        case "movie": return Constants.ItemCategory.movie
+//        case "office": return Constants.ItemCategory.office
+//        case "sports": return Constants.ItemCategory.sports
+//        case "wine": return Constants.ItemCategory.wine
+//        default: return Constants.ItemCategory.none
+//        }
+//    }
 }
 
 extension UIColor {
