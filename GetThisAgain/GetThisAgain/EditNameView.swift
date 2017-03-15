@@ -18,7 +18,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categoryTableView = UITableView()
     var categoryLabel = UILabel()
     var categoryTableViewTopBorder = UIView()
-    var categorySelected = Int()
+    //var categorySelected = Int()
     var itemInst: MyItem?
     
     //var itemExistsInDatastore = false
@@ -73,7 +73,14 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.categorySelected = self.store.myCategories[indexPath.row].id
+        self.itemInst?.categoryID = self.store.myCategories[indexPath.row].id
+    }
+    
+    func getSelectedCategoryID() -> Int {
+        if let indexPath = self.categoryTableView.indexPathForSelectedRow {
+            return self.store.myCategories[indexPath.row].id
+        }
+        return 0
     }
 
     func layoutPage() {

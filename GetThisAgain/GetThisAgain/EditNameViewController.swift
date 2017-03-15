@@ -33,9 +33,7 @@ class EditNameViewController: UIViewController {
             }
             // set the category
             let indexPath = self.getCategoryIndex(categoryID: itemInst.categoryID)
-            //let indexPath = IndexPath(item: 0, section: 0)
             self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
-            self.editNameViewInst.categorySelected = self.editNameViewInst.itemInst!.categoryID
             self.categoryInitial = self.editNameViewInst.itemInst!.categoryID
 
         } else {
@@ -72,16 +70,14 @@ class EditNameViewController: UIViewController {
         let itemDetailViewControllerInst = ItemDetailViewController()
         
         if let itemInst = self.editNameViewInst.itemInst {
-            // update the itemInst object if any properties values changed
-            if self.nameInitial != self.editNameViewInst.nameTextView.text || self.categoryInitial != self.editNameViewInst.categorySelected {
+            // update the record in the DB and itemInst object if any properties values changed
+            if (self.nameInitial != self.editNameViewInst.nameTextView.text || self.categoryInitial != itemInst.categoryID) && self.store.getItemExistsInDatastore(item: itemInst) {
                 
-                APIClient.updateMyItem(barcode: itemInst.barcode, name: self.editNameViewInst.nameTextView.text, category: String(describing: self.editNameViewInst.categorySelected), completion: { (results) in
+                APIClient.updateMyItem(barcode: itemInst.barcode, name: self.editNameViewInst.nameTextView.text, categoryID: itemInst.categoryID , completion: { (results) in
                     if results == apiResponse.ok {
                         // database updated successfully, so update the object
                         itemInst.name = self.editNameViewInst.nameTextView.text
-                        itemDetailViewControllerInst.itemInst.categoryID = self.editNameViewInst.categorySelected
                         itemDetailViewControllerInst.itemInst = itemInst
-                        itemDetailViewControllerInst.itemExistsInDatastore = true
                         itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
                         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
                     } else {
@@ -89,17 +85,17 @@ class EditNameViewController: UIViewController {
                     }
                 })
             } else {
+                // if the name was changed, but the item is not in the datastore yet update the property
+                self.nameInitial != self.editNameViewInst.nameTextView.text ? itemInst.name = self.editNameViewInst.nameTextView.text : ()
                 // nothing was changed, so pass the itemInst and open the item detail
                 itemDetailViewControllerInst.itemInst = itemInst
-                itemDetailViewControllerInst.itemExistsInDatastore = true
                 itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
                 self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
             }
         } else {
             // we dont have an itemInst, so create one
-            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: 0, imageURL: "", shoppingList: false, getAgain: .unsure)
+            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", shoppingList: false, getAgain: .unsure)
             itemDetailViewControllerInst.itemInst = itemInst
-            itemDetailViewControllerInst.itemExistsInDatastore = false
             itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
             self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
         }

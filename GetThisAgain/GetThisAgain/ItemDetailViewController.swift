@@ -13,7 +13,6 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     let store = DataStore.sharedInstance
     let itemDetailViewInst = ItemDetailView()
-    var itemExistsInDatastore = Bool()
     var itemInst: MyItem!
     var itemInstImage: UIImage?
     var addButton = UIBarButtonItem()
@@ -56,10 +55,17 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.title = "Item Detail" // nav bar title
         
         self.itemDetailViewInst.nameLabel.text = itemInst.name
-        self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: itemInst.categoryID)
+        print("itemInst.categoryID in itemDetail: \(itemInst.categoryID)")
+        if itemInst.categoryID == -1 { // prompt user about new cagtegory
+            let message = "This item is associated with a new cagtegory: \(self.store.getCategoryLabelFromID(id: itemInst.categoryID))."
+            self.showNewCategoryMessage(message, viewControllerInst: self)
+        } else { // set the text in the label
+            self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: itemInst.categoryID)
+        }
+         
         self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
         
-        if self.itemExistsInDatastore {
+        if self.store.getItemExistsInDatastore(item: self.itemInst) {
             // done button
             self.navigationItem.rightBarButtonItems = [doneButton]
             // delete button
@@ -156,5 +162,39 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         let editNameViewControllerInst = EditNameViewController()
         editNameViewControllerInst.editNameViewInst.itemInst = item
         self.navigationController?.pushViewController(editNameViewControllerInst, animated: false)
+    }
+    
+    func handleNewCategoryAlert(action: UIAlertAction) {
+        if let title = action.title {
+            if title == "Select Existing Category" {
+                self.store.removeCategory(id: self.itemDetailViewInst.itemInst.categoryID) // remove temp category
+                self.itemDetailViewInst.itemInst.categoryID = self.store.getIdOfNone()
+                self.openEditName(item: self.itemDetailViewInst.itemInst)
+            } else {
+                // add new category
+                print("add new category")
+                let categoryForInsert = self.store.getNewCategoryForInsert()
+                APIClient.insertMyCategory(category: categoryForInsert, completion: { (result) in
+                    if result == apiResponse.ok {
+                        self.itemDetailViewInst.itemInst.categoryID = categoryForInsert.id
+                        self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: categoryForInsert.id)
+                    } else {
+                        print("error")  // TODO: show users the error
+                    }
+
+                })
+            }
+        }
+    }
+    
+    func showNewCategoryMessage(_ message: String, viewControllerInst: UIViewController) {
+        let alertController = UIAlertController(title: "New Category Found", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Add Category", style: UIAlertActionStyle.default,handler: handleNewCategoryAlert))
+        alertController.addAction(UIAlertAction(title: "Select Existing Category", style: UIAlertActionStyle.default, handler: handleNewCategoryAlert))
+        viewControllerInst.present(alertController, animated: true, completion: nil)
+    }
+    
+    func addNewCategory(action: UIAlertAction) {
+        
     }
 }

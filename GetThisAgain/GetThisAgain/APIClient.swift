@@ -117,7 +117,7 @@ class APIClient {
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
                 if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&category=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
                     }
                     request.httpBody = parameterString.data(using: .utf8)
             }
@@ -198,7 +198,7 @@ class APIClient {
         }
     }
     
-    class func updateMyItem(barcode: String, name: String, category: String, completion: @escaping (apiResponse) -> Void) {
+    class func updateMyItem(barcode: String, name: String, categoryID: Int, completion: @escaping (apiResponse) -> Void) {
         
         if let nameEncoded = name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
         
@@ -211,7 +211,7 @@ class APIClient {
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 
-                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&category=\(category)&key=\(Secrets.gtaKey)"
+                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&categoryID=\(categoryID)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
                 
                 URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
@@ -220,7 +220,7 @@ class APIClient {
                             do {
                                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
                                     if let results = json["results"] {
-                                        
+                                        print("results from DB: \(results)")
                                         if results == "1" {
                                             completion(.ok)
                                         } else if results == "0" {
@@ -281,10 +281,10 @@ class APIClient {
                                                         // create a temp category for this label, prompt user on item detail page about
                                                         // keeping or discarding it
                                                         let tempCategory = MyCategory(id: -1, label: categoryText)
+                                                        print("New category: \(tempCategory.id) , \(tempCategory.label)")
                                                         store.myCategories.append(tempCategory)
-                                                    } else {
-                                                        itemInst.categoryID = categoryID
                                                     }
+                                                    itemInst.categoryID = categoryID
                                                 }
                                             }
                                         }
@@ -392,7 +392,50 @@ class APIClient {
             }).resume()
         }
     }
-    
+    class func insertMyCategory(category: MyCategory, completion: @escaping (apiResponse) -> Void) {
+        
+        let urlString = "\(Secrets.gtaURL)/insertMyCategory.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            
+
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            var parameterString = String()
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                parameterString = "userName=\(userName)&id=\(category.id)&label=\(category.label)&key=\(Secrets.gtaKey)"
+                request.httpBody = parameterString.data(using: .utf8)
+            }
+
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                                if let results = json["results"] as! Int? {
+                                    if results == 1 {
+                                        completion(.ok)
+                                    } else if results == -1 {
+                                        completion(.failed)
+                                    } else {
+                                        completion(.noReply)
+                                    }
+                                }
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
+        }
+    }
+
     static func decodeCharactersIn(string: String) -> String {
         var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
         let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " "]

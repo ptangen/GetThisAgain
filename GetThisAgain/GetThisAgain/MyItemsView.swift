@@ -9,7 +9,7 @@
 import UIKit
 
 protocol MyItemsViewDelegate: class {
-    func openItemDetail(item: MyItem, editMode: Bool)
+    func openItemDetail(item: MyItem)
     func showAlertMessage(_: String)
 }
 
@@ -86,9 +86,9 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row], editMode: true)
+            self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
-            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row], editMode: true)
+            self.delegate?.openItemDetail(item: self.store.myItems[indexPath.row])
         }
     }
     

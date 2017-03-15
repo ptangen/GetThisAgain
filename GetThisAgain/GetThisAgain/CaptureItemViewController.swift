@@ -41,9 +41,8 @@ class CaptureItemViewController: UIViewController, CaptureItemViewDelegate {
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
     }
     
-    func openItemDetail(item: MyItem, itemExistsInDatastore: Bool) {
+    func openItemDetail(item: MyItem) {
         let itemDetailViewControllerInst = ItemDetailViewController()
-        itemDetailViewControllerInst.itemExistsInDatastore = itemExistsInDatastore
         itemDetailViewControllerInst.itemInst = item
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }

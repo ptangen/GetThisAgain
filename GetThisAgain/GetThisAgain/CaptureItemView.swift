@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 protocol CaptureItemViewDelegate: class {
-    func openItemDetail(item: MyItem, itemExistsInDatastore: Bool)
+    func openItemDetail(item: MyItem)
     func openEditName(capturedImageView: UIImageView)
 }
 
@@ -176,14 +176,14 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         if let itemInst = self.store.getItemFromBarcode(barcode: barcodeValue) {
             // we have the item that was scanned in the datastore so show the item detail
             DispatchQueue.main.async {
-                self.delegate?.openItemDetail(item: itemInst, itemExistsInDatastore: true)
+                self.delegate?.openItemDetail(item: itemInst)
             }
         } else {
             // we dont have the item in the datastore so fetch it from the API
             APIClient.getEandataFromAPI(barcode: barcodeValue, completion: {itemInst in
                 if itemInst.barcode != "notFound" {
                     DispatchQueue.main.async {
-                        self.delegate?.openItemDetail(item: itemInst, itemExistsInDatastore: false)
+                        self.delegate?.openItemDetail(item: itemInst)
                     }
                 } else {
                     // display not found message
