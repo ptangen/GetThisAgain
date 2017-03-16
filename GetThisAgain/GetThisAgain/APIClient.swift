@@ -220,7 +220,6 @@ class APIClient {
                             do {
                                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
                                     if let results = json["results"] {
-                                        print("results from DB: \(results)")
                                         if results == "1" {
                                             completion(.ok)
                                         } else if results == "0" {
@@ -392,6 +391,7 @@ class APIClient {
             }).resume()
         }
     }
+    
     class func insertMyCategory(category: MyCategory, completion: @escaping (apiResponse) -> Void) {
         
         let urlString = "\(Secrets.gtaURL)/insertMyCategory.php"

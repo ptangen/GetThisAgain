@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditNameViewController: UIViewController {
+class EditNameViewController: UIViewController, EditNameViewDelegate {
     
     let store = DataStore.sharedInstance
     let editNameViewInst = EditNameView()
@@ -17,6 +17,7 @@ class EditNameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.editNameViewInst.delegate = self
         self.edgesForExtendedLayout = []   // prevents view from siding under nav bar
         self.navigationItem.setHidesBackButton(true, animated:false);
         
@@ -116,4 +117,59 @@ class EditNameViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func showAddCategory() {
+        let alertController = UIAlertController(title: "Add Category", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        //Add text field
+        alertController.addTextField { (textField) -> Void in
+            textField.placeholder = "Name"
+        }
+        alertController.addAction(UIAlertAction(title: "Add", style: UIAlertActionStyle.default){ action -> Void in
+            if let newCategoryLabel = ((alertController.textFields?.first)! as UITextField).text {
+                let tempCategory = MyCategory(id: -1, label: newCategoryLabel)
+                self.store.myCategories.append(tempCategory)
+                let newCategory = self.store.setIDOnCategoryForInsert()
+                
+                APIClient.insertMyCategory(category: newCategory, completion: { (result) in
+                    if result == apiResponse.ok {
+                        self.editNameViewInst.categoryTableView.reloadData()
+                        // select the new category in the tableview
+                        let newID = self.store.getCategoryIDFromLabel(label: newCategoryLabel)
+                        let indexPath = self.store.getCategoryIndexPath(id: newID)
+                        self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+                        // set the new category on the item
+                        self.editNameViewInst.itemInst?.categoryID = newID
+                    } else {
+                        self.store.removeCategory(id: -1)
+                        print("error: unable to add category")  // TODO: show users the error
+                    }
+                })
+            } else {
+                print("no name provided")
+            }
+        })
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+//    func handleAddCategory(action: UIAlertAction) {
+//        print(sender.textFields?.first?.text!)
+//        if let title = sender.actions.first?.title {
+//            if title == "Add" {
+//                print("add")
+////                let tempCategory = MyCategory(id: -1, label: "New Category")
+////                let categoryForInsert = self.store.getNewCategoryForInsert()
+////                APIClient.insertMyCategory(category: categoryForInsert, completion: { (result) in
+////                    if result == apiResponse.ok {
+////                        self.itemDetailViewInst.itemInst.categoryID = categoryForInsert.id
+////                        self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: categoryForInsert.id)
+////                    } else {
+////                        print("error")  // TODO: show users the error
+////                    }
+////                    
+////                })
+//            }
+//        }
+//    }
+
 }

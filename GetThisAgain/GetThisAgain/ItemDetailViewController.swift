@@ -55,7 +55,6 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.title = "Item Detail" // nav bar title
         
         self.itemDetailViewInst.nameLabel.text = itemInst.name
-        print("itemInst.categoryID in itemDetail: \(itemInst.categoryID)")
         if itemInst.categoryID == -1 { // prompt user about new cagtegory
             let message = "This item is associated with a new cagtegory: \(self.store.getCategoryLabelFromID(id: itemInst.categoryID))."
             self.showNewCategoryMessage(message, viewControllerInst: self)
@@ -172,8 +171,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                 self.openEditName(item: self.itemDetailViewInst.itemInst)
             } else {
                 // add new category
-                print("add new category")
-                let categoryForInsert = self.store.getNewCategoryForInsert()
+                let categoryForInsert = self.store.setIDOnCategoryForInsert()
                 APIClient.insertMyCategory(category: categoryForInsert, completion: { (result) in
                     if result == apiResponse.ok {
                         self.itemDetailViewInst.itemInst.categoryID = categoryForInsert.id

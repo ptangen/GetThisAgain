@@ -89,7 +89,7 @@ class ItemDetailView: UIView {
         // nameLabel
         self.addSubview(self.nameLabel)
         self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.nameLabel.bottomAnchor.constraint(equalTo: self.itemImageView.centerYAnchor, constant: -2).isActive = true
+        self.nameLabel.centerYAnchor.constraint(equalTo: self.itemImageView.centerYAnchor, constant: -10).isActive = true
         self.nameLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.nameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.nameLabel.numberOfLines = 0
@@ -103,7 +103,7 @@ class ItemDetailView: UIView {
         // categoryLabel
         self.addSubview(self.categoryLabel)
         self.categoryLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.categoryLabel.topAnchor.constraint(equalTo: self.itemImageView.centerYAnchor, constant: 2).isActive = true
+        self.categoryLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 2).isActive = true
         self.categoryLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.categoryLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.categoryLabel.numberOfLines = 0

@@ -27,7 +27,8 @@ struct Constants{
 //        case faTimesCircle =    "\u{f057}"
 //        case faCircleO =        "\u{f10c}"
 //        case faInfoCircle =     "\u{f05a}"
-        case mode_edit =     "\u{E254}"
+        case mode_edit =    "\u{E254}"
+        case add =          "\u{E145}"
     }
     
     enum iconSize: CGFloat {

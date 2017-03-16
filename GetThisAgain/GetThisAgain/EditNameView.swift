@@ -8,8 +8,14 @@
 
 import UIKit
 
+protocol EditNameViewDelegate: class {
+    func showAddCategory()
+}
+
+
 class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
+    weak var delegate: EditNameViewDelegate?
     let store = DataStore.sharedInstance
     var itemImageView = UIImageView()
     var nameLabel = UILabel()
@@ -18,7 +24,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categoryTableView = UITableView()
     var categoryLabel = UILabel()
     var categoryTableViewTopBorder = UIView()
-    //var categorySelected = Int()
+    var addCategoryButton = UIButton()
     var itemInst: MyItem?
     
     //var itemExistsInDatastore = false
@@ -38,6 +44,11 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         // select the first category by default
         let indexPath = IndexPath(item: 0, section: 0)
         self.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+        
+        self.addCategoryButton.addTarget(self, action: #selector(self.onTapAddCategory), for: UIControlEvents.touchUpInside)
+        self.addCategoryButton.setTitle(Constants.iconLibrary.add.rawValue, for: .normal)
+        self.addCategoryButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
+        self.addCategoryButton.setTitleColor(UIColor(named: .blue), for: .normal)
     }
     
     
@@ -82,6 +93,12 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         }
         return 0
     }
+    
+    func onTapAddCategory() {
+        if let delegate = self.delegate {
+            delegate.showAddCategory()
+        }
+    }
 
     func layoutPage() {
         
@@ -99,7 +116,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.nameTextView.topAnchor.constraint(equalTo: self.topAnchor, constant: 74).isActive = true
         self.nameTextView.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 2).isActive = true
         self.nameTextView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8).isActive = true
-        self.nameTextView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        self.nameTextView.heightAnchor.constraint(equalToConstant: 110).isActive = true
         
         self.nameTextView.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
         self.nameTextView.layer.borderColor = UIColor(named: .blue).cgColor
@@ -108,7 +125,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         // nameLabel
         self.addSubview(self.nameLabel)
         self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.nameLabel.bottomAnchor.constraint(equalTo: self.nameTextView.topAnchor, constant: -6).isActive = true
+        self.nameLabel.bottomAnchor.constraint(equalTo: self.nameTextView.topAnchor, constant: -4).isActive = true
         self.nameLabel.leftAnchor.constraint(equalTo: self.nameTextView.leftAnchor, constant: 0).isActive = true
         
         // categoryTableView
@@ -124,6 +141,12 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         self.categoryLabel.bottomAnchor.constraint(equalTo: self.categoryTableView.topAnchor, constant: -6).isActive = true
         self.categoryLabel.leftAnchor.constraint(equalTo: self.categoryTableView.leftAnchor, constant: 8).isActive = true
+        
+        // add category button
+        self.addSubview(self.addCategoryButton)
+        self.addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addCategoryButton.bottomAnchor.constraint(equalTo: self.categoryTableView.topAnchor, constant: -4).isActive = true
+        self.addCategoryButton.rightAnchor.constraint(equalTo: self.categoryTableView.rightAnchor, constant: -8).isActive = true
         
         // categoryTableViewTopBorder
         self.addSubview(self.categoryTableViewTopBorder)

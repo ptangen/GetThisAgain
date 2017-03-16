@@ -72,14 +72,27 @@ class DataStore {
         return idOfNone
     }
     
-    func getNewCategoryForInsert() -> MyCategory {
+    func getCategoryIndexPath(id: Int) -> IndexPath {
+        var itemIndex = Int()
+        for (index,category) in myCategories.enumerated() {
+            if category.id == id {
+                itemIndex = index
+                break
+            }
+        }
+        let indexPath = IndexPath(item: itemIndex, section: 0)
+        return indexPath
+    }
+    
+    func setIDOnCategoryForInsert() -> MyCategory {
         let newCategoryArr = self.myCategories.filter { $0.id == -1 }
         if let newCategory = newCategoryArr.first {
             // find the largest id value in the current categories
-            let myCategoriesSorted = self.myCategories.sorted(by: { $0.id > $1.id })
-            if let categoryWithMaxValue = myCategoriesSorted.first {
+            self.myCategories.sort(by: { $0.id > $1.id })
+            if let categoryWithMaxValue = self.myCategories.first {
                 newCategory.id = categoryWithMaxValue.id + 1
             }
+            self.myCategories.sort(by: { $0.label < $1.label })
             return newCategory
         }
         let x = MyCategory(id: 0, label: "")
