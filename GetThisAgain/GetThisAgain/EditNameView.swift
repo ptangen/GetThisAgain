@@ -10,8 +10,8 @@ import UIKit
 
 protocol EditNameViewDelegate: class {
     func showAddCategory()
+    func deleteCategoryClicked(id: Int)
 }
-
 
 class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -25,9 +25,8 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     var categoryLabel = UILabel()
     var categoryTableViewTopBorder = UIView()
     var addCategoryButton = UIButton()
+    var deleteCategoryButton = UIButton()
     var itemInst: MyItem?
-    
-    //var itemExistsInDatastore = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,12 +44,20 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         let indexPath = IndexPath(item: 0, section: 0)
         self.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
         
+        // addCategoryButton
         self.addCategoryButton.addTarget(self, action: #selector(self.onTapAddCategory), for: UIControlEvents.touchUpInside)
         self.addCategoryButton.setTitle(Constants.iconLibrary.add.rawValue, for: .normal)
         self.addCategoryButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
         self.addCategoryButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        
+        // deleteCategoryButton
+        self.deleteCategoryButton.addTarget(self, action: #selector(self.onTapDeleteCategory), for: UIControlEvents.touchUpInside)
+        self.deleteCategoryButton.setTitle(Constants.iconLibrary.delete.rawValue, for: .normal)
+        self.deleteCategoryButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
+        self.deleteCategoryButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        self.deleteCategoryButton.setTitleColor(UIColor(named: .disabledText), for: .disabled)
+        self.deleteCategoryButton.isEnabled = false
     }
-    
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         // dismiss keyboard when user clicks return/done, the return button is changed to a done button during init
@@ -65,7 +72,6 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         super.init(coder: aDecoder)
     }
     
-
     // tableview
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -84,7 +90,10 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.itemInst?.categoryID = self.store.myCategories[indexPath.row].id
+        if let itemInst = self.itemInst {
+            itemInst.categoryID = self.store.myCategories[indexPath.row].id
+        }
+        self.enableDisbleDeleteButton() // the selection has changed so we may be able to delete an item now
     }
     
     func getSelectedCategoryID() -> Int {
@@ -97,6 +106,27 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     func onTapAddCategory() {
         if let delegate = self.delegate {
             delegate.showAddCategory()
+        }
+    }
+    
+    func onTapDeleteCategory() {
+        let selectedCategoryID = getSelectedCategoryID()
+        if let delegate = self.delegate {
+            delegate.deleteCategoryClicked(id: selectedCategoryID)
+        }
+    }
+    
+    func enableDisbleDeleteButton() {
+        // iterate through the categories and determine if any categories are not associated with an item
+        for category in self.store.myCategories {
+            let itemsUsingCategoryID = self.store.myItems.filter({ $0.categoryID == category.id })
+            if itemsUsingCategoryID.isEmpty && category.id != 0 {
+                // we have an unused category (ignore none (0)). enable the delete button
+                self.deleteCategoryButton.isEnabled = true
+                break
+            } else {
+                self.deleteCategoryButton.isEnabled = false
+            }
         }
     }
 
@@ -142,11 +172,17 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.categoryLabel.bottomAnchor.constraint(equalTo: self.categoryTableView.topAnchor, constant: -6).isActive = true
         self.categoryLabel.leftAnchor.constraint(equalTo: self.categoryTableView.leftAnchor, constant: 8).isActive = true
         
+        // delete category button
+        self.addSubview(self.deleteCategoryButton)
+        self.deleteCategoryButton.translatesAutoresizingMaskIntoConstraints = false
+        self.deleteCategoryButton.bottomAnchor.constraint(equalTo: self.categoryTableView.topAnchor, constant: -4).isActive = true
+        self.deleteCategoryButton.rightAnchor.constraint(equalTo: self.categoryTableView.rightAnchor, constant: -12).isActive = true
+        
         // add category button
         self.addSubview(self.addCategoryButton)
         self.addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
         self.addCategoryButton.bottomAnchor.constraint(equalTo: self.categoryTableView.topAnchor, constant: -4).isActive = true
-        self.addCategoryButton.rightAnchor.constraint(equalTo: self.categoryTableView.rightAnchor, constant: -8).isActive = true
+        self.addCategoryButton.rightAnchor.constraint(equalTo: self.deleteCategoryButton.leftAnchor, constant: -12).isActive = true
         
         // categoryTableViewTopBorder
         self.addSubview(self.categoryTableViewTopBorder)

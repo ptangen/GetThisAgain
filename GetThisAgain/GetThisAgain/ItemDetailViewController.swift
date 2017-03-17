@@ -121,9 +121,10 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                     itemInst.barcode = barcode
                     itemInst.imageURL = imageURL
                     self.store.myItems.append(itemInst)
+                    self.store.myItems.sort(by: { $0.name < $1.name })
                     self.doneButtonClicked()
                 } else {
-                    print("error")
+                    Utilities.showAlertMessage("The system was unable to save the new item. Please contact ptangen@ptangen.com about this issue.", viewControllerInst: self)
                 }
             }
         }
@@ -136,7 +137,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                     self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
                 } else {
-                    print("error")
+                    Utilities.showAlertMessage("The system was unable to delete the item. Please contact ptangen@ptangen.com about this issue.", viewControllerInst: self)
                 }
             }
         }
@@ -177,7 +178,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                         self.itemDetailViewInst.itemInst.categoryID = categoryForInsert.id
                         self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: categoryForInsert.id)
                     } else {
-                        print("error")  // TODO: show users the error
+                        Utilities.showAlertMessage("The system was unable to save the new category. Please contact ptangen@ptangen.com about this issue.", viewControllerInst: self)
                     }
 
                 })
@@ -190,9 +191,5 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         alertController.addAction(UIAlertAction(title: "Add Category", style: UIAlertActionStyle.default,handler: handleNewCategoryAlert))
         alertController.addAction(UIAlertAction(title: "Select Existing Category", style: UIAlertActionStyle.default, handler: handleNewCategoryAlert))
         viewControllerInst.present(alertController, animated: true, completion: nil)
-    }
-    
-    func addNewCategory(action: UIAlertAction) {
-        
     }
 }

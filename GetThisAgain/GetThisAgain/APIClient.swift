@@ -12,6 +12,7 @@ import UIKit
 class APIClient {
     
     class func requestAuth(userName: String, password: String, completion: @escaping (apiResponse) -> Void) {
+        
         guard let userNameSubmitted = userName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed) else {
             completion(.userNameInvalid)
             return
@@ -65,7 +66,6 @@ class APIClient {
     class func insertMyItem(itemInst: MyItem, image: UIImage?, completion: @escaping (apiResponse, String, String) -> Void) {
         
         // prepare image for upload
-        
         let urlString = "\(Secrets.gtaURL)/insertMyItem.php"
         let url = URL(string: urlString)
         if let url = url {
@@ -242,6 +242,7 @@ class APIClient {
     }
     
     class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
+        
         let store = DataStore.sharedInstance
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
@@ -303,6 +304,7 @@ class APIClient {
     }
     
     class func selectMyItems(userName: String, completion: @escaping (Bool) -> Void) {
+        
         let store = DataStore.sharedInstance
         let urlString = "\(Secrets.gtaURL)/selectMyItems.php"
         let url = URL(string: urlString)
@@ -419,6 +421,49 @@ class APIClient {
                                     if results == 1 {
                                         completion(.ok)
                                     } else if results == -1 {
+                                        completion(.failed)
+                                    } else {
+                                        completion(.noReply)
+                                    }
+                                }
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
+        }
+    }
+    
+    class func deleteMyCategory(id: Int, completion: @escaping (apiResponse) -> Void) {
+        
+        let urlString = "\(Secrets.gtaURL)/deleteMyCategory.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                let parameterString = "userName=\(userName)&id=\(id)&key=\(Secrets.gtaKey)"
+                request.httpBody = parameterString.data(using: .utf8)
+            }
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                                
+                                if let results = json["results"] {
+                                    if results == "1" {
+                                        completion(.ok)
+                                    } else if results == "-1" {
                                         completion(.failed)
                                     } else {
                                         completion(.noReply)

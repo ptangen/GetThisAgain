@@ -164,7 +164,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
     }
 
     func addSnapshotViewCameraImage(){
-        let backgroundImage: UIImageView = UIImageView(frame: self.snapshotView.bounds)  //centerView.bounds)
+        let backgroundImage: UIImageView = UIImageView(frame: self.snapshotView.bounds)
         backgroundImage.clipsToBounds = true
         backgroundImage.image = #imageLiteral(resourceName: "camera.png")
         backgroundImage.contentMode = .scaleAspectFill

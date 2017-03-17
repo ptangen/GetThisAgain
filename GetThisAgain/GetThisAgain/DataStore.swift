@@ -52,7 +52,6 @@ class DataStore {
         return -1
     }
 
-
     func removeCategory(id: Int) {
         for (index, category) in myCategories.enumerated() {
             if category.id == id {

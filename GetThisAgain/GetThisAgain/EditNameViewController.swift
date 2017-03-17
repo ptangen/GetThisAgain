@@ -42,6 +42,10 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             // item does not exist yet, add back button to nav bar
             let captureItemButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(captureItemButtonClicked))
             self.navigationItem.leftBarButtonItems = [captureItemButton]
+            // set the category to none
+            let indexPath = self.getCategoryIndex(categoryID: 0)
+            self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+            self.categoryInitial = 0
         }
         
         // next button
@@ -94,11 +98,13 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
                 self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
             }
         } else {
+            print("no itemInst yet, cagtegoryID = \(self.editNameViewInst.getSelectedCategoryID())")
             // we dont have an itemInst, so create one
             let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", shoppingList: false, getAgain: .unsure)
             itemDetailViewControllerInst.itemInst = itemInst
             itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
             self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
+            print("pushViewController(itemDetailViewControllerInst")
         }
     }
     
@@ -111,6 +117,8 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         // nav bar title
         self.editNameViewInst.itemInst == nil ? (self.title = "Add Name & Category") : (self.title = "Edit Name & Category")
         self.editNameViewInst.itemImageView.contentMode = .scaleAspectFit
+        
+        self.editNameViewInst.enableDisbleDeleteButton()
     }
 
     override func didReceiveMemoryWarning() {
@@ -126,50 +134,78 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         }
         alertController.addAction(UIAlertAction(title: "Add", style: UIAlertActionStyle.default){ action -> Void in
             if let newCategoryLabel = ((alertController.textFields?.first)! as UITextField).text {
-                let tempCategory = MyCategory(id: -1, label: newCategoryLabel)
-                self.store.myCategories.append(tempCategory)
-                let newCategory = self.store.setIDOnCategoryForInsert()
+                if newCategoryLabel.isEmpty {
+                    Utilities.showAlertMessage("A new category was not added because a label was not provided.", viewControllerInst: self)
+                } else {
+                    let tempCategory = MyCategory(id: -1, label: newCategoryLabel)
+                    self.store.myCategories.append(tempCategory)
+                    let newCategory = self.store.setIDOnCategoryForInsert()
                 
-                APIClient.insertMyCategory(category: newCategory, completion: { (result) in
-                    if result == apiResponse.ok {
-                        self.editNameViewInst.categoryTableView.reloadData()
-                        // select the new category in the tableview
-                        let newID = self.store.getCategoryIDFromLabel(label: newCategoryLabel)
-                        let indexPath = self.store.getCategoryIndexPath(id: newID)
-                        self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
-                        // set the new category on the item
-                        self.editNameViewInst.itemInst?.categoryID = newID
-                    } else {
-                        self.store.removeCategory(id: -1)
-                        print("error: unable to add category")  // TODO: show users the error
-                    }
-                })
-            } else {
-                print("no name provided")
+                    APIClient.insertMyCategory(category: newCategory, completion: { (result) in
+                        if result == apiResponse.ok {
+                            self.editNameViewInst.categoryTableView.reloadData()
+                            // select the new category in the tableview
+                            let newID = self.store.getCategoryIDFromLabel(label: newCategoryLabel)
+                            let indexPath = self.store.getCategoryIndexPath(id: newID)
+                            self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+                            // set the new category on the item
+                            self.editNameViewInst.itemInst?.categoryID = newID
+                            self.editNameViewInst.enableDisbleDeleteButton()
+                        } else {
+                            self.store.removeCategory(id: -1)
+                            Utilities.showAlertMessage("The system was unable to add the new category.", viewControllerInst: self)
+                        }
+                    })
+                }
             }
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
         self.present(alertController, animated: true, completion: nil)
     }
     
-//    func handleAddCategory(action: UIAlertAction) {
-//        print(sender.textFields?.first?.text!)
-//        if let title = sender.actions.first?.title {
-//            if title == "Add" {
-//                print("add")
-////                let tempCategory = MyCategory(id: -1, label: "New Category")
-////                let categoryForInsert = self.store.getNewCategoryForInsert()
-////                APIClient.insertMyCategory(category: categoryForInsert, completion: { (result) in
-////                    if result == apiResponse.ok {
-////                        self.itemDetailViewInst.itemInst.categoryID = categoryForInsert.id
-////                        self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: categoryForInsert.id)
-////                    } else {
-////                        print("error")  // TODO: show users the error
-////                    }
-////                    
-////                })
-//            }
-//        }
-//    }
+    func deleteSelectedCategory(id: Int) {
+        APIClient.deleteMyCategory(id: id) { (result) in
+            if result == apiResponse.ok {
+                
+                // get the selected item so we can reselect it after the table reload below
+                let selectedID = self.editNameViewInst.getSelectedCategoryID()
+                
+                // remove the category from the array
+                for (index, category) in self.store.myCategories.enumerated() {
+                    if category.id == id {
+                        self.store.myCategories.remove(at: index)
+                    }
+                }
+                
+                // reload the table and reselect the item that was selected
+                self.editNameViewInst.categoryTableView.reloadData()
+                let indexPath = self.store.getCategoryIndexPath(id: selectedID)
+                self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+                self.editNameViewInst.enableDisbleDeleteButton()
+            }
+        }
+    }
+    
+    func deleteCategoryClicked(id: Int) {
+        
+        // create a menu of categories that can be deleted
+        let deleteMenu = UIAlertController(title: nil, message: "Select an Unused Category to Delete", preferredStyle: .actionSheet)
+        
+        // iterate through the categories and create menu items for the categories that are not used
+        for category in self.store.myCategories {
+            let itemsUsingCategoryID = self.store.myItems.filter({ $0.categoryID == category.id })
 
+            // if there are some unused categories and the unused category is not "none" (0) then add the cagtegory to the menu
+            if itemsUsingCategoryID.isEmpty && category.id != 0 {
+                
+                    let menuItemToDeleteCategory = UIAlertAction(title: category.label, style: .default, handler: { (alert: UIAlertAction!) -> Void in
+                        self.deleteSelectedCategory(id: category.id)
+                    })
+                    deleteMenu.addAction(menuItemToDeleteCategory)
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (alert: UIAlertAction!) -> Void in })
+        deleteMenu.addAction(cancelAction)
+        self.present(deleteMenu, animated: true, completion: nil)
+    }
 }
