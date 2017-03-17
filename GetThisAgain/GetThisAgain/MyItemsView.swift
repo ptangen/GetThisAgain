@@ -37,7 +37,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.searchController.hidesNavigationBarDuringPresentation = false 
         self.searchController.dimsBackgroundDuringPresentation = false
         self.myItemsTableView.tableHeaderView = self.searchController.searchBar
-        
+
         self.pageLayout()
     }
     
@@ -59,6 +59,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = MyItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
         var myItemCurrent: MyItem!
         if searchController.isActive && searchController.searchBar.text != "" {
@@ -125,7 +126,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
                 }
             } else {
                 OperationQueue.main.addOperation {
-                    //self.activityIndicator.isHidden = true
+                    //self.activityIndicator.isHidden = true  TODO: Add spinner
                 }
                 self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
             }

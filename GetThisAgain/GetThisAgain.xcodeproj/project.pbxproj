@@ -27,6 +27,7 @@
 		C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* CaptureItemViewController.swift */; };
 		C06712221E574C9E0047473B /* CaptureItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* CaptureItemView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
+		C06FFF321E7C640C00FE272E /* MyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06FFF311E7C640C00FE272E /* MyList.swift */; };
 		C09C04D21E6B62E700DCFF64 /* barcode_sample.png in Resources */ = {isa = PBXBuildFile; fileRef = C09C04D11E6B62E700DCFF64 /* barcode_sample.png */; };
 		C09C04D41E6B63AC00DCFF64 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = C09C04D31E6B63AC00DCFF64 /* camera.png */; };
 		C0A232CE1E67880F00FB1617 /* EditNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */; };
@@ -85,6 +86,7 @@
 		C067121F1E574C700047473B /* CaptureItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemViewController.swift; sourceTree = "<group>"; };
 		C06712211E574C9E0047473B /* CaptureItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
+		C06FFF311E7C640C00FE272E /* MyList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyList.swift; sourceTree = "<group>"; };
 		C09C04D11E6B62E700DCFF64 /* barcode_sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = barcode_sample.png; sourceTree = "<group>"; };
 		C09C04D31E6B63AC00DCFF64 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
 		C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditNameViewController.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			children = (
 				C06712191E5749DF0047473B /* MyItem.swift */,
 				C0BDF9E41E78AF9A003796CF /* MyCategory.swift */,
+				C06FFF311E7C640C00FE272E /* MyList.swift */,
 				C027E0711E578D3800CA6577 /* APIClient.swift */,
 				C027E0731E578D8A00CA6577 /* Secrets.swift */,
 				C0CE94F51E5A1EA400099F61 /* DataStore.swift */,
@@ -429,6 +432,7 @@
 				C0A232D21E68619E00FB1617 /* SignInViewController.swift in Sources */,
 				C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */,
 				C0A232CE1E67880F00FB1617 /* EditNameViewController.swift in Sources */,
+				C06FFF321E7C640C00FE272E /* MyList.swift in Sources */,
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
 				C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */,
 				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,

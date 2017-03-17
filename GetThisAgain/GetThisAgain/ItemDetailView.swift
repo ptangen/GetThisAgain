@@ -14,6 +14,7 @@ protocol ItemDetailViewDelegate: class {
 
 class ItemDetailView: UIView {
 
+    let store = DataStore.sharedInstance
     weak var delegate: ItemDetailViewDelegate?
     let nameLabel = UILabel()
     let categoryLabel = UILabel()
@@ -24,6 +25,7 @@ class ItemDetailView: UIView {
     var itemImageView = UIImageView()
     var itemInst: MyItem!
     var editTextButton = UIButton()
+    var updateRecordRequired = Bool()
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -66,6 +68,7 @@ class ItemDetailView: UIView {
         default:
             self.itemInst.setGetAgain(status: .yes)
         }
+        self.updateRecordRequired = true
     }
     
     func onTapItemNameOrIcon() {
@@ -73,7 +76,10 @@ class ItemDetailView: UIView {
     }
     
     func switchStateDidChange(_ sender:UISwitch!) {
-        self.itemInst.shoppingList = sender.isOn
+        if let myList = self.store.myLists.first {
+            sender.isOn ? (self.itemInst.listID = myList.id) : (self.itemInst.listID = 0)
+        }
+        self.updateRecordRequired = true
     }
     
     func layoutForm(){

@@ -87,7 +87,7 @@ class APIClient {
                         "userName"      : userName,
                         "name"          : nameUnwrapped,
                         "categoryID"    : String(itemInst.categoryID),
-                        "shoppingList"  : String(itemInst.shoppingList),
+                        "shoppingList"  : String(itemInst.listID),
                         "getAgain"      : String(describing: itemInst.getAgain),
                         "key"           : Secrets.gtaKey
                     ]
@@ -117,7 +117,7 @@ class APIClient {
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
                 if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&shoppingList=\(itemInst.shoppingList)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&listID=\(itemInst.listID)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
                     }
                     request.httpBody = parameterString.data(using: .utf8)
             }
@@ -198,8 +198,7 @@ class APIClient {
         }
     }
     
-    class func updateMyItem(barcode: String, name: String, categoryID: Int, completion: @escaping (apiResponse) -> Void) {
-        
+    class func updateMyItem(barcode: String, name: String, categoryID: Int, listID: Int, completion: @escaping (apiResponse) -> Void) {
         if let nameEncoded = name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
         
             let urlString = "\(Secrets.gtaURL)/updateMyItem.php"
@@ -211,7 +210,7 @@ class APIClient {
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 
-                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&categoryID=\(categoryID)&key=\(Secrets.gtaKey)"
+                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&categoryID=\(categoryID)&listID=\(listID)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
                 
                 URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
@@ -247,7 +246,7 @@ class APIClient {
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?
-        let itemInstNotFound = MyItem(barcode: "notFound", name: "", categoryID: 1, imageURL: "", shoppingList: false, getAgain: .unsure)
+        let itemInstNotFound = MyItem(barcode: "notFound", name: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure)
 
         if let unwrappedUrl = url{
             let session = URLSession.shared
@@ -266,7 +265,7 @@ class APIClient {
                                         
                                         // create the item object
                                         if let name = productAttributesDict["product"] {
-                                            itemInst = MyItem(barcode: barcode, name: name, categoryID: 0, imageURL: "", shoppingList: false, getAgain: .unsure)
+                                            itemInst = MyItem(barcode: barcode, name: name, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure)
                                             // set the imageURL and category values if we have them
                                             if let itemInst = itemInst {
                                                 if let imageURL = productDict["image"] as? String {
@@ -325,6 +324,26 @@ class APIClient {
                         let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
                         if let responseJSON = responseJSON {
                             
+                            if let myListsDictAny = responseJSON["myLists"] {
+                                let myListsDict = myListsDictAny as! [[String:String]]
+                                for myListDict in myListsDict {
+                                    
+                                    //unwrap the incoming data and create item objects in datastore
+                                    if let listIDString = myListDict["id"], let listLabelEncoded = myListDict["label"], let listOwner = myListDict["owner"] {
+                                        
+                                        if let listID = Int(listIDString) {
+                                            
+                                            // clean html from the label
+                                            let listLabel = self.decodeCharactersIn(string: listLabelEncoded)
+                                            
+                                            // create the object and add to datastore
+                                            let myListInst = MyList(id: listID, owner: listOwner, label: listLabel)
+                                            store.myLists.append(myListInst)
+                                        }
+                                    }
+                                }
+                            } // end myCategoriesDictAny
+                            
                             if let myCategoriesDictAny = responseJSON["myCategories"] {
                                 let myCategoriesDict = myCategoriesDictAny as! [[String:String]]
                                 
@@ -356,31 +375,29 @@ class APIClient {
                                         let nameEncoded = myItemDict["name"],
                                         let categoryIDString = myItemDict["categoryID"],
                                         let imageURL = myItemDict["imageURL"],
-                                        let shoppingListString = myItemDict["shoppingList"],
+                                        let listIDString = myItemDict["listID"],
                                         let getAgainString = myItemDict["getAgain"] {
                                     
-                                        // clean html from the names
+                                        // clean html from the name
                                         let name = self.decodeCharactersIn(string: nameEncoded)
-                                        let categoryID = Int(categoryIDString)
                                         
-                                        // shoppingList
-                                        var shoppingList: Bool!
-                                        shoppingListString == "true" ? (shoppingList = true) : (shoppingList = false)
+                                        if let categoryID = Int(categoryIDString), let listID = Int(listIDString) {
                                         
-                                        // getAgain
-                                        var getAgain: GetAgain!
+                                            // getAgain
+                                            var getAgain: GetAgain!
                                         
-                                        switch getAgainString {
-                                        case ".yes":
-                                            getAgain = GetAgain.yes
-                                        case ".no":
-                                            getAgain = GetAgain.no
-                                        default:
-                                            getAgain = GetAgain.unsure
-                                        }
+                                            switch getAgainString {
+                                            case ".yes":
+                                                getAgain = GetAgain.yes
+                                            case ".no":
+                                                getAgain = GetAgain.no
+                                            default:
+                                                getAgain = GetAgain.unsure
+                                            }
                                         
-                                        let myItemInst = MyItem(barcode: barcode, name: name, categoryID: categoryID!, imageURL: imageURL, shoppingList: shoppingList, getAgain: getAgain)
+                                            let myItemInst = MyItem(barcode: barcode, name: name, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain)
                                         store.myItems.append(myItemInst)
+                                        }
                                     }
                                 }
                             } // end myItemsDictAny

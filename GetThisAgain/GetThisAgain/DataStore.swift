@@ -13,8 +13,8 @@ class DataStore {
     fileprivate init() {}
     
     var myItems = [MyItem]()
-    
     var myCategories = [MyCategory]()
+    var myLists = [MyList]()
     
     func getItemFromBarcode(barcode: String) -> MyItem? {
         for item in myItems {

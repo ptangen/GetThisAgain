@@ -63,6 +63,8 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
         
         let signOutAction = UIAlertAction(title: "Sign Out", style: .default, handler: { (alert: UIAlertAction!) -> Void in
             self.store.myItems.removeAll()
+            self.store.myCategories.removeAll()
+            self.store.myLists.removeAll()
             let signInControllerInst = SignInViewController()
             self.navigationController?.pushViewController(signInControllerInst, animated: true) // show destination with nav bar
         })

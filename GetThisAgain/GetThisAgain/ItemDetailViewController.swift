@@ -19,6 +19,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     var cancelButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +54,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         self.itemDetailViewInst.itemInst = itemInst
         self.title = "Item Detail" // nav bar title
+        self.itemDetailViewInst.updateRecordRequired = false
         
         self.itemDetailViewInst.nameLabel.text = itemInst.name
         if itemInst.categoryID == -1 { // prompt user about new cagtegory
@@ -61,8 +63,8 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         } else { // set the text in the label
             self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: itemInst.categoryID)
         }
-         
-        self.itemDetailViewInst.shoppingListSwitch.isOn = itemInst.shoppingList
+        
+        itemInst.listID > 0 ? (self.itemDetailViewInst.shoppingListSwitch.isOn = true) : (self.itemDetailViewInst.shoppingListSwitch.isOn = false)
         
         if self.store.getItemExistsInDatastore(item: self.itemInst) {
             // done button
@@ -122,7 +124,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                     itemInst.imageURL = imageURL
                     self.store.myItems.append(itemInst)
                     self.store.myItems.sort(by: { $0.name < $1.name })
-                    self.doneButtonClicked()
+                    
+                    let itemsTabViewControllerInst = ItemsTabViewController()
+                    self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
                 } else {
                     Utilities.showAlertMessage("The system was unable to save the new item. Please contact ptangen@ptangen.com about this issue.", viewControllerInst: self)
                 }
@@ -144,8 +148,19 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     }
 
     func doneButtonClicked() {
-        let itemsTabViewControllerInst = ItemsTabViewController()
-        self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+        if self.itemDetailViewInst.updateRecordRequired {
+            APIClient.updateMyItem(barcode: itemInst.barcode, name: itemInst.name, categoryID: itemInst.categoryID, listID: itemInst.listID, completion: { (results) in
+                if results == apiResponse.ok {
+                    let itemsTabViewControllerInst = ItemsTabViewController()
+                    self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+                } else {
+                    print("error") // TODO: Show error message to user as changes were not applied.
+                }
+            })
+        } else {
+            let itemsTabViewControllerInst = ItemsTabViewController()
+            self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+        }
     }
 
     override func didReceiveMemoryWarning() {

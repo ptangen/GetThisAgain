@@ -14,15 +14,15 @@ class MyItem {
     var name: String
     var categoryID: Int
     var imageURL: String
-    var shoppingList: Bool
+    var listID: Int
     var getAgain: GetAgain
     
-    init (barcode: String, name: String, categoryID: Int, imageURL: String, shoppingList: Bool, getAgain: GetAgain) {
+    init (barcode: String, name: String, categoryID: Int, imageURL: String, listID: Int, getAgain: GetAgain) {
         self.barcode = barcode
         self.name = name
         self.categoryID = categoryID
         self.imageURL = imageURL
-        self.shoppingList = shoppingList
+        self.listID = listID
         self.getAgain = getAgain
     }
     

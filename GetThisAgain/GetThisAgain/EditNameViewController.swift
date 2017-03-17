@@ -78,7 +78,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             // update the record in the DB and itemInst object if any properties values changed
             if (self.nameInitial != self.editNameViewInst.nameTextView.text || self.categoryInitial != itemInst.categoryID) && self.store.getItemExistsInDatastore(item: itemInst) {
                 
-                APIClient.updateMyItem(barcode: itemInst.barcode, name: self.editNameViewInst.nameTextView.text, categoryID: itemInst.categoryID , completion: { (results) in
+                APIClient.updateMyItem(barcode: itemInst.barcode, name: self.editNameViewInst.nameTextView.text, categoryID: itemInst.categoryID, listID: itemInst.listID, completion: { (results) in
                     if results == apiResponse.ok {
                         // database updated successfully, so update the object
                         itemInst.name = self.editNameViewInst.nameTextView.text
@@ -100,7 +100,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         } else {
             print("no itemInst yet, cagtegoryID = \(self.editNameViewInst.getSelectedCategoryID())")
             // we dont have an itemInst, so create one
-            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", shoppingList: false, getAgain: .unsure)
+            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", listID: 0, getAgain: .unsure)
             itemDetailViewControllerInst.itemInst = itemInst
             itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
             self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
