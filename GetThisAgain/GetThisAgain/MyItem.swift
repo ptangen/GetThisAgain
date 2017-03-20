@@ -10,16 +10,18 @@ import Foundation
 
 class MyItem {
     
+    var createdBy: String
     var barcode: String
-    var name: String
+    var itemName: String
     var categoryID: Int
     var imageURL: String
     var listID: Int
     var getAgain: GetAgain
     
-    init (barcode: String, name: String, categoryID: Int, imageURL: String, listID: Int, getAgain: GetAgain) {
+    init (createdBy: String, barcode: String, itemName: String, categoryID: Int, imageURL: String, listID: Int, getAgain: GetAgain) {
+        self.createdBy = createdBy
         self.barcode = barcode
-        self.name = name
+        self.itemName = itemName
         self.categoryID = categoryID
         self.imageURL = imageURL
         self.listID = listID

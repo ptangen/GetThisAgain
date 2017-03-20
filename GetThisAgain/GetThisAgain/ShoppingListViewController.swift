@@ -28,12 +28,18 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "Shopping List"
-        if let myList = self.store.myLists.first {
-            self.shoppingListViewInst.shoppingListItems = self.store.myItems.filter({ $0.listID == myList.id })
-            // we only have one list now and there is no sharing so if the ID is greater than 1 it is in our list.
-            // we need to show items from our shopping list that belong to other people...
-            // we need to get the IDs of our lists and the shared lists
+        var shoppingListUnsorted = [MyItem]()
+        
+        // iterate through myItems and place the items that are on a list into the shoppingListItems array
+        for list in self.store.myLists {
+            // myItems
+            let myItemsFromAList = self.store.myItems.filter({ $0.listID == list.id })
+            shoppingListUnsorted.append(contentsOf: myItemsFromAList)
+            // other items
+            let otherItemsFromAList = self.store.otherItems.filter({ $0.listID == list.id })
+            shoppingListUnsorted.append(contentsOf: otherItemsFromAList)
         }
+        self.shoppingListViewInst.shoppingListItems = shoppingListUnsorted.sorted(by: { $0.itemName < $1.itemName })
     }
     
     func openItemDetail(item: MyItem) {

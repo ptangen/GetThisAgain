@@ -15,6 +15,8 @@ class DataStore {
     var myItems = [MyItem]()
     var myCategories = [MyCategory]()
     var myLists = [MyList]()
+    var otherItems = [MyItem]()
+    var otherCategories = [MyCategory]()
     
     func getItemFromBarcode(barcode: String) -> MyItem? {
         for item in myItems {
@@ -35,12 +37,24 @@ class DataStore {
     }
     
     func getCategoryLabelFromID(id: Int) -> String {
+        
+        var categoryLabel: String = "labelNotFound"
+        
+        // look in the myCategories array for the label
         for category in myCategories {
             if category.id == id {
-                return category.label
+                categoryLabel = category.label
             }
         }
-        return "labelNotFound"
+        // look in the otherCategories array for the label
+        if categoryLabel == "labelNotFound" {
+            for otherCategory in otherCategories {
+                if otherCategory.id == id {
+                    categoryLabel = otherCategory.label
+                }
+            }
+        }
+        return categoryLabel
     }
     
     func getCategoryIDFromLabel(label: String) -> Int {
@@ -94,7 +108,7 @@ class DataStore {
             self.myCategories.sort(by: { $0.label < $1.label })
             return newCategory
         }
-        let x = MyCategory(id: 0, label: "")
+        let x = MyCategory(createdBy: "", id: 0, label: "")
         return x
     }
 }

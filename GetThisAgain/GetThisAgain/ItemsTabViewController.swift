@@ -65,6 +65,8 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
             self.store.myItems.removeAll()
             self.store.myCategories.removeAll()
             self.store.myLists.removeAll()
+            self.store.otherCategories.removeAll()
+            self.store.otherItems.removeAll()
             let signInControllerInst = SignInViewController()
             self.navigationController?.pushViewController(signInControllerInst, animated: true) // show destination with nav bar
         })

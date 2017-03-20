@@ -68,7 +68,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
             myItemCurrent = self.store.myItems[indexPath.row]
         }
         
-        cell.titleLabel.text = myItemCurrent.name  + " (" + myItemCurrent.getAgain.label() + ")"
+        cell.titleLabel.text = myItemCurrent.itemName  + " (" + myItemCurrent.getAgain.label() + ")"
         cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: myItemCurrent.categoryID)
         
         // var imageURLString = String()
@@ -96,7 +96,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         self.filteredItems = self.store.myItems.filter { myItem in
             var nameAndCategory = String()
-            nameAndCategory = myItem.name + self.store.getCategoryLabelFromID(id: myItem.categoryID)
+            nameAndCategory = myItem.itemName + self.store.getCategoryLabelFromID(id: myItem.categoryID)
             return nameAndCategory.lowercased().contains(searchText.lowercased())
         }
         self.myItemsTableView.reloadData()
@@ -118,17 +118,18 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func getMyItemsFromDB() {
-        let userName = UserDefaults.standard.value(forKey: "userName") as! String
-        APIClient.selectMyItems(userName: userName) { isSuccessful in
-            if isSuccessful {
-                OperationQueue.main.addOperation {
-                    self.myItemsTableView.reloadData()
+        if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+            APIClient.selectMyItems(createdBy: userName) { isSuccessful in
+                if isSuccessful {
+                    OperationQueue.main.addOperation {
+                        self.myItemsTableView.reloadData()
+                    }
+                } else {
+                    OperationQueue.main.addOperation {
+                        //self.activityIndicator.isHidden = true  TODO: Add spinner
+                    }
+                    self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
                 }
-            } else {
-                OperationQueue.main.addOperation {
-                    //self.activityIndicator.isHidden = true  TODO: Add spinner
-                }
-                self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
             }
         }
     }

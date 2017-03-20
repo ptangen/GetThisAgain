@@ -23,7 +23,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         
         if let itemInst = self.editNameViewInst.itemInst {
             // we are editing an existing item so populate the controls with values from the object
-            self.editNameViewInst.nameTextView.text = itemInst.name
+            self.editNameViewInst.nameTextView.text = itemInst.itemName
             self.nameInitial = self.editNameViewInst.nameTextView.text
             
             if !itemInst.imageURL.isEmpty {  // imageURL exists
@@ -38,7 +38,6 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             self.categoryInitial = self.editNameViewInst.itemInst!.categoryID
 
         } else {
-            print("no itemInst passed in")
             // item does not exist yet, add back button to nav bar
             let captureItemButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(captureItemButtonClicked))
             self.navigationItem.leftBarButtonItems = [captureItemButton]
@@ -78,10 +77,10 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             // update the record in the DB and itemInst object if any properties values changed
             if (self.nameInitial != self.editNameViewInst.nameTextView.text || self.categoryInitial != itemInst.categoryID) && self.store.getItemExistsInDatastore(item: itemInst) {
                 
-                APIClient.updateMyItem(barcode: itemInst.barcode, name: self.editNameViewInst.nameTextView.text, categoryID: itemInst.categoryID, listID: itemInst.listID, completion: { (results) in
+                APIClient.updateMyItem(createdBy: itemInst.createdBy, barcode: itemInst.barcode, itemName: self.editNameViewInst.nameTextView.text, categoryID: itemInst.categoryID, getAgain: itemInst.getAgain, listID: itemInst.listID, completion: { (results) in
                     if results == apiResponse.ok {
                         // database updated successfully, so update the object
-                        itemInst.name = self.editNameViewInst.nameTextView.text
+                        itemInst.itemName = self.editNameViewInst.nameTextView.text
                         itemDetailViewControllerInst.itemInst = itemInst
                         itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
                         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
@@ -91,20 +90,20 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
                 })
             } else {
                 // if the name was changed, but the item is not in the datastore yet update the property
-                self.nameInitial != self.editNameViewInst.nameTextView.text ? itemInst.name = self.editNameViewInst.nameTextView.text : ()
+                self.nameInitial != self.editNameViewInst.nameTextView.text ? itemInst.itemName = self.editNameViewInst.nameTextView.text : ()
                 // nothing was changed, so pass the itemInst and open the item detail
                 itemDetailViewControllerInst.itemInst = itemInst
                 itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
                 self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
             }
         } else {
-            print("no itemInst yet, cagtegoryID = \(self.editNameViewInst.getSelectedCategoryID())")
             // we dont have an itemInst, so create one
-            let itemInst = MyItem(barcode: "0", name: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", listID: 0, getAgain: .unsure)
-            itemDetailViewControllerInst.itemInst = itemInst
-            itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
-            self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
-            print("pushViewController(itemDetailViewControllerInst")
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                let itemInst = MyItem(createdBy: userName, barcode: "0", itemName: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", listID: 0, getAgain: .unsure)
+                itemDetailViewControllerInst.itemInst = itemInst
+                itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
+                self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
+            }
         }
     }
     
@@ -137,25 +136,27 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
                 if newCategoryLabel.isEmpty {
                     Utilities.showAlertMessage("A new category was not added because a label was not provided.", viewControllerInst: self)
                 } else {
-                    let tempCategory = MyCategory(id: -1, label: newCategoryLabel)
-                    self.store.myCategories.append(tempCategory)
-                    let newCategory = self.store.setIDOnCategoryForInsert()
-                
-                    APIClient.insertMyCategory(category: newCategory, completion: { (result) in
-                        if result == apiResponse.ok {
-                            self.editNameViewInst.categoryTableView.reloadData()
-                            // select the new category in the tableview
-                            let newID = self.store.getCategoryIDFromLabel(label: newCategoryLabel)
-                            let indexPath = self.store.getCategoryIndexPath(id: newID)
-                            self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
-                            // set the new category on the item
-                            self.editNameViewInst.itemInst?.categoryID = newID
-                            self.editNameViewInst.enableDisbleDeleteButton()
-                        } else {
-                            self.store.removeCategory(id: -1)
-                            Utilities.showAlertMessage("The system was unable to add the new category.", viewControllerInst: self)
-                        }
-                    })
+                    if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                        let tempCategory = MyCategory(createdBy: userName, id: -1, label: newCategoryLabel)
+                        self.store.myCategories.append(tempCategory)
+                        let newCategory = self.store.setIDOnCategoryForInsert()
+                        
+                        APIClient.insertMyCategory(category: newCategory, completion: { (result) in
+                            if result == apiResponse.ok {
+                                self.editNameViewInst.categoryTableView.reloadData()
+                                // select the new category in the tableview
+                                let newID = self.store.getCategoryIDFromLabel(label: newCategoryLabel)
+                                let indexPath = self.store.getCategoryIndexPath(id: newID)
+                                self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
+                                // set the new category on the item
+                                self.editNameViewInst.itemInst?.categoryID = newID
+                                self.editNameViewInst.enableDisbleDeleteButton()
+                            } else {
+                                self.store.removeCategory(id: -1)
+                                Utilities.showAlertMessage("The system was unable to add the new category.", viewControllerInst: self)
+                            }
+                        })
+                    }
                 }
             }
         })

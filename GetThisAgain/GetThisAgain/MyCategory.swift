@@ -10,10 +10,12 @@ import Foundation
 
 class MyCategory {
     
+    var createdBy: String
     var id: Int
     var label: String
     
-    init (id: Int, label: String) {
+    init (createdBy: String, id: Int, label: String) {
+        self.createdBy = createdBy
         self.id = id
         self.label = label
     }

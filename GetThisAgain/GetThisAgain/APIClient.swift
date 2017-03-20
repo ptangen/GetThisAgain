@@ -81,11 +81,11 @@ class APIClient {
                 
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 
-                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
                 
                     let param = [
-                        "userName"      : userName,
-                        "name"          : nameUnwrapped,
+                        "createdBy"      : createdBy,
+                        "itemName"      : itemNameUnwrapped,
                         "categoryID"    : String(itemInst.categoryID),
                         "shoppingList"  : String(itemInst.listID),
                         "getAgain"      : String(describing: itemInst.getAgain),
@@ -116,8 +116,8 @@ class APIClient {
             } else {   // create request without image
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
-                if let nameUnwrapped = itemInst.name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    parameterString = "userName=\(userName)&barcode=\(itemInst.barcode)&name=\(nameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&listID=\(itemInst.listID)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+                if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
+                    parameterString = "createdBy=\(createdBy)&barcode=\(itemInst.barcode)&itemName=\(itemNameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&listID=\(itemInst.listID)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
                     }
                     request.httpBody = parameterString.data(using: .utf8)
             }
@@ -156,7 +156,7 @@ class APIClient {
         }
     }
     
-    class func deleteMyItem(userName: String, barcode: String, imageURL: String, completion: @escaping (apiResponse) -> Void) {
+    class func deleteMyItem(createdBy: String, barcode: String, imageURL: String, completion: @escaping (apiResponse) -> Void) {
         
         let urlString = "\(Secrets.gtaURL)/deleteMyItem.php"
         let url = URL(string: urlString)
@@ -167,7 +167,7 @@ class APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             
-            let parameterString = "userName=\(userName)&barcode=\(barcode)&imageURL=\(imageURL)&key=\(Secrets.gtaKey)"
+            let parameterString = "createdBy=\(createdBy)&barcode=\(barcode)&imageURL=\(imageURL)&key=\(Secrets.gtaKey)"
             request.httpBody = parameterString.data(using: .utf8)
             
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
@@ -198,8 +198,8 @@ class APIClient {
         }
     }
     
-    class func updateMyItem(barcode: String, name: String, categoryID: Int, listID: Int, completion: @escaping (apiResponse) -> Void) {
-        if let nameEncoded = name.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+    class func updateMyItem(createdBy: String, barcode: String, itemName: String, categoryID: Int, getAgain: GetAgain, listID: Int, completion: @escaping (apiResponse) -> Void) {
+        if let itemNameEncoded = itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed) {
         
             let urlString = "\(Secrets.gtaURL)/updateMyItem.php"
             let url = URL(string: urlString)
@@ -210,7 +210,7 @@ class APIClient {
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 
-                let parameterString = "userName=\(userName)&barcode=\(barcode)&name=\(nameEncoded)&categoryID=\(categoryID)&listID=\(listID)&key=\(Secrets.gtaKey)"
+                let parameterString = "createdBy=\(createdBy)&barcode=\(barcode)&itemName=\(itemNameEncoded)&categoryID=\(categoryID)&getAgain=\(getAgain.rawValue)&listID=\(listID)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
                 
                 URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
@@ -219,9 +219,9 @@ class APIClient {
                             do {
                                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
                                     if let results = json["results"] {
-                                        if results == "1" {
+                                        if results == "1" || results == "0" {
                                             completion(.ok)
-                                        } else if results == "0" {
+                                        } else if results == "-1" {
                                             completion(.failed)
                                         } else {
                                             completion(.noReply)
@@ -246,63 +246,68 @@ class APIClient {
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?
-        let itemInstNotFound = MyItem(barcode: "notFound", name: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure)
-
-        if let unwrappedUrl = url{
-            let session = URLSession.shared
-            let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
-                if let unwrappedData = data {
-                    do {
-                        if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
-                            // check the status code and create object
-                            
-                            let statusDict = responseJSON["status"] as! [String:String]
-                            if let code = statusDict["code"] {
-                                if code == "200" {
-                                    let productDict = responseJSON["product"] as! [String:Any]
-                                    if productDict["attributes"] != nil {
-                                        let productAttributesDict = productDict["attributes"] as! [String : String]
-                                        
-                                        // create the item object
-                                        if let name = productAttributesDict["product"] {
-                                            itemInst = MyItem(barcode: barcode, name: name, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure)
-                                            // set the imageURL and category values if we have them
-                                            if let itemInst = itemInst {
-                                                if let imageURL = productDict["image"] as? String {
-                                                    itemInst.imageURL = imageURL
-                                                }
-                                             
-                                                if let categoryText = productAttributesDict["category_text"] {
-                                                    // try to get the id for the cagtegory, if we dont have it generate a new id if we have it
-                                                    // assign the id to the object
-                                                    let categoryID = store.getCategoryIDFromLabel(label: categoryText)
-                                                    if categoryID == -1 {
-                                                        // create a temp category for this label, prompt user on item detail page about
-                                                        // keeping or discarding it
-                                                        let tempCategory = MyCategory(id: -1, label: categoryText)
-                                                        print("New category: \(tempCategory.id) , \(tempCategory.label)")
-                                                        store.myCategories.append(tempCategory)
+        if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
+            let itemInstNotFound = MyItem(createdBy: createdBy, barcode: "notFound", itemName: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure)
+            
+            if let unwrappedUrl = url{
+                let session = URLSession.shared
+                let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
+                    if let unwrappedData = data {
+                        do {
+                            if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
+                                // check the status code and create object
+                                
+                                let statusDict = responseJSON["status"] as! [String:String]
+                                if let code = statusDict["code"] {
+                                    if code == "200" {
+                                        let productDict = responseJSON["product"] as! [String:Any]
+                                        if productDict["attributes"] != nil {
+                                            let productAttributesDict = productDict["attributes"] as! [String : String]
+                                            
+                                            // create the item object
+                                            if let itemName = productAttributesDict["product"] {
+                                                itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure)
+                                                // set the imageURL and category values if we have them
+                                                if let itemInst = itemInst {
+                                                    if let imageURL = productDict["image"] as? String {
+                                                        itemInst.imageURL = imageURL
                                                     }
-                                                    itemInst.categoryID = categoryID
+                                                    
+                                                    if let categoryText = productAttributesDict["category_text"] {
+                                                        // try to get the id for the cagtegory, if we dont have it generate a new id if we have it
+                                                        // assign the id to the object
+                                                        let categoryID = store.getCategoryIDFromLabel(label: categoryText)
+                                                        if categoryID == -1 {
+                                                            // create a temp category for this label, prompt user on item detail page about
+                                                            // keeping or discarding it
+                                                            
+                                                            if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
+                                                                let tempCategory = MyCategory(createdBy: createdBy, id: -1, label: categoryText)
+                                                                print("New category:\(tempCategory.createdBy), \(tempCategory.id) , \(tempCategory.label)")
+                                                                store.myCategories.append(tempCategory)
+                                                            }
+                                                        }
+                                                        itemInst.categoryID = categoryID
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                            let itemInstUnwrapped = itemInst ?? itemInstNotFound
+                            completion(itemInstUnwrapped)
+                        } catch {
+                            print("An error occured when creating responseJSON")
                         }
-                        let itemInstUnwrapped = itemInst ?? itemInstNotFound
-                        completion(itemInstUnwrapped)
-                    } catch {
-                        print("An error occured when creating responseJSON")
                     }
                 }
+                task.resume()
             }
-            task.resume()
         }
     }
     
-    class func selectMyItems(userName: String, completion: @escaping (Bool) -> Void) {
+    class func selectMyItems(createdBy: String, completion: @escaping (Bool) -> Void) {
         
         let store = DataStore.sharedInstance
         let urlString = "\(Secrets.gtaURL)/selectMyItems.php"
@@ -314,7 +319,7 @@ class APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             
-            let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)"
+            let parameterString = "key=\(Secrets.gtaKey)&createdBy=\(createdBy)"
             request.httpBody = parameterString.data(using: .utf8)
             
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
@@ -327,17 +332,16 @@ class APIClient {
                             if let myListsDictAny = responseJSON["myLists"] {
                                 let myListsDict = myListsDictAny as! [[String:String]]
                                 for myListDict in myListsDict {
-                                    
                                     //unwrap the incoming data and create item objects in datastore
-                                    if let listIDString = myListDict["id"], let listLabelEncoded = myListDict["label"], let listOwner = myListDict["owner"] {
+                                    if let listIDString = myListDict["id"], let listLabelEncoded = myListDict["label"], let createdBy = myListDict["createdBy"], let listOwnerString = myListDict["owner"] {
                                         
-                                        if let listID = Int(listIDString) {
+                                        if let listID = Int(listIDString), let listOwner = Bool(listOwnerString) {
                                             
                                             // clean html from the label
                                             let listLabel = self.decodeCharactersIn(string: listLabelEncoded)
                                             
                                             // create the object and add to datastore
-                                            let myListInst = MyList(id: listID, owner: listOwner, label: listLabel)
+                                            let myListInst = MyList(id: listID, createdBy: createdBy, label: listLabel, owner: listOwner)
                                             store.myLists.append(myListInst)
                                         }
                                     }
@@ -350,7 +354,7 @@ class APIClient {
                                 for myCategoryDict in myCategoriesDict {
 
                                     //unwrap the incoming data and create item objects in datastore
-                                    if let categoryIDString = myCategoryDict["id"], let categoryLabelEncoded = myCategoryDict["label"] {
+                                    if let categoryCreatedBy = myCategoryDict["createdBy"], let categoryIDString = myCategoryDict["id"], let categoryLabelEncoded = myCategoryDict["label"] {
                                         
                                         if let categoryID = Int(categoryIDString) {
                                            
@@ -358,8 +362,11 @@ class APIClient {
                                             let categoryLabel = self.decodeCharactersIn(string: categoryLabelEncoded)
                                         
                                             // create the object and add to datastore
-                                            let myCategoryInst = MyCategory(id: categoryID, label: categoryLabel)
-                                            store.myCategories.append(myCategoryInst)
+                                            let categoryInst = MyCategory(createdBy: categoryCreatedBy, id: categoryID, label: categoryLabel)
+                                            
+                                            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                                                userName == categoryInst.createdBy ? store.myCategories.append(categoryInst) : store.otherCategories.append(categoryInst)
+                                            }
                                         }
                                     }
                                 }
@@ -371,15 +378,16 @@ class APIClient {
                                 for myItemDict in myItemsDict {
                                     
                                     //unwrap the incoming data and create item objects in datastore
-                                    if let barcode = myItemDict["barcode"],
-                                        let nameEncoded = myItemDict["name"],
+                                    if let createdBy = myItemDict["createdBy"],
+                                        let barcode = myItemDict["barcode"],
+                                        let itemNameEncoded = myItemDict["itemName"],
                                         let categoryIDString = myItemDict["categoryID"],
                                         let imageURL = myItemDict["imageURL"],
                                         let listIDString = myItemDict["listID"],
                                         let getAgainString = myItemDict["getAgain"] {
                                     
                                         // clean html from the name
-                                        let name = self.decodeCharactersIn(string: nameEncoded)
+                                        let itemName = self.decodeCharactersIn(string: itemNameEncoded)
                                         
                                         if let categoryID = Int(categoryIDString), let listID = Int(listIDString) {
                                         
@@ -387,16 +395,19 @@ class APIClient {
                                             var getAgain: GetAgain!
                                         
                                             switch getAgainString {
-                                            case ".yes":
+                                            case "yes":
                                                 getAgain = GetAgain.yes
-                                            case ".no":
+                                            case "no":
                                                 getAgain = GetAgain.no
                                             default:
                                                 getAgain = GetAgain.unsure
                                             }
                                         
-                                            let myItemInst = MyItem(barcode: barcode, name: name, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain)
-                                        store.myItems.append(myItemInst)
+                                            let itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain)
+                                            
+                                            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                                                userName == itemInst.createdBy ? store.myItems.append(itemInst) : store.otherItems.append(itemInst)
+                                            }
                                         }
                                     }
                                 }
@@ -421,11 +432,10 @@ class APIClient {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             
-
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             var parameterString = String()
             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                parameterString = "userName=\(userName)&id=\(category.id)&label=\(category.label)&key=\(Secrets.gtaKey)"
+                parameterString = "createdBy=\(userName)&id=\(category.id)&label=\(category.label)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
             }
 
@@ -467,7 +477,7 @@ class APIClient {
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                let parameterString = "userName=\(userName)&id=\(id)&key=\(Secrets.gtaKey)"
+                let parameterString = "createdBy=\(userName)&id=\(id)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
             }
             

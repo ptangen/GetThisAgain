@@ -56,7 +56,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.title = "Item Detail" // nav bar title
         self.itemDetailViewInst.updateRecordRequired = false
         
-        self.itemDetailViewInst.nameLabel.text = itemInst.name
+        self.itemDetailViewInst.nameLabel.text = itemInst.itemName
         if itemInst.categoryID == -1 { // prompt user about new cagtegory
             let message = "This item is associated with a new cagtegory: \(self.store.getCategoryLabelFromID(id: itemInst.categoryID))."
             self.showNewCategoryMessage(message, viewControllerInst: self)
@@ -66,18 +66,24 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         
         itemInst.listID > 0 ? (self.itemDetailViewInst.shoppingListSwitch.isOn = true) : (self.itemDetailViewInst.shoppingListSwitch.isOn = false)
         
-        if self.store.getItemExistsInDatastore(item: self.itemInst) {
-            // done button
-            self.navigationItem.rightBarButtonItems = [doneButton]
-            // delete button
-            self.navigationItem.leftBarButtonItems = [deleteButton]
-        } else {
-            // add button
-            self.navigationItem.rightBarButtonItems = [addButton]
-            // cancel button
-            self.navigationItem.setHidesBackButton(true, animated:false);
+        if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+            if self.store.getItemExistsInDatastore(item: self.itemInst) && userName == self.itemInst.createdBy {
+                // done button
+                self.navigationItem.rightBarButtonItems = [doneButton]
+                // delete button
+                self.navigationItem.leftBarButtonItems = [deleteButton]
+            } else if userName == self.itemInst.createdBy {
+                // add button
+                self.navigationItem.rightBarButtonItems = [addButton]
+                // cancel button
+                self.navigationItem.setHidesBackButton(true, animated:false);
             
-            self.navigationItem.leftBarButtonItems = [cancelButton]
+                self.navigationItem.leftBarButtonItems = [cancelButton]
+            } else {
+                // done button only, this is someone else's item
+                self.navigationItem.rightBarButtonItems = [doneButton]
+                self.navigationItem.setHidesBackButton(true, animated:false);
+            }
         }
 
         if let itemInstImage = self.itemInstImage {
@@ -107,6 +113,15 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         default:
             break
         }
+        
+        // disable editing of items that are not the current user's items
+        if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+            if itemInst.createdBy != userName {
+                self.itemDetailViewInst.editTextButton.isHidden = true
+                self.itemDetailViewInst.getAgainPicker.isHidden = true
+                self.itemDetailViewInst.getAgainLabel.isHidden = true
+            }
+        }
     }
     
     override func loadView(){
@@ -123,7 +138,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                     itemInst.barcode = barcode
                     itemInst.imageURL = imageURL
                     self.store.myItems.append(itemInst)
-                    self.store.myItems.sort(by: { $0.name < $1.name })
+                    self.store.myItems.sort(by: { $0.itemName < $1.itemName })
                     
                     let itemsTabViewControllerInst = ItemsTabViewController()
                     self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
@@ -136,7 +151,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     func deleteButtonClicked() {
         if let itemInst = self.itemInst {
-            APIClient.deleteMyItem(userName: UserDefaults.standard.value(forKey: "userName") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
+            APIClient.deleteMyItem(createdBy: UserDefaults.standard.value(forKey: "userName") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
                 if results == apiResponse.ok {
                     self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
@@ -149,7 +164,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
 
     func doneButtonClicked() {
         if self.itemDetailViewInst.updateRecordRequired {
-            APIClient.updateMyItem(barcode: itemInst.barcode, name: itemInst.name, categoryID: itemInst.categoryID, listID: itemInst.listID, completion: { (results) in
+            APIClient.updateMyItem(createdBy: itemInst.createdBy, barcode: itemInst.barcode, itemName: itemInst.itemName, categoryID: itemInst.categoryID, getAgain: itemInst.getAgain, listID: itemInst.listID, completion: { (results) in
                 if results == apiResponse.ok {
                     let itemsTabViewControllerInst = ItemsTabViewController()
                     self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
