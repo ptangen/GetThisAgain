@@ -71,7 +71,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = myItemCurrent.itemName  + " (" + myItemCurrent.getAgain.label() + ")"
         cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: myItemCurrent.categoryID)
         
-        // var imageURLString = String()
         if myItemCurrent.imageURL.isEmpty {
             // show no image found
             cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")

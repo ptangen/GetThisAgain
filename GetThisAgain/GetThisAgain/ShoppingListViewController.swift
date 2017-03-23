@@ -31,14 +31,15 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
         var shoppingListUnsorted = [MyItem]()
         
         // iterate through myItems and place the items that are on a list into the shoppingListItems array
-        for list in self.store.myLists {
-            // myItems
-            let myItemsFromAList = self.store.myItems.filter({ $0.listID == list.id })
-            shoppingListUnsorted.append(contentsOf: myItemsFromAList)
-            // other items
-            let otherItemsFromAList = self.store.otherItems.filter({ $0.listID == list.id })
-            shoppingListUnsorted.append(contentsOf: otherItemsFromAList)
-        }
+        // items not in a list have listID = 0, items in a list have listID > 0
+
+        // myItems
+        let myItemsFromAList = self.store.myItems.filter({ $0.listID > 0 })
+        shoppingListUnsorted.append(contentsOf: myItemsFromAList)
+        // other items
+        let otherItemsFromAList = self.store.otherItems.filter({ $0.listID > 0 })
+        shoppingListUnsorted.append(contentsOf: otherItemsFromAList)
+
         self.shoppingListViewInst.shoppingListItems = shoppingListUnsorted.sorted(by: { $0.itemName < $1.itemName })
     }
     

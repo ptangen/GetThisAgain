@@ -71,8 +71,14 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = shoppingItemCurrent.itemName  + " (" + shoppingItemCurrent.getAgain.label() + ")"
         cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: shoppingItemCurrent.categoryID)
         
-        let itemImageURL = URL(string: shoppingItemCurrent.imageURL)
-        cell.itemImageView.sd_setImage(with: itemImageURL)
+        if shoppingItemCurrent.imageURL.isEmpty {
+            // show no image found
+            cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
+        } else {
+            // show the image per the URL
+            let itemImageURL = URL(string: shoppingItemCurrent.imageURL)
+            cell.itemImageView.sd_setImage(with: itemImageURL)
+        }
         cell.itemImageView.contentMode = .scaleAspectFit
         
         return cell

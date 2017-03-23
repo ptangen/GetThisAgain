@@ -333,20 +333,20 @@ class APIClient {
                                 let myListsDict = myListsDictAny as! [[String:String]]
                                 for myListDict in myListsDict {
                                     //unwrap the incoming data and create item objects in datastore
-                                    if let listIDString = myListDict["id"], let listLabelEncoded = myListDict["label"], let createdBy = myListDict["createdBy"], let listOwnerString = myListDict["owner"] {
+                                    if let listIDString = myListDict["id"], let listLabelEncoded = myListDict["label"]{
                                         
-                                        if let listID = Int(listIDString), let listOwner = Bool(listOwnerString) {
+                                        if let listID = Int(listIDString) {
                                             
                                             // clean html from the label
                                             let listLabel = self.decodeCharactersIn(string: listLabelEncoded)
                                             
                                             // create the object and add to datastore
-                                            let myListInst = MyList(id: listID, createdBy: createdBy, label: listLabel, owner: listOwner)
+                                            let myListInst = MyList(id: listID, label: listLabel)
                                             store.myLists.append(myListInst)
                                         }
                                     }
                                 }
-                            } // end myCategoriesDictAny
+                            } // end myListsDictAny
                             
                             if let myCategoriesDictAny = responseJSON["myCategories"] {
                                 let myCategoriesDict = myCategoriesDictAny as! [[String:String]]
@@ -374,6 +374,7 @@ class APIClient {
                             
                             if let myItemsDictAny = responseJSON["myItems"] {
                                 let myItemsDict = myItemsDictAny as! [[String:String]]
+                                var myItemsUnsorted = [MyItem]()
                                 
                                 for myItemDict in myItemsDict {
                                     
@@ -405,11 +406,13 @@ class APIClient {
                                         
                                             let itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain)
                                             
+                                            // create an array of the user's items and an array for the other items.
                                             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                                                userName == itemInst.createdBy ? store.myItems.append(itemInst) : store.otherItems.append(itemInst)
+                                                userName == itemInst.createdBy ? myItemsUnsorted.append(itemInst) : store.otherItems.append(itemInst)
                                             }
                                         }
                                     }
+                                    store.myItems = myItemsUnsorted.sorted(by: { $0.itemName < $1.itemName })
                                 }
                             } // end myItemsDictAny
                         }

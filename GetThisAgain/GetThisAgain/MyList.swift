@@ -11,14 +11,10 @@ import Foundation
 class MyList {
     
     var id: Int
-    var createdBy: String
     var label: String
-    var owner: Bool
     
-    init (id: Int, createdBy: String, label: String, owner: Bool ) {
+    init (id: Int, label: String) {
         self.id = id
-        self.createdBy = createdBy
         self.label = label
-        self.owner = owner
     }
 }

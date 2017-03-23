@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
+class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate {
     
     let store = DataStore.sharedInstance
     let myItemsViewControllerInst = MyItemsViewController()
@@ -71,14 +71,15 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate  {
             self.navigationController?.pushViewController(signInControllerInst, animated: true) // show destination with nav bar
         })
         
-        let addAction = UIAlertAction(title: "Add Item", style: .default, handler: { (alert: UIAlertAction!) -> Void in
-            self.addButtonClicked()
+        let openSharing = UIAlertAction(title: "Sharing Lists", style: .default, handler: { (alert: UIAlertAction!) -> Void in
+            let sharingTabViewControllerInst = SharingTabViewController()
+            self.navigationController?.pushViewController(sharingTabViewControllerInst, animated: true) // show destination with nav bar
         })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (alert: UIAlertAction!) -> Void in })
         
         // Add actions to menu and display
-        optionMenu.addAction(addAction)
+        optionMenu.addAction(openSharing)
         optionMenu.addAction(signOutAction)
         optionMenu.addAction(cancelAction)
         self.present(optionMenu, animated: true, completion: nil)

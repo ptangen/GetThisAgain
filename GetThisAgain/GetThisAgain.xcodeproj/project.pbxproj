@@ -13,6 +13,8 @@
 		C028D5161E69CDA60087392C /* ic_insert_photo_black_24px.svg in Resources */ = {isa = PBXBuildFile; fileRef = C028D5151E69CDA60087392C /* ic_insert_photo_black_24px.svg */; };
 		C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */; };
 		C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A71E59F8B800A62051 /* ItemDetailView.swift */; };
+		C0393E5C1E8460D800541969 /* SharingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5B1E8460D800541969 /* SharingTabViewController.swift */; };
+		C0393E5E1E84611900541969 /* SharingStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5D1E84611900541969 /* SharingStatusViewController.swift */; };
 		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */; };
@@ -68,6 +70,8 @@
 		C028D5151E69CDA60087392C /* ic_insert_photo_black_24px.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ic_insert_photo_black_24px.svg; sourceTree = "<group>"; };
 		C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		C031E5A71E59F8B800A62051 /* ItemDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
+		C0393E5B1E8460D800541969 /* SharingTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingTabViewController.swift; sourceTree = "<group>"; };
+		C0393E5D1E84611900541969 /* SharingStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingStatusViewController.swift; sourceTree = "<group>"; };
 		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -216,6 +220,8 @@
 				C067121F1E574C700047473B /* CaptureItemViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
 				C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */,
+				C0393E5B1E8460D800541969 /* SharingTabViewController.swift */,
+				C0393E5D1E84611900541969 /* SharingStatusViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -444,6 +450,7 @@
 				C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */,
 				C0CE94FC1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift in Sources */,
 				C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */,
+				C0393E5C1E8460D800541969 /* SharingTabViewController.swift in Sources */,
 				C067121C1E574A380047473B /* Constants.swift in Sources */,
 				C067121A1E5749DF0047473B /* MyItem.swift in Sources */,
 				C0A232D41E6861BC00FB1617 /* SignInView.swift in Sources */,
@@ -453,6 +460,7 @@
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */,
 				C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */,
+				C0393E5E1E84611900541969 /* SharingStatusViewController.swift in Sources */,
 				C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */,
 				C027E0721E578D3800CA6577 /* APIClient.swift in Sources */,
 			);
