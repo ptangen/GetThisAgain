@@ -26,7 +26,7 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = false
-        self.title = "Sharing List"
+        self.title = "Sharing Lists"
         self.navigationItem.hidesBackButton = true
         UITabBar.appearance().tintColor = UIColor(named: .statusBarBlue)
         self.automaticallyAdjustsScrollViewInsets = false
@@ -45,5 +45,4 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
         let itemsTabViewControllerInst = ItemsTabViewController()
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: true) // show destination with nav bar
     }
-
 }

@@ -15,6 +15,7 @@
 		C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C031E5A71E59F8B800A62051 /* ItemDetailView.swift */; };
 		C0393E5C1E8460D800541969 /* SharingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5B1E8460D800541969 /* SharingTabViewController.swift */; };
 		C0393E5E1E84611900541969 /* SharingStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5D1E84611900541969 /* SharingStatusViewController.swift */; };
+		C0393E601E84649900541969 /* SharingStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5F1E84649900541969 /* SharingStatusView.swift */; };
 		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */; };
@@ -72,6 +73,7 @@
 		C031E5A71E59F8B800A62051 /* ItemDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		C0393E5B1E8460D800541969 /* SharingTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingTabViewController.swift; sourceTree = "<group>"; };
 		C0393E5D1E84611900541969 /* SharingStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingStatusViewController.swift; sourceTree = "<group>"; };
+		C0393E5F1E84649900541969 /* SharingStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingStatusView.swift; sourceTree = "<group>"; };
 		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				C06712211E574C9E0047473B /* CaptureItemView.swift */,
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
 				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
+				C0393E5F1E84649900541969 /* SharingStatusView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				C06712141E57492B0047473B /* MyItemsViewController.swift in Sources */,
 				C0A232D71E6862B200FB1617 /* KeychainWrapper.m in Sources */,
 				C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */,
+				C0393E601E84649900541969 /* SharingStatusView.swift in Sources */,
 				C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */,
 				C0CE94FC1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift in Sources */,
 				C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */,

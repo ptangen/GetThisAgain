@@ -17,6 +17,7 @@ class DataStore {
     var myLists = [MyList]()
     var otherItems = [MyItem]()
     var otherCategories = [MyCategory]()
+    var sharedListStatus = [[String]]()
     
     func getItemFromBarcode(barcode: String) -> MyItem? {
         for item in myItems {
@@ -110,5 +111,20 @@ class DataStore {
         }
         let x = MyCategory(createdBy: "", id: 0, label: "")
         return x
+    }
+    
+    func removeUserNameFromSharedListStatus(list: Int, userName: String) {
+        for (index, userNameInArray) in self.sharedListStatus[list].enumerated() {
+            if userName == userNameInArray {
+                
+                self.sharedListStatus[list].remove(at: index)
+                
+                if list == 0 {
+                    self.sharedListStatus[list].isEmpty ? self.sharedListStatus[list].append("No one can see your list.") : ()
+                } else {
+                    self.sharedListStatus[list].isEmpty ? self.sharedListStatus[list].append("You cannot see anyone's list.") : ()
+                }
+            }
+        }
     }
 }

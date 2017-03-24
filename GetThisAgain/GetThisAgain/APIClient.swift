@@ -425,6 +425,113 @@ class APIClient {
         }
     }
     
+    class func selectSharedLists(completion: @escaping (Bool) -> Void) {
+        
+        let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.gtaURL)/selectSharedLists.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // get the user's list id and userName and then set the parameters
+            if let myList = store.myLists.first {
+                if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                    let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)&listID=\(myList.id)"
+                    request.httpBody = parameterString.data(using: .utf8)
+                }
+            }
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let unwrappedData = data {
+                    do {
+                        
+                        let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
+                        if let responseJSON = responseJSON {
+                            
+                            // usersWithAccessToMyList
+                            var tempUsersWithAccessToMyList = [String]()
+                            if let usersWithAccessToMyListDictAny = responseJSON["usersWithAccessToMyList"] {
+                                let usersWithAccessToMyListDict = usersWithAccessToMyListDictAny as! [[String:String]]
+                                for userWithAccessToMyListDict in usersWithAccessToMyListDict {
+                                    if let userName = userWithAccessToMyListDict["userName"] {
+                                        tempUsersWithAccessToMyList.append(userName)
+                                    }
+                                }
+                            }
+                            
+                            // usersListICanAccess
+                            var tempUsersListICanAccess = [String]()
+                            if let usersListICanAccessDictAny = responseJSON["usersListICanAccess"] {
+                                let usersListICanAccessDict = usersListICanAccessDictAny as! [[String:String]]
+                                for userListICanAccessDict in usersListICanAccessDict {
+                                    if let userName = userListICanAccessDict["userName"] {
+                                        tempUsersListICanAccess.append(userName)
+                                    }
+                                }
+                            }
+                            // insert the none label of the arrays are empty so it looks better in the tableview
+                            if tempUsersWithAccessToMyList.isEmpty {
+                                tempUsersWithAccessToMyList.append("No one can see your list.")
+                            }
+                            if tempUsersListICanAccess.isEmpty {
+                                tempUsersListICanAccess.append("You cannot see anyone's list.")
+                            }
+                            store.sharedListStatus.append(tempUsersWithAccessToMyList)
+                            store.sharedListStatus.append(tempUsersListICanAccess)
+                        }
+                        completion(true)
+                    } catch {
+                        completion(false) // An error occurred when creating responseJSON
+                    }
+                }
+            }).resume()
+        }
+    }
+    
+    class func editSharedListAccess(action: String, userName: String, completion: @escaping (apiResponse) -> Void) {
+        
+        let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.gtaURL)/editSharedListAccess.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // get the user's list id and userName and then set the parameters
+            if let myList = store.myLists.first {
+                let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&userName=\(userName)&listID=\(myList.id)"
+                request.httpBody = parameterString.data(using: .utf8)
+            }
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                            if let results = json["results"] as! Int? {
+                                if results == 1 {
+                                    completion(.ok)
+                                } else if results == -1 {
+                                    completion(.failed)
+                                } else {
+                                    completion(.noReply)
+                                }
+                            }
+                        }
+                    } catch {
+                        completion(.noReply)
+                    }
+                }
+            }).resume()
+        }
+    }
+    
     class func insertMyCategory(category: MyCategory, completion: @escaping (apiResponse) -> Void) {
         
         let urlString = "\(Secrets.gtaURL)/insertMyCategory.php"
