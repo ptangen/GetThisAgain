@@ -17,7 +17,16 @@ class DataStore {
     var myLists = [MyList]()
     var otherItems = [MyItem]()
     var otherCategories = [MyCategory]()
-    var sharedListStatus = [[String]]()
+    var sharedListStatus = [[(listID: Int, userName: String)]]()
+    
+    func datastoreRemoveAll() {
+        self.myItems.removeAll()
+        self.myCategories.removeAll()
+        self.myLists.removeAll()
+        self.otherItems.removeAll()
+        self.otherCategories.removeAll()
+        self.sharedListStatus.removeAll()
+    }
     
     func getItemFromBarcode(barcode: String) -> MyItem? {
         for item in myItems {
@@ -27,6 +36,7 @@ class DataStore {
         }
         return nil
     }
+    
     
     func getItemExistsInDatastore(item: MyItem) -> Bool {
         for itemInDataStore in myItems {
@@ -113,16 +123,16 @@ class DataStore {
         return x
     }
     
-    func removeUserNameFromSharedListStatus(list: Int, userName: String) {
-        for (index, userNameInArray) in self.sharedListStatus[list].enumerated() {
-            if userName == userNameInArray {
+    func removeUserNameFromSharedListStatus(slot: Int, userName: String) {
+        for (index, userNameInArray) in self.sharedListStatus[slot].enumerated() {
+            if userName == userNameInArray.userName {
                 
-                self.sharedListStatus[list].remove(at: index)
+                self.sharedListStatus[slot].remove(at: index)
                 
-                if list == 0 {
-                    self.sharedListStatus[list].isEmpty ? self.sharedListStatus[list].append("No one can see your list.") : ()
+                if slot == 0 {
+                    self.sharedListStatus[slot].isEmpty ? self.sharedListStatus[slot].append((listID: -1, userName: "No one can see your list.")) : ()
                 } else {
-                    self.sharedListStatus[list].isEmpty ? self.sharedListStatus[list].append("You cannot see anyone's list.") : ()
+                    self.sharedListStatus[slot].isEmpty ? self.sharedListStatus[slot].append((listID: -1, userName: "You cannot see anyone's list.")) : ()
                 }
             }
         }

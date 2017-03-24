@@ -33,47 +33,38 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
     }
     
     func onTapDeleteUser(message: String) {
-        //print(message)
+
         let alertController = UIAlertController(title: "Confirmation", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default){ action -> Void in
+            var action = String()
+            var slot = Int()
             
-            if self.sharingStatusViewInst.selectedSection == "People that see my shopping list" {
-                // remove the record that lets this user see my list.
-                
-                APIClient.editSharedListAccess(action: "removeRecord", userName: self.sharingStatusViewInst.selectedUserName, completion: { (result) in
+            if self.sharingStatusViewInst.selectedSection == "People that can see my shopping list" {
+                action = "deleteRecord"  // remove the record that lets this user see my list.
+                slot = 0
+            } else {
+                action = "updateToPending"  // set the status of the record that lets me see this user's list to pending
+                slot = 1
+            }
+            
+            // send request to update DB
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                APIClient.editSharedListAccess(action: action, listID: self.sharingStatusViewInst.selectedListID, userName: userName, completion: { (result) in
                     if result == apiResponse.ok {
                         DispatchQueue.main.async {
-                            self.store.removeUserNameFromSharedListStatus(list: 0, userName: self.sharingStatusViewInst.selectedUserName)
-                            
+                            // update the array in the datastore
+                            self.store.removeUserNameFromSharedListStatus(slot: slot, userName: self.sharingStatusViewInst.selectedUserName)
                             self.sharingStatusViewInst.usersWithAccessToMyListTableView.reloadData()
                             
                             self.sharingStatusViewInst.selectedSection = String()
                             self.sharingStatusViewInst.selectedUserName = String()
+                            self.sharingStatusViewInst.selectedListID = Int()
                             self.sharingStatusViewInst.deleteUserButton.isEnabled = false
                         }
                     } else {
                         Utilities.showAlertMessage("The system was unable to remove this user.", viewControllerInst: self)
                     }
                 })
-            } else {
-                // set the status of the record that lets me see this user's list to pending
-                if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    APIClient.editSharedListAccess(action: "updateToPending", userName: userName, completion: { (result) in
-                        if result == apiResponse.ok {
-                            DispatchQueue.main.async {
-                                self.store.removeUserNameFromSharedListStatus(list: 1, userName: self.sharingStatusViewInst.selectedUserName)
-                                
-                                self.sharingStatusViewInst.usersWithAccessToMyListTableView.reloadData()
-                                
-                                self.sharingStatusViewInst.selectedSection = String()
-                                self.sharingStatusViewInst.selectedUserName = String()
-                                self.sharingStatusViewInst.deleteUserButton.isEnabled = false
-                            }
-                        } else {
-                            Utilities.showAlertMessage("The system was unable to remove this user.", viewControllerInst: self)
-                        }
-                    })
-                }
             }
         })
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel))

@@ -453,32 +453,36 @@ class APIClient {
                         if let responseJSON = responseJSON {
                             
                             // usersWithAccessToMyList
-                            var tempUsersWithAccessToMyList = [String]()
+                            var tempUsersWithAccessToMyList = [(listID: Int, userName: String)]()
                             if let usersWithAccessToMyListDictAny = responseJSON["usersWithAccessToMyList"] {
                                 let usersWithAccessToMyListDict = usersWithAccessToMyListDictAny as! [[String:String]]
                                 for userWithAccessToMyListDict in usersWithAccessToMyListDict {
-                                    if let userName = userWithAccessToMyListDict["userName"] {
-                                        tempUsersWithAccessToMyList.append(userName)
+                                    if let listIDString = userWithAccessToMyListDict["listID"], let userName = userWithAccessToMyListDict["userName"] {
+                                        if let listID = Int(listIDString) {
+                                            tempUsersWithAccessToMyList.append((listID: listID, userName:userName))
+                                        }
                                     }
                                 }
                             }
                             
                             // usersListICanAccess
-                            var tempUsersListICanAccess = [String]()
+                            var tempUsersListICanAccess = [(listID: Int, userName: String)]()
                             if let usersListICanAccessDictAny = responseJSON["usersListICanAccess"] {
                                 let usersListICanAccessDict = usersListICanAccessDictAny as! [[String:String]]
                                 for userListICanAccessDict in usersListICanAccessDict {
-                                    if let userName = userListICanAccessDict["userName"] {
-                                        tempUsersListICanAccess.append(userName)
+                                    if let listIDString = userListICanAccessDict["listID"], let userName = userListICanAccessDict["userName"] {
+                                        if let listID = Int(listIDString) {
+                                            tempUsersListICanAccess.append((listID: listID, userName:userName))
+                                        }
                                     }
                                 }
                             }
-                            // insert the none label of the arrays are empty so it looks better in the tableview
+                            // insert the "none" label of the arrays are empty to display in the tableview
                             if tempUsersWithAccessToMyList.isEmpty {
-                                tempUsersWithAccessToMyList.append("No one can see your list.")
+                                tempUsersWithAccessToMyList.append((listID: -1, userName:"No one can see your list."))
                             }
                             if tempUsersListICanAccess.isEmpty {
-                                tempUsersListICanAccess.append("You cannot see anyone's list.")
+                                tempUsersListICanAccess.append((listID: -1, userName:"You cannot see anyone's list."))
                             }
                             store.sharedListStatus.append(tempUsersWithAccessToMyList)
                             store.sharedListStatus.append(tempUsersListICanAccess)
@@ -492,9 +496,9 @@ class APIClient {
         }
     }
     
-    class func editSharedListAccess(action: String, userName: String, completion: @escaping (apiResponse) -> Void) {
+    class func editSharedListAccess(action: String, listID: Int, userName: String, completion: @escaping (apiResponse) -> Void) {
         
-        let store = DataStore.sharedInstance
+        //let store = DataStore.sharedInstance
         let urlString = "\(Secrets.gtaURL)/editSharedListAccess.php"
         let url = URL(string: urlString)
         if let url = url {
@@ -504,20 +508,17 @@ class APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             
-            // get the user's list id and userName and then set the parameters
-            if let myList = store.myLists.first {
-                let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&userName=\(userName)&listID=\(myList.id)"
-                request.httpBody = parameterString.data(using: .utf8)
-            }
+            let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&listID=\(listID)&userName=\(userName)"
+            request.httpBody = parameterString.data(using: .utf8)
             
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 if let data = data {
                     do {
-                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                            if let results = json["results"] as! Int? {
-                                if results == 1 {
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                            if let results = json["results"] {
+                                if results == "1" {
                                     completion(.ok)
-                                } else if results == -1 {
+                                } else if results == "-1" {
                                     completion(.failed)
                                 } else {
                                     completion(.noReply)

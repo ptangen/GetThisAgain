@@ -17,12 +17,12 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
 
     weak var delegate: SharingStatusViewDelegate?
     let store = DataStore.sharedInstance
-    //var filteredItems = [MyItem]()
     let usersWithAccessToMyListTableView = UITableView()
-    let sectionTitles = ["People that see my shopping list", "People whose shopping lists I can see"]
+    let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
     var deleteUserButton = UIButton()
     var selectedSection = String()
     var selectedUserName = String()
+    var selectedListID = Int()
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -74,15 +74,17 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "prototype")
         
         if let textLabel = cell.textLabel {
-            textLabel.text = self.store.sharedListStatus[indexPath.section][indexPath.row]
+            textLabel.text = self.store.sharedListStatus[indexPath.section][indexPath.row].userName
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if self.store.sharedListStatus[indexPath.section][indexPath.row] != "You cannot see anyone's list." && self.store.sharedListStatus[indexPath.section][indexPath.row] != "No one can see your list." {
+        if self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "You cannot see anyone's list." && self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "No one can see your list." {
             self.selectedSection = self.sectionTitles[indexPath.section]
-            self.selectedUserName = self.store.sharedListStatus[indexPath.section][indexPath.row]
+            self.selectedUserName = self.store.sharedListStatus[indexPath.section][indexPath.row].userName
+            selectedListID = self.store.sharedListStatus[indexPath.section][indexPath.row].listID
+            
             self.deleteUserButton.isEnabled = true
         } else {
             self.deleteUserButton.isEnabled = false

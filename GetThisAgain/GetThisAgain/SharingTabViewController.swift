@@ -42,6 +42,9 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
     }
     
     func doneButtonClicked() {
+        // clear the myItems array so we get a proper list of items
+        self.store.datastoreRemoveAll()
+        
         let itemsTabViewControllerInst = ItemsTabViewController()
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: true) // show destination with nav bar
     }
