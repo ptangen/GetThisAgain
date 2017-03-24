@@ -533,6 +533,77 @@ class APIClient {
         }
     }
     
+    class func selectInvitations(completion: @escaping (Bool) -> Void) {
+        
+        let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.gtaURL)/selectInvitations.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // get the user's list id and userName and then set the parameters
+            if let myList = store.myLists.first {
+                if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                    let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)&listID=\(myList.id)"
+                    request.httpBody = parameterString.data(using: .utf8)
+                }
+            }
+
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let unwrappedData = data {
+                    do {
+                        
+                        let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
+                        if let responseJSON = responseJSON {
+
+                            // usersInvitedToViewMyList
+                            var usersInvitedToViewMyList = [(listID: Int, userName: String)]()
+                            if let usersInvitedToViewMyListDictAny = responseJSON["usersInvitedToViewMyList"] {
+                                let usersInvitedToViewMyListDict = usersInvitedToViewMyListDictAny as! [[String:String]]
+                                for userInvitedToViewMyListDict in usersInvitedToViewMyListDict {
+                                    if let listIDString = userInvitedToViewMyListDict["listID"], let userName = userInvitedToViewMyListDict["userName"] {
+                                        if let listID = Int(listIDString) {
+                                            usersInvitedToViewMyList.append((listID: listID, userName:userName))
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // usersWhoInvitedMeToViewTheirList
+                            var usersWhoInvitedMeToViewTheirList = [(listID: Int, userName: String)]()
+                            if let usersWhoInvitedMeToViewTheirListDictAny = responseJSON["usersWhoInvitedMeToViewTheirList"] {
+                                let usersWhoInvitedMeToViewTheirListDict = usersWhoInvitedMeToViewTheirListDictAny as! [[String:String]]
+                                for userWhoInvitedMeToViewTheirListDict in usersWhoInvitedMeToViewTheirListDict {
+                                    if let listIDString = userWhoInvitedMeToViewTheirListDict["listID"], let userName = userWhoInvitedMeToViewTheirListDict["userName"] {
+                                        if let listID = Int(listIDString) {
+                                            usersWhoInvitedMeToViewTheirList.append((listID: listID, userName:userName))
+                                        }
+                                    }
+                                }
+                            }
+                            // insert the "none" label of the arrays are empty to display in the tableview
+                            if usersInvitedToViewMyList.isEmpty {
+                                usersInvitedToViewMyList.append((listID: -1, userName:"Any invitations sent have been accepted or deleted."))
+                            }
+                            if usersWhoInvitedMeToViewTheirList.isEmpty {
+                                usersWhoInvitedMeToViewTheirList.append((listID: -1, userName:"You have accepted or deleted any invitations received."))
+                            }
+                            store.invitations.append(usersInvitedToViewMyList)
+                            store.invitations.append(usersWhoInvitedMeToViewTheirList)
+                        }
+                        completion(true)
+                    } catch {
+                        completion(false) // An error occurred when creating responseJSON
+                    }
+                }
+            }).resume()
+        }
+    }
+    
     class func insertMyCategory(category: MyCategory, completion: @escaping (apiResponse) -> Void) {
         
         let urlString = "\(Secrets.gtaURL)/insertMyCategory.php"

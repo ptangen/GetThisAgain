@@ -16,6 +16,8 @@
 		C0393E5C1E8460D800541969 /* SharingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5B1E8460D800541969 /* SharingTabViewController.swift */; };
 		C0393E5E1E84611900541969 /* SharingStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5D1E84611900541969 /* SharingStatusViewController.swift */; };
 		C0393E601E84649900541969 /* SharingStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E5F1E84649900541969 /* SharingStatusView.swift */; };
+		C0393E621E85AF6B00541969 /* SharingInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E611E85AF6B00541969 /* SharingInvitationView.swift */; };
+		C0393E641E85AFAD00541969 /* SharingInvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E631E85AFAD00541969 /* SharingInvitationViewController.swift */; };
 		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */; };
@@ -74,6 +76,8 @@
 		C0393E5B1E8460D800541969 /* SharingTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingTabViewController.swift; sourceTree = "<group>"; };
 		C0393E5D1E84611900541969 /* SharingStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingStatusViewController.swift; sourceTree = "<group>"; };
 		C0393E5F1E84649900541969 /* SharingStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingStatusView.swift; sourceTree = "<group>"; };
+		C0393E611E85AF6B00541969 /* SharingInvitationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingInvitationView.swift; sourceTree = "<group>"; };
+		C0393E631E85AFAD00541969 /* SharingInvitationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingInvitationViewController.swift; sourceTree = "<group>"; };
 		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -224,6 +228,7 @@
 				C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */,
 				C0393E5B1E8460D800541969 /* SharingTabViewController.swift */,
 				C0393E5D1E84611900541969 /* SharingStatusViewController.swift */,
+				C0393E631E85AFAD00541969 /* SharingInvitationViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -240,6 +245,7 @@
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
 				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
 				C0393E5F1E84649900541969 /* SharingStatusView.swift */,
+				C0393E611E85AF6B00541969 /* SharingInvitationView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -444,6 +450,7 @@
 				C06FFF321E7C640C00FE272E /* MyList.swift in Sources */,
 				C031E5A81E59F8B800A62051 /* ItemDetailView.swift in Sources */,
 				C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */,
+				C0393E621E85AF6B00541969 /* SharingInvitationView.swift in Sources */,
 				C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */,
 				C0A232DC1E6865C000FB1617 /* Utilities.swift in Sources */,
 				C06712181E57498F0047473B /* MyItemsView.swift in Sources */,
@@ -460,6 +467,7 @@
 				C0A232D41E6861BC00FB1617 /* SignInView.swift in Sources */,
 				C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */,
 				C0A232D01E67882A00FB1617 /* EditNameView.swift in Sources */,
+				C0393E641E85AFAD00541969 /* SharingInvitationViewController.swift in Sources */,
 				C06712221E574C9E0047473B /* CaptureItemView.swift in Sources */,
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */,

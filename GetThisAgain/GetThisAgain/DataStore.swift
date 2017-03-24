@@ -18,6 +18,7 @@ class DataStore {
     var otherItems = [MyItem]()
     var otherCategories = [MyCategory]()
     var sharedListStatus = [[(listID: Int, userName: String)]]()
+    var invitations = [[(listID: Int, userName: String)]]()
     
     func datastoreRemoveAll() {
         self.myItems.removeAll()

@@ -54,7 +54,7 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
                         DispatchQueue.main.async {
                             // update the array in the datastore
                             self.store.removeUserNameFromSharedListStatus(slot: slot, userName: self.sharingStatusViewInst.selectedUserName)
-                            self.sharingStatusViewInst.usersWithAccessToMyListTableView.reloadData()
+                            self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
                             
                             self.sharingStatusViewInst.selectedSection = String()
                             self.sharingStatusViewInst.selectedUserName = String()

@@ -12,6 +12,7 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
     
     let store = DataStore.sharedInstance
     let sharingStatusViewControllerInst = SharingStatusViewController()
+    let sharingInvitationViewControllerInst = SharingInvitationViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +32,15 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
         UITabBar.appearance().tintColor = UIColor(named: .statusBarBlue)
         self.automaticallyAdjustsScrollViewInsets = false
         
-        // Create MyItems Tab
+        // Create tabStatus
         let tabStatus = UITabBarItem(title: "Sharing Status", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
         self.sharingStatusViewControllerInst.tabBarItem = tabStatus
         
-        self.viewControllers = [self.sharingStatusViewControllerInst]
+        // Create tabInvitation
+        let tabInvitation = UITabBarItem(title: "Sharing Invitations", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
+        self.sharingInvitationViewControllerInst.tabBarItem = tabInvitation
+        
+        self.viewControllers = [self.sharingStatusViewControllerInst, sharingInvitationViewControllerInst]
         
         let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonClicked))
         self.navigationItem.rightBarButtonItems = [doneButton]

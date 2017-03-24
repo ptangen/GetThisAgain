@@ -17,18 +17,22 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
 
     weak var delegate: SharingStatusViewDelegate?
     let store = DataStore.sharedInstance
-    let usersWithAccessToMyListTableView = UITableView()
+    let usersWithAccessTableView = UITableView()
     let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
     var deleteUserButton = UIButton()
     var selectedSection = String()
     var selectedUserName = String()
     var selectedListID = Int()
+    var tabDescription = UILabel()
     
     override init(frame:CGRect){
         super.init(frame: frame)
         
-        self.usersWithAccessToMyListTableView.delegate = self
-        self.usersWithAccessToMyListTableView.dataSource = self
+        self.tabDescription.text = "Review who you are sharing your shopping list with and who is sharing their shopping list with you."
+        self.tabDescription.numberOfLines = 0
+        
+        self.usersWithAccessTableView.delegate = self
+        self.usersWithAccessTableView.dataSource = self
         
         // deleteCategoryButton
         self.deleteUserButton.addTarget(self, action: #selector(self.onTapDeleteUser), for: UIControlEvents.touchUpInside)
@@ -93,19 +97,26 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     
     func pageLayout() {
         
+        // tabDescription
+        self.addSubview(self.tabDescription)
+        self.tabDescription.translatesAutoresizingMaskIntoConstraints = false
+        self.tabDescription.topAnchor.constraint(equalTo: self.topAnchor, constant: 72).isActive = true
+        self.tabDescription.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 6).isActive = true
+        self.tabDescription.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 6).isActive = true
+        
         // myItemsTableView
-        self.addSubview(self.usersWithAccessToMyListTableView)
-        self.usersWithAccessToMyListTableView.translatesAutoresizingMaskIntoConstraints = false
-        self.usersWithAccessToMyListTableView.topAnchor.constraint(equalTo: self.topAnchor, constant: 120).isActive = true
-        self.usersWithAccessToMyListTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        self.usersWithAccessToMyListTableView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        self.usersWithAccessToMyListTableView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        self.addSubview(self.usersWithAccessTableView)
+        self.usersWithAccessTableView.translatesAutoresizingMaskIntoConstraints = false
+        self.usersWithAccessTableView.topAnchor.constraint(equalTo: self.tabDescription.bottomAnchor, constant: 60).isActive = true
+        self.usersWithAccessTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        self.usersWithAccessTableView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+        self.usersWithAccessTableView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
         
         // delete user button
         self.addSubview(self.deleteUserButton)
         self.deleteUserButton.translatesAutoresizingMaskIntoConstraints = false
-        self.deleteUserButton.bottomAnchor.constraint(equalTo: self.usersWithAccessToMyListTableView.topAnchor, constant: -4).isActive = true
-        self.deleteUserButton.rightAnchor.constraint(equalTo: self.usersWithAccessToMyListTableView.rightAnchor, constant: -12).isActive = true
+        self.deleteUserButton.bottomAnchor.constraint(equalTo: self.usersWithAccessTableView.topAnchor, constant: -4).isActive = true
+        self.deleteUserButton.rightAnchor.constraint(equalTo: self.usersWithAccessTableView.rightAnchor, constant: -12).isActive = true
     }
     
     func getSharingStatusFromDB() {
@@ -114,7 +125,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         APIClient.selectSharedLists(completion: { isSuccessful in
             if isSuccessful {
                 OperationQueue.main.addOperation {
-                    self.usersWithAccessToMyListTableView.reloadData()
+                    self.usersWithAccessTableView.reloadData()
                 }
             } else {
                 OperationQueue.main.addOperation {
