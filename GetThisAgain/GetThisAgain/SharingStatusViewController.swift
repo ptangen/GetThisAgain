@@ -32,19 +32,23 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
         self.sharingStatusViewInst.getSharingStatusFromDB()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.store.removeDefaultMessageFromSharedListStatusInvitations( completion: {
+                self.sharingStatusViewInst.usersWithAccessTableView.reloadData() })
+    }
+    
     func onTapDeleteUser(message: String) {
+        
+        // set the status to pending the user cannot see the list and the record becomes an invitation from the other user.
 
         let alertController = UIAlertController(title: "Confirmation", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default){ action -> Void in
             var action = String()
-            var slot = Int()
-            
-            if self.sharingStatusViewInst.selectedSection == "People that can see my shopping list" {
+
+            if self.sharingStatusViewInst.selectedSection == 0 {
                 action = "deleteRecord"  // remove the record that lets this user see my list.
-                slot = 0
             } else {
                 action = "updateToPending"  // set the status of the record that lets me see this user's list to pending
-                slot = 1
             }
             
             // send request to update DB
@@ -53,10 +57,14 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
                     if result == apiResponse.ok {
                         DispatchQueue.main.async {
                             // update the array in the datastore
-                            self.store.removeUserNameFromSharedListStatus(slot: slot, userName: self.sharingStatusViewInst.selectedUserName)
+                            self.store.removeUserNameFromSharedListStatus(slot: self.sharingStatusViewInst.selectedSection, userName: self.sharingStatusViewInst.selectedUserName)
+                            // add name to list of invitations
+                            if self.store.invitations.isEmpty == false {
+                                self.store.invitations[1].append((listID: self.sharingStatusViewInst.selectedListID, userName: self.sharingStatusViewInst.selectedUserName))
+                            }
                             self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
                             
-                            self.sharingStatusViewInst.selectedSection = String()
+                            self.sharingStatusViewInst.selectedSection = Int()
                             self.sharingStatusViewInst.selectedUserName = String()
                             self.sharingStatusViewInst.selectedListID = Int()
                             self.sharingStatusViewInst.deleteUserButton.isEnabled = false

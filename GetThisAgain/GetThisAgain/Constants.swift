@@ -30,6 +30,7 @@ struct Constants{
         case mode_edit =    "\u{E254}"
         case add =          "\u{E145}"
         case delete =       "\u{E872}"
+        case check =        "\u{E5CA}"
     }
     
     enum iconSize: CGFloat {

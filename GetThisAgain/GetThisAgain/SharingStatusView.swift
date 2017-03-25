@@ -20,7 +20,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     let usersWithAccessTableView = UITableView()
     let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
     var deleteUserButton = UIButton()
-    var selectedSection = String()
+    var selectedSection = Int()
     var selectedUserName = String()
     var selectedListID = Int()
     var tabDescription = UILabel()
@@ -51,7 +51,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     
     func onTapDeleteUser() {
         if let delegate = self.delegate {
-            delegate.onTapDeleteUser(message: "Are you sure you want to remove '\(self.selectedUserName)' from '\(self.selectedSection)'?")
+            delegate.onTapDeleteUser(message: "Are you sure you want to remove '\(self.selectedUserName)' from '\(self.sectionTitles[self.selectedSection])'?")
         }
     }
     
@@ -85,7 +85,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "You cannot see anyone's list." && self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "No one can see your list." {
-            self.selectedSection = self.sectionTitles[indexPath.section]
+            self.selectedSection = indexPath.section
             self.selectedUserName = self.store.sharedListStatus[indexPath.section][indexPath.row].userName
             selectedListID = self.store.sharedListStatus[indexPath.section][indexPath.row].listID
             
@@ -120,7 +120,6 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     }
     
     func getSharingStatusFromDB() {
-        self.store.sharedListStatus.removeAll()
         
         APIClient.selectSharedLists(completion: { isSuccessful in
             if isSuccessful {

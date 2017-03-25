@@ -124,17 +124,50 @@ class DataStore {
         return x
     }
     
+    func removeDefaultMessageFromSharedListStatusInvitations(completion: @escaping () -> Void) {
+        for (index1, _) in sharedListStatus.enumerated() {
+            if self.sharedListStatus[index1].count > 1 {
+                for (index2, listInArray) in self.sharedListStatus[index1].enumerated() {
+                    if listInArray.listID == -1 {
+                        self.sharedListStatus[index1].remove(at: index2)
+                    }
+                }
+            }
+            if self.invitations.isEmpty == false {
+                if self.invitations[index1].count > 1 {
+                    for (index3, listInArray) in self.invitations[index1].enumerated() {
+                        if listInArray.listID == -1 {
+                            self.invitations[index1].remove(at: index3)
+                        }
+                    }
+                }
+            }
+        }
+        completion()
+    }
+    
     func removeUserNameFromSharedListStatus(slot: Int, userName: String) {
         for (index, userNameInArray) in self.sharedListStatus[slot].enumerated() {
             if userName == userNameInArray.userName {
                 
                 self.sharedListStatus[slot].remove(at: index)
                 
-                if slot == 0 {
-                    self.sharedListStatus[slot].isEmpty ? self.sharedListStatus[slot].append((listID: -1, userName: "No one can see your list.")) : ()
-                } else {
-                    self.sharedListStatus[slot].isEmpty ? self.sharedListStatus[slot].append((listID: -1, userName: "You cannot see anyone's list.")) : ()
-                }
+                // make sure the message is available
+                self.sharedListStatus[0].isEmpty ? self.sharedListStatus[0].append((listID: -1, userName: "No one can see your list.")) : ()
+                self.sharedListStatus[1].isEmpty ? self.sharedListStatus[1].append((listID: -1, userName: "You cannot see anyone's list.")) : ()
+            }
+        }
+    }
+    
+    func removeUserNameFromInvitations(slot: Int, userName: String) {
+        for (index, userNameInArray) in self.invitations[slot].enumerated() {
+            if userName == userNameInArray.userName {
+                
+                self.invitations[slot].remove(at: index)
+                
+                // make sure the message is available
+                self.invitations[0].isEmpty ? self.invitations[0].append((listID: -1, userName: "Any invitations sent have been addressed.")) : ()
+                self.invitations[1].isEmpty ? self.invitations[1].append((listID: -1, userName: "You have addressed any invitations received.")) : ()
             }
         }
     }

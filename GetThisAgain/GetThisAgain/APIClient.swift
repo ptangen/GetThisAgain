@@ -484,6 +484,7 @@ class APIClient {
                             if tempUsersListICanAccess.isEmpty {
                                 tempUsersListICanAccess.append((listID: -1, userName:"You cannot see anyone's list."))
                             }
+                            store.sharedListStatus.removeAll()
                             store.sharedListStatus.append(tempUsersWithAccessToMyList)
                             store.sharedListStatus.append(tempUsersListICanAccess)
                         }
@@ -592,6 +593,7 @@ class APIClient {
                             if usersWhoInvitedMeToViewTheirList.isEmpty {
                                 usersWhoInvitedMeToViewTheirList.append((listID: -1, userName:"You have accepted or deleted any invitations received."))
                             }
+                            store.invitations.removeAll()
                             store.invitations.append(usersInvitedToViewMyList)
                             store.invitations.append(usersWhoInvitedMeToViewTheirList)
                         }
@@ -610,14 +612,12 @@ class APIClient {
         let url = URL(string: urlString)
         if let url = url {
             var request = URLRequest(url: url)
-            
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
-            
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            var parameterString = String()
+            // set the parameters
             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                parameterString = "createdBy=\(userName)&id=\(category.id)&label=\(category.label)&key=\(Secrets.gtaKey)"
+                let parameterString = "createdBy=\(userName)&id=\(category.id)&label=\(category.label)&key=\(Secrets.gtaKey)"
                 request.httpBody = parameterString.data(using: .utf8)
             }
 
@@ -647,6 +647,49 @@ class APIClient {
         }
     }
     
+    class func handleInvitation(action: String, userName: String, listID: Int, status: String, completion: @escaping (apiResponse) -> Void) {
+        
+        // add a record to listAccess with the currentUser's list id, the recipent specified (who will become the userName) and set the status to pending
+        let urlString = "\(Secrets.gtaURL)/handleInvitation.php"
+        let url = URL(string: urlString)
+        if let url = url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // set the parameters
+            let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&userName=\(userName)&listID=\(listID)&status=\(status)"
+            request.httpBody = parameterString.data(using: .utf8)
+            
+            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        do {
+                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
+                                if let results = json["results"] as! Int? {
+                                    if results == 1 {
+                                        completion(.ok)
+                                    } else if results == -10 {
+                                        completion(.userNameInvalid)
+                                    } else if results == -1 {
+                                        completion(.failed)
+                                    } else {
+                                        completion(.noReply)
+                                    }
+                                }
+                            }
+                        } catch {
+                            completion(.noReply)
+                        }
+                    }
+                }
+            }).resume()
+        } else {
+            print("error: unable to unwrap url")
+        }
+    }
+
     class func deleteMyCategory(id: Int, completion: @escaping (apiResponse) -> Void) {
         
         let urlString = "\(Secrets.gtaURL)/deleteMyCategory.php"
@@ -668,7 +711,6 @@ class APIClient {
                     DispatchQueue.main.async {
                         do {
                             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
-                                
                                 if let results = json["results"] {
                                     if results == "1" {
                                         completion(.ok)
