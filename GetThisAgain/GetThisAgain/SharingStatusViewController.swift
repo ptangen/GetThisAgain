@@ -21,7 +21,6 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func loadView(){
@@ -29,45 +28,39 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.sharingStatusViewInst.frame = CGRect.zero
         self.view = self.sharingStatusViewInst
-        self.sharingStatusViewInst.getSharingStatusFromDB()
+        self.sharingStatusViewInst.getAccessListFromDB()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.store.removeDefaultMessageFromSharedListStatusInvitations( completion: {
-                self.sharingStatusViewInst.usersWithAccessTableView.reloadData() })
+        self.sharingStatusViewInst.createArraysForTableView()
+        self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
     }
     
     func onTapDeleteUser(message: String) {
         
         // set the status to pending the user cannot see the list and the record becomes an invitation from the other user.
-
         let alertController = UIAlertController(title: "Confirmation", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default){ action -> Void in
             var action = String()
 
             if self.sharingStatusViewInst.selectedSection == 0 {
-                action = "deleteRecord"  // remove the record that lets this user see my list.
+                action = "delete"  // remove the record that lets this user see my list.
             } else {
-                action = "updateToPending"  // set the status of the record that lets me see this user's list to pending
+                action = "updateToPendingByViewer"  // set the status of the record that lets me see this user's list to pending
             }
             
             // send request to update DB
-            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                APIClient.editSharedListAccess(action: action, listID: self.sharingStatusViewInst.selectedListID, userName: userName, completion: { (result) in
+            if let selectedAccessRecord = self.sharingStatusViewInst.selectedAccessRecord {
+                APIClient.handleAccessRecord(action: action, listID: selectedAccessRecord.id, listOwner: selectedAccessRecord.owner, listViewer: selectedAccessRecord.viewer, status: selectedAccessRecord.status, completion: { (result) in
                     if result == apiResponse.ok {
                         DispatchQueue.main.async {
                             // update the array in the datastore
-                            self.store.removeUserNameFromSharedListStatus(slot: self.sharingStatusViewInst.selectedSection, userName: self.sharingStatusViewInst.selectedUserName)
-                            // add name to list of invitations
-                            if self.store.invitations.isEmpty == false {
-                                self.store.invitations[1].append((listID: self.sharingStatusViewInst.selectedListID, userName: self.sharingStatusViewInst.selectedUserName))
+                            if action == "delete" {
+                                self.store.removeAccessRecord(accessRecord: self.sharingStatusViewInst.selectedAccessRecord!)
+                            } else {
+                                selectedAccessRecord.status = "pending"
                             }
-                            self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
-                            
-                            self.sharingStatusViewInst.selectedSection = Int()
-                            self.sharingStatusViewInst.selectedUserName = String()
-                            self.sharingStatusViewInst.selectedListID = Int()
-                            self.sharingStatusViewInst.deleteUserButton.isEnabled = false
+                            self.sharingStatusViewInst.createArraysForTableView()
                         }
                     } else {
                         Utilities.showAlertMessage("The system was unable to remove this user.", viewControllerInst: self)

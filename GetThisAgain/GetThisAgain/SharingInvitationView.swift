@@ -25,9 +25,9 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
     var acceptInvitationButton = UIButton()
     var deleteInvitationButton = UIButton()
     var selectedSection = Int()
-    var selectedUserName = String()
-    var selectedListID = Int()
+    var selectedAccessRecord: AccessRecord?
     var tabDescription = UILabel()
+    var accessListInvitations = Array(repeating: [AccessRecord](), count: 2)
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -76,17 +76,21 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
     
     func onTapAcceptInvitation() {
         if let delegate = self.delegate {
+            if let selectedAccessRecord = self.selectedAccessRecord {
+                selectedAccessRecord.status = "accepted"
+            }
             delegate.onTapAcceptInvitation()
         }
     }
     
     func onTapDeleteInvitation() {
         if let delegate = self.delegate {
-            
-            if self.selectedSection == 0 {
-                delegate.onTapDeleteInvitation(message: "Are you sure you want to delete the invitation to '\(self.selectedUserName)' to view your shopping list?")
-            } else {
-                delegate.onTapDeleteInvitation(message: "Are you sure you want to delete the invitation from '\(self.selectedUserName)' to view his/her shopping list?")
+            if let selectedAccessRecord = self.selectedAccessRecord {
+                if self.selectedSection == 0 {
+                    delegate.onTapDeleteInvitation(message: "Are you sure you want to delete the invitation to '\(selectedAccessRecord.viewer)' to view your shopping list?")
+                } else {
+                    delegate.onTapDeleteInvitation(message: "Are you sure you want to delete the invitation from '\(selectedAccessRecord.owner)' to view his/her shopping list?")
+                }
             }
         }
     }
@@ -102,11 +106,7 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.store.invitations.isEmpty {
-            return 0
-        } else {
-            return self.store.invitations[section].count
-        }
+        return self.accessListInvitations[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -114,24 +114,28 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         let cell = UITableViewCell(style: .default, reuseIdentifier: "prototype")
         
         if let textLabel = cell.textLabel {
-            textLabel.text = self.store.invitations[indexPath.section][indexPath.row].userName
+            if indexPath.section == 0 {
+                self.accessListInvitations[indexPath.section].isEmpty ? (textLabel.text = "none") : (textLabel.text = self.accessListInvitations[indexPath.section][indexPath.row].viewer)
+            } else {
+                self.accessListInvitations[indexPath.section].isEmpty ? (textLabel.text = "none") : (textLabel.text = self.accessListInvitations[indexPath.section][indexPath.row].owner)
+            }
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if self.store.invitations[indexPath.section][indexPath.row].userName != "Any invitations sent have been addressed" && self.store.invitations[indexPath.section][indexPath.row].userName != "You have addressed any invitations received." {
+        
+        if self.accessListInvitations[indexPath.section].isEmpty {
+            self.selectedAccessRecord = nil
+            self.deleteInvitationButton.isEnabled = false
+            self.selectedSection = Int()
+        } else {
             self.selectedSection = indexPath.section
-            self.selectedUserName = self.store.invitations[indexPath.section][indexPath.row].userName
-            selectedListID = self.store.invitations[indexPath.section][indexPath.row].listID
-            
+            self.selectedAccessRecord = self.accessListInvitations[indexPath.section][indexPath.row]
             self.deleteInvitationButton.isEnabled = true
             
             // enable acceptInvitationButton for invitations received
             indexPath.section == 1 ? (self.acceptInvitationButton.isEnabled = true) : (self.acceptInvitationButton.isEnabled = false)
-            
-        } else {
-            self.deleteInvitationButton.isEnabled = false
         }
     }
     
@@ -171,21 +175,24 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.addInvitationButton.rightAnchor.constraint(equalTo: self.acceptInvitationButton.leftAnchor, constant: -18).isActive = true
     }
     
-    func getInvitationsFromDB() {
-        
-        APIClient.selectInvitations(completion: { isSuccessful in
+    func createArraysForTableView() {
 
-            if isSuccessful {
-                OperationQueue.main.addOperation {
-                    self.invitationsTableView.reloadData()
-                }
-            } else {
-                OperationQueue.main.addOperation {
-                    //self.activityIndicator.isHidden = true  TODO: Add spinner
-                }
-                self.delegate?.showAlertMessage(message: "Unable to retrieve invitations from the server.")
+        self.selectedAccessRecord = nil
+        self.deleteInvitationButton.isEnabled = false
+        
+        OperationQueue.main.addOperation {
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                self.accessListInvitations[0] = self.store.accessList.filter(
+                    { $0.owner == userName && $0.viewer != userName && $0.status == "pending" } )
+                self.accessListInvitations[1] = self.store.accessList.filter(
+                    { $0.viewer == userName && $0.owner != userName && $0.status == "pending" } )
+                
+                // add messages when no record exists
+                self.accessListInvitations[0].isEmpty ? (self.accessListInvitations[0] = [AccessRecord(id: -1, owner: "", viewer: "No pending invitations found.", status: "empty")]) : ()
+                self.accessListInvitations[1].isEmpty ? (self.accessListInvitations[1] = [AccessRecord(id: -1, owner: "No pending invitations found.", viewer: "", status: "empty")]) : ()
+                
+                self.invitationsTableView.reloadData()
             }
-        })
+        }
     }
-    
 }

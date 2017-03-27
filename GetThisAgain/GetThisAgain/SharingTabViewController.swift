@@ -41,6 +41,7 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
         self.sharingInvitationViewControllerInst.tabBarItem = tabInvitation
         
         self.viewControllers = [self.sharingStatusViewControllerInst, sharingInvitationViewControllerInst]
+        //self.viewControllers = [self.sharingStatusViewControllerInst]
         
         let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonClicked))
         self.navigationItem.rightBarButtonItems = [doneButton]

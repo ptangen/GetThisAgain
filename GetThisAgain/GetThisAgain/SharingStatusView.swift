@@ -21,9 +21,9 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
     var deleteUserButton = UIButton()
     var selectedSection = Int()
-    var selectedUserName = String()
-    var selectedListID = Int()
+    var selectedAccessRecord: AccessRecord?
     var tabDescription = UILabel()
+    var accessListAccepted = Array(repeating: [AccessRecord](), count: 2)
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -51,7 +51,16 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     
     func onTapDeleteUser() {
         if let delegate = self.delegate {
-            delegate.onTapDeleteUser(message: "Are you sure you want to remove '\(self.selectedUserName)' from '\(self.sectionTitles[self.selectedSection])'?")
+            var message = String()
+            if let selectedAccessRecord = self.selectedAccessRecord {
+                if self.selectedSection == 0 {
+                    message = "Are you sure you want to stop \(selectedAccessRecord.viewer) from viewing your shopping list?"
+                } else {
+                    message = "Are you sure you want to stop viewing \(selectedAccessRecord.owner)'s shopping list?"
+                    selectedAccessRecord.status = "pending"
+                }
+                delegate.onTapDeleteUser(message: message)
+            }
         }
     }
     
@@ -66,11 +75,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.store.sharedListStatus.isEmpty {
-            return 0
-        } else {
-            return self.store.sharedListStatus[section].count
-        }
+        return self.accessListAccepted[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -78,20 +83,26 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "prototype")
         
         if let textLabel = cell.textLabel {
-            textLabel.text = self.store.sharedListStatus[indexPath.section][indexPath.row].userName
+            if indexPath.section == 0 {
+                self.accessListAccepted[indexPath.section].isEmpty ? (textLabel.text = "none") : (textLabel.text = self.accessListAccepted[indexPath.section][indexPath.row].viewer)
+            } else {
+                self.accessListAccepted[indexPath.section].isEmpty ? (textLabel.text = "none") : (textLabel.text = self.accessListAccepted[indexPath.section][indexPath.row].owner)
+            }
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "You cannot see anyone's list." && self.store.sharedListStatus[indexPath.section][indexPath.row].userName != "No one can see your list." {
-            self.selectedSection = indexPath.section
-            self.selectedUserName = self.store.sharedListStatus[indexPath.section][indexPath.row].userName
-            selectedListID = self.store.sharedListStatus[indexPath.section][indexPath.row].listID
-            
-            self.deleteUserButton.isEnabled = true
-        } else {
+
+        if self.accessListAccepted[indexPath.section].isEmpty {
+            self.selectedAccessRecord = nil
             self.deleteUserButton.isEnabled = false
+            self.selectedSection = Int()
+            
+        } else {
+            self.selectedSection = indexPath.section
+            self.selectedAccessRecord = self.accessListAccepted[indexPath.section][indexPath.row]
+            self.deleteUserButton.isEnabled = true
         }
     }
     
@@ -119,19 +130,41 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         self.deleteUserButton.rightAnchor.constraint(equalTo: self.usersWithAccessTableView.rightAnchor, constant: -12).isActive = true
     }
     
-    func getSharingStatusFromDB() {
+    func getAccessListFromDB() {
+        if self.store.accessList.isEmpty {
+            APIClient.getAccessList(completion: { isSuccessful in
+                if isSuccessful {
+                    self.createArraysForTableView()
+                } else {
+                    OperationQueue.main.addOperation {
+                        //self.activityIndicator.isHidden = true  TODO: Add spinner
+                    }
+                    if let delegate = self.delegate {
+                        delegate.showAlertMessage(message: "Unable to retrieve data from the server.")
+                    }
+                }
+            })
+        }
+    }
+    
+    func createArraysForTableView() {
         
-        APIClient.selectSharedLists(completion: { isSuccessful in
-            if isSuccessful {
-                OperationQueue.main.addOperation {
-                    self.usersWithAccessTableView.reloadData()
-                }
-            } else {
-                OperationQueue.main.addOperation {
-                    //self.activityIndicator.isHidden = true  TODO: Add spinner
-                }
-                self.delegate?.showAlertMessage(message: "Unable to retrieve data from the server.")
+        self.selectedAccessRecord = nil
+        self.deleteUserButton.isEnabled = false
+        
+        OperationQueue.main.addOperation {
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                self.accessListAccepted[0] = self.store.accessList.filter(
+                    { $0.owner == userName && $0.viewer != userName && $0.status == "accepted" } )
+                self.accessListAccepted[1] = self.store.accessList.filter(
+                    { $0.viewer == userName && $0.owner != userName && $0.status == "accepted" } )
+                
+                // add messages when no record exists
+                self.accessListAccepted[0].isEmpty ? (self.accessListAccepted[0] = [AccessRecord(id: -1, owner: "", viewer: "Nobody has access to your list.", status: "empty")]) : ()
+                self.accessListAccepted[1].isEmpty ? (self.accessListAccepted[1] = [AccessRecord(id: -1, owner: "Nobody is sharing their list with you.", viewer: "", status: "empty")]) : ()
+                
+                self.usersWithAccessTableView.reloadData()
             }
-        })
+        }
     }
 }

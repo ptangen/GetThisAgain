@@ -425,10 +425,10 @@ class APIClient {
         }
     }
     
-    class func selectSharedLists(completion: @escaping (Bool) -> Void) {
+    class func getAccessList(completion: @escaping (Bool) -> Void) {
         
         let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.gtaURL)/selectSharedLists.php"
+        let urlString = "\(Secrets.gtaURL)/selectAccessList.php"
         let url = URL(string: urlString)
         if let url = url {
             var request = URLRequest(url: url)
@@ -437,56 +437,29 @@ class APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             
-            // get the user's list id and userName and then set the parameters
-            if let myList = store.myLists.first {
-                if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)&listID=\(myList.id)"
-                    request.httpBody = parameterString.data(using: .utf8)
-                }
+            // get the userName and then set the parameters
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)"
+                request.httpBody = parameterString.data(using: .utf8)
             }
             
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 if let unwrappedData = data {
                     do {
-                        
                         let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
                         if let responseJSON = responseJSON {
-                            
-                            // usersWithAccessToMyList
-                            var tempUsersWithAccessToMyList = [(listID: Int, userName: String)]()
-                            if let usersWithAccessToMyListDictAny = responseJSON["usersWithAccessToMyList"] {
-                                let usersWithAccessToMyListDict = usersWithAccessToMyListDictAny as! [[String:String]]
-                                for userWithAccessToMyListDict in usersWithAccessToMyListDict {
-                                    if let listIDString = userWithAccessToMyListDict["listID"], let userName = userWithAccessToMyListDict["userName"] {
+                            // accessList
+                            if let accessListDictAny = responseJSON["accessList"] {
+                                let accessListDict = accessListDictAny as! [[String:String]]
+                                for accessRecordDict in accessListDict {
+                                    if let listIDString = accessRecordDict["listID"], let listOwner = accessRecordDict["listOwner"], let listViewer = accessRecordDict["listViewer"], let status = accessRecordDict["status"] {
                                         if let listID = Int(listIDString) {
-                                            tempUsersWithAccessToMyList.append((listID: listID, userName:userName))
+                                            let accessRecordInst = AccessRecord(id: listID, owner: listOwner, viewer: listViewer, status: status)
+                                            store.accessList.append(accessRecordInst)
                                         }
                                     }
                                 }
                             }
-                            
-                            // usersListICanAccess
-                            var tempUsersListICanAccess = [(listID: Int, userName: String)]()
-                            if let usersListICanAccessDictAny = responseJSON["usersListICanAccess"] {
-                                let usersListICanAccessDict = usersListICanAccessDictAny as! [[String:String]]
-                                for userListICanAccessDict in usersListICanAccessDict {
-                                    if let listIDString = userListICanAccessDict["listID"], let userName = userListICanAccessDict["userName"] {
-                                        if let listID = Int(listIDString) {
-                                            tempUsersListICanAccess.append((listID: listID, userName:userName))
-                                        }
-                                    }
-                                }
-                            }
-                            // insert the "none" label of the arrays are empty to display in the tableview
-                            if tempUsersWithAccessToMyList.isEmpty {
-                                tempUsersWithAccessToMyList.append((listID: -1, userName:"No one can see your list."))
-                            }
-                            if tempUsersListICanAccess.isEmpty {
-                                tempUsersListICanAccess.append((listID: -1, userName:"You cannot see anyone's list."))
-                            }
-                            store.sharedListStatus.removeAll()
-                            store.sharedListStatus.append(tempUsersWithAccessToMyList)
-                            store.sharedListStatus.append(tempUsersListICanAccess)
                         }
                         completion(true)
                     } catch {
@@ -497,10 +470,9 @@ class APIClient {
         }
     }
     
-    class func editSharedListAccess(action: String, listID: Int, userName: String, completion: @escaping (apiResponse) -> Void) {
+    class func handleAccessRecord(action: String, listID: Int, listOwner: String, listViewer: String, status: String, completion: @escaping (apiResponse) -> Void) {
         
-        //let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.gtaURL)/editSharedListAccess.php"
+        let urlString = "\(Secrets.gtaURL)/handleAccessRecord.php"
         let url = URL(string: urlString)
         if let url = url {
             var request = URLRequest(url: url)
@@ -509,17 +481,17 @@ class APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             
-            let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&listID=\(listID)&userName=\(userName)"
+            let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&listID=\(listID)&listOwner=\(listOwner)&listViewer=\(listViewer)&status=\(status)"
             request.httpBody = parameterString.data(using: .utf8)
             
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 if let data = data {
                     do {
-                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Int] {
                             if let results = json["results"] {
-                                if results == "1" {
+                                if results == 1 {
                                     completion(.ok)
-                                } else if results == "-1" {
+                                } else if results == -1 {
                                     completion(.failed)
                                 } else {
                                     completion(.noReply)
@@ -528,78 +500,6 @@ class APIClient {
                         }
                     } catch {
                         completion(.noReply)
-                    }
-                }
-            }).resume()
-        }
-    }
-    
-    class func selectInvitations(completion: @escaping (Bool) -> Void) {
-        
-        let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.gtaURL)/selectInvitations.php"
-        let url = URL(string: urlString)
-        if let url = url {
-            var request = URLRequest(url: url)
-            
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Accept")
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            
-            // get the user's list id and userName and then set the parameters
-            if let myList = store.myLists.first {
-                if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                    let parameterString = "key=\(Secrets.gtaKey)&userName=\(userName)&listID=\(myList.id)"
-                    request.httpBody = parameterString.data(using: .utf8)
-                }
-            }
-
-            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
-                if let unwrappedData = data {
-                    do {
-                        
-                        let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
-                        if let responseJSON = responseJSON {
-
-                            // usersInvitedToViewMyList
-                            var usersInvitedToViewMyList = [(listID: Int, userName: String)]()
-                            if let usersInvitedToViewMyListDictAny = responseJSON["usersInvitedToViewMyList"] {
-                                let usersInvitedToViewMyListDict = usersInvitedToViewMyListDictAny as! [[String:String]]
-                                for userInvitedToViewMyListDict in usersInvitedToViewMyListDict {
-                                    if let listIDString = userInvitedToViewMyListDict["listID"], let userName = userInvitedToViewMyListDict["userName"] {
-                                        if let listID = Int(listIDString) {
-                                            usersInvitedToViewMyList.append((listID: listID, userName:userName))
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            // usersWhoInvitedMeToViewTheirList
-                            var usersWhoInvitedMeToViewTheirList = [(listID: Int, userName: String)]()
-                            if let usersWhoInvitedMeToViewTheirListDictAny = responseJSON["usersWhoInvitedMeToViewTheirList"] {
-                                let usersWhoInvitedMeToViewTheirListDict = usersWhoInvitedMeToViewTheirListDictAny as! [[String:String]]
-                                for userWhoInvitedMeToViewTheirListDict in usersWhoInvitedMeToViewTheirListDict {
-                                    if let listIDString = userWhoInvitedMeToViewTheirListDict["listID"], let userName = userWhoInvitedMeToViewTheirListDict["userName"] {
-                                        if let listID = Int(listIDString) {
-                                            usersWhoInvitedMeToViewTheirList.append((listID: listID, userName:userName))
-                                        }
-                                    }
-                                }
-                            }
-                            // insert the "none" label of the arrays are empty to display in the tableview
-                            if usersInvitedToViewMyList.isEmpty {
-                                usersInvitedToViewMyList.append((listID: -1, userName:"Any invitations sent have been accepted or deleted."))
-                            }
-                            if usersWhoInvitedMeToViewTheirList.isEmpty {
-                                usersWhoInvitedMeToViewTheirList.append((listID: -1, userName:"You have accepted or deleted any invitations received."))
-                            }
-                            store.invitations.removeAll()
-                            store.invitations.append(usersInvitedToViewMyList)
-                            store.invitations.append(usersWhoInvitedMeToViewTheirList)
-                        }
-                        completion(true)
-                    } catch {
-                        completion(false) // An error occurred when creating responseJSON
                     }
                 }
             }).resume()
@@ -629,49 +529,6 @@ class APIClient {
                                 if let results = json["results"] as! Int? {
                                     if results == 1 {
                                         completion(.ok)
-                                    } else if results == -1 {
-                                        completion(.failed)
-                                    } else {
-                                        completion(.noReply)
-                                    }
-                                }
-                            }
-                        } catch {
-                            completion(.noReply)
-                        }
-                    }
-                }
-            }).resume()
-        } else {
-            print("error: unable to unwrap url")
-        }
-    }
-    
-    class func handleInvitation(action: String, userName: String, listID: Int, status: String, completion: @escaping (apiResponse) -> Void) {
-        
-        // add a record to listAccess with the currentUser's list id, the recipent specified (who will become the userName) and set the status to pending
-        let urlString = "\(Secrets.gtaURL)/handleInvitation.php"
-        let url = URL(string: urlString)
-        if let url = url {
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Accept")
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            
-            // set the parameters
-            let parameterString = "key=\(Secrets.gtaKey)&action=\(action)&userName=\(userName)&listID=\(listID)&status=\(status)"
-            request.httpBody = parameterString.data(using: .utf8)
-            
-            URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
-                if let data = data {
-                    DispatchQueue.main.async {
-                        do {
-                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                                if let results = json["results"] as! Int? {
-                                    if results == 1 {
-                                        completion(.ok)
-                                    } else if results == -10 {
-                                        completion(.userNameInvalid)
                                     } else if results == -1 {
                                         completion(.failed)
                                     } else {
