@@ -29,14 +29,15 @@ class ItemDetailView: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.getAgainLabel.text = "Get This Again"
+        self.getAgainLabel.text = "Get This Again?"
         self.shoppingListLabel.text = "On Shopping List"
         
         // configure segmented control to pick status for the measure
-        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.no)(), at: 0, animated: false)
-        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.unsure)(), at: 1, animated: false)
-        self.getAgainPicker.insertSegment(withTitle: GetAgain.label(.yes)(), at: 2, animated: false)
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleTimes"), at: 0, animated: false)
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleQuestion"), at: 1, animated: false)
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleCheck"), at: 2, animated: false)
         self.getAgainPicker.selectedSegmentIndex = 1
+ 
         self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
         
         self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
@@ -113,7 +114,7 @@ class ItemDetailView: UIView {
         self.categoryLabel.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 6).isActive = true
         self.categoryLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         self.categoryLabel.numberOfLines = 0
-        self.categoryLabel.font = UIFont(name: "HelveticaNeue", size: CGFloat(12.0))
+        self.categoryLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.xsmall.rawValue)
         
         // getAgainLabel
         self.addSubview(self.getAgainLabel)

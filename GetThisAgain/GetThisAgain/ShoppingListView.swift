@@ -75,13 +75,13 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         switch shoppingItemCurrent.getAgain.rawValue {
         case "yes" :
             cell.getThisAgainLabel.text = Constants.iconLibrary.faCheckCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusGreen)
+            cell.getThisAgainLabel.textColor = UIColor(named: .statusGreen)
         case "no" :
             cell.getThisAgainLabel.text = Constants.iconLibrary.faTimesCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusRed)
+            cell.getThisAgainLabel.textColor = UIColor(named: .statusRed)
         default:
             cell.getThisAgainLabel.text = Constants.iconLibrary.faQuestionCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.disabledText)
+            cell.getThisAgainLabel.textColor = UIColor(named: .disabledText)
         }
         
         // set the image
