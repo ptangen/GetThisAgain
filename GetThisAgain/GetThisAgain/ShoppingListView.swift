@@ -31,7 +31,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         self.shoppingListTableView.delegate = self
         self.shoppingListTableView.dataSource = self
-        self.shoppingListTableView.register(ShoppingListTableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.shoppingListTableView.register(ItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
         
         self.searchController.searchResultsUpdater = self
         self.searchController.hidesNavigationBarDuringPresentation = false
@@ -59,7 +59,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = ShoppingListTableViewCell(style: .default, reuseIdentifier: "prototype")
+        let cell = ItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
         var shoppingItemCurrent: MyItem
         if searchController.isActive && searchController.searchBar.text != "" {
             shoppingItemCurrent = self.filteredItems[indexPath.row]
@@ -67,9 +67,24 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
             shoppingItemCurrent = self.shoppingListItems[indexPath.row]
         }
         
-        cell.titleLabel.text = shoppingItemCurrent.itemName  + " (" + shoppingItemCurrent.getAgain.label() + ")"
+        // set the title and subtitle
+        cell.titleLabel.text = shoppingItemCurrent.itemName
         cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: shoppingItemCurrent.categoryID)
         
+        // set the icon for the getAgain status
+        switch shoppingItemCurrent.getAgain.rawValue {
+        case "yes" :
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faCheckCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusGreen)
+        case "no" :
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faTimesCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusRed)
+        default:
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faQuestionCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.disabledText)
+        }
+        
+        // set the image
         if shoppingItemCurrent.imageURL.isEmpty {
             // show no image found
             cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")

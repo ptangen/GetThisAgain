@@ -31,7 +31,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         self.myItemsTableView.delegate = self
         self.myItemsTableView.dataSource = self
-        self.myItemsTableView.register(MyItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.myItemsTableView.register(ItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
         
         self.searchController.searchResultsUpdater = self
         self.searchController.hidesNavigationBarDuringPresentation = false 
@@ -60,7 +60,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = MyItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
+        let cell = ItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
         var myItemCurrent: MyItem!
         if searchController.isActive && searchController.searchBar.text != "" {
             myItemCurrent = self.filteredItems[indexPath.row]
@@ -68,9 +68,24 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
             myItemCurrent = self.store.myItems[indexPath.row]
         }
         
-        cell.titleLabel.text = myItemCurrent.itemName  + " (" + myItemCurrent.getAgain.label() + ")"
+        // set the title and subtitle
+        cell.titleLabel.text = myItemCurrent.itemName
         cell.subTitleLabel.text = self.store.getCategoryLabelFromID(id: myItemCurrent.categoryID)
         
+        // set the icon for the getAgain status
+        switch myItemCurrent.getAgain.rawValue {
+        case "yes" :
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faCheckCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusGreen)
+        case "no" :
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faTimesCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusRed)
+        default:
+            cell.getThisAgainLabel.text = Constants.iconLibrary.faQuestionCircle.rawValue
+            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.disabledText)
+        }
+        
+        // set the image
         if myItemCurrent.imageURL.isEmpty {
             // show no image found
             cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")

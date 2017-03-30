@@ -29,7 +29,7 @@
 		C06712181E57498F0047473B /* MyItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712171E57498F0047473B /* MyItemsView.swift */; };
 		C067121A1E5749DF0047473B /* MyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712191E5749DF0047473B /* MyItem.swift */; };
 		C067121C1E574A380047473B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121B1E574A380047473B /* Constants.swift */; };
-		C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */; };
+		C067121E1E574AB20047473B /* ItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121D1E574AB20047473B /* ItemsTableViewCell.swift */; };
 		C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C067121F1E574C700047473B /* CaptureItemViewController.swift */; };
 		C06712221E574C9E0047473B /* CaptureItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712211E574C9E0047473B /* CaptureItemView.swift */; };
 		C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06712231E574FC30047473B /* ItemsTabViewController.swift */; };
@@ -49,7 +49,6 @@
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
-		C0CE94FC1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94FB1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift */; };
 		C62DA4F975655931B192D62B /* Pods_GetThisAgain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B51790200D6975B2C6AB2BA9 /* Pods_GetThisAgain.framework */; };
 /* End PBXBuildFile section */
 
@@ -94,7 +93,7 @@
 		C06712171E57498F0047473B /* MyItemsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsView.swift; sourceTree = "<group>"; };
 		C06712191E5749DF0047473B /* MyItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItem.swift; sourceTree = "<group>"; };
 		C067121B1E574A380047473B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyItemsTableViewCell.swift; sourceTree = "<group>"; };
+		C067121D1E574AB20047473B /* ItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTableViewCell.swift; sourceTree = "<group>"; };
 		C067121F1E574C700047473B /* CaptureItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemViewController.swift; sourceTree = "<group>"; };
 		C06712211E574C9E0047473B /* CaptureItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureItemView.swift; sourceTree = "<group>"; };
 		C06712231E574FC30047473B /* ItemsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsTabViewController.swift; sourceTree = "<group>"; };
@@ -116,7 +115,6 @@
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
-		C0CE94FB1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,9 +239,8 @@
 			children = (
 				C0A232D31E6861BC00FB1617 /* SignInView.swift */,
 				C06712171E57498F0047473B /* MyItemsView.swift */,
-				C067121D1E574AB20047473B /* MyItemsTableViewCell.swift */,
 				C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */,
-				C0CE94FB1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift */,
+				C067121D1E574AB20047473B /* ItemsTableViewCell.swift */,
 				C06712211E574C9E0047473B /* CaptureItemView.swift */,
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
 				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
@@ -461,8 +458,7 @@
 				C0A232D71E6862B200FB1617 /* KeychainWrapper.m in Sources */,
 				C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */,
 				C0393E601E84649900541969 /* SharingStatusView.swift in Sources */,
-				C067121E1E574AB20047473B /* MyItemsTableViewCell.swift in Sources */,
-				C0CE94FC1E5CE8CB00099F61 /* ShoppingListTableViewCell.swift in Sources */,
+				C067121E1E574AB20047473B /* ItemsTableViewCell.swift in Sources */,
 				C06712241E574FC30047473B /* ItemsTabViewController.swift in Sources */,
 				C0393E5C1E8460D800541969 /* SharingTabViewController.swift in Sources */,
 				C067121C1E574A380047473B /* Constants.swift in Sources */,
