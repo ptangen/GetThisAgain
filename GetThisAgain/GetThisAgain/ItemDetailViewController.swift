@@ -19,7 +19,6 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     var cancelButton = UIBarButtonItem()
     var doneButton = UIBarButtonItem()
     var deleteButton = UIBarButtonItem()
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()

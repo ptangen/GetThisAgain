@@ -21,7 +21,6 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,6 +49,22 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate {
         
         let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "menu"), style: .plain, target: self, action: #selector(menuButtonClicked))
         self.navigationItem.leftBarButtonItems = [menuButton]
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        // open most recently used tab
+        UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") ? (self.selectedIndex = 1) : (self.selectedIndex = 0)
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+
+        // save mostRecentTabIsShoppingList in user prefs so when the user visits the tabs again it will show the most recently used tab
+        self.selectedIndex == 0 ? UserDefaults.standard.setValue(false, forKey: "mostRecentTabIsShoppingList") : UserDefaults.standard.setValue(true, forKey: "mostRecentTabIsShoppingList")
     }
     
     func addButtonClicked() {

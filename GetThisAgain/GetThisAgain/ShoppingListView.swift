@@ -12,7 +12,6 @@ protocol ShoppingListViewDelegate: class {
     func openItemDetail(item: MyItem)
 }
 
-
 class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
     weak var delegate: ShoppingListViewDelegate?
@@ -85,6 +84,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         if searchController.isActive && searchController.searchBar.text != "" {
             self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {

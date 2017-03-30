@@ -85,6 +85,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
         if searchController.isActive && searchController.searchBar.text != "" {
             self.delegate?.openItemDetail(item: self.filteredItems[indexPath.row])
         } else {
@@ -114,23 +115,6 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-    }
-    
-    func getMyItemsFromDB() {
-        if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-            APIClient.selectMyItems(createdBy: userName) { isSuccessful in
-                if isSuccessful {
-                    OperationQueue.main.addOperation {
-                        self.myItemsTableView.reloadData()
-                    }
-                } else {
-                    OperationQueue.main.addOperation {
-                        //self.activityIndicator.isHidden = true  TODO: Add spinner
-                    }
-                    self.delegate?.showAlertMessage("Unable to retrieve data from the server.")
-                }
-            }
-        }
     }
 }
 

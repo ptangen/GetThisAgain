@@ -8,8 +8,13 @@
 
 import UIKit
 
+//protocol MyItemsViewControllerDelegate: class {
+//    func setCurrentTab()
+//}
+
 class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     
+    //weak var delegate: MyItemsViewControllerDelegate?
     let store = DataStore.sharedInstance
     var myItemsViewInst = MyItemsView()
     
@@ -32,7 +37,9 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "My Items"
-        store.myItems.isEmpty ? self.myItemsViewInst.getMyItemsFromDB() : ()
+        // get myItems
+        self.store.myItems.isEmpty && !UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") ? self.store.getMyItemsFromDB(currentViewController: self, type: "MyItems") : ()
+        self.myItemsViewInst.myItemsTableView.reloadData()
     }
     
     func openItemDetail(item: MyItem) {
@@ -43,6 +50,5 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }

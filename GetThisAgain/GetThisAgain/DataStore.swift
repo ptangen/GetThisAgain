@@ -19,6 +19,42 @@ class DataStore {
     var otherCategories = [MyCategory]()
     var accessList = [AccessRecord]()
     
+    // Either MyItems or Shopping list can call getMyItemsFromDB. We need to respond when the data is recieved and then two view controllers
+    // are of different types, so a generic was used.
+    func getMyItemsFromDB<T>(currentViewController: T, type: String) {
+
+        if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+            APIClient.selectMyItems(createdBy: userName) { isSuccessful in
+                if isSuccessful {
+                    OperationQueue.main.addOperation {
+                        // reload data for the current view
+                        if type == "MyItems" {
+                            let viewController = currentViewController as! MyItemsViewController
+                            viewController.myItemsViewInst.myItemsTableView.reloadData()
+                        } else {
+                            let viewController = currentViewController as! ShoppingListViewController
+                            viewController.viewWillAppear(false) // filter myItems to get the shooping list items
+                            viewController.shoppingListViewInst.shoppingListTableView.reloadData()
+                        }
+                    }
+                } else {
+                    OperationQueue.main.addOperation {
+                        //self.activityIndicator.isHidden = true  TODO: Add spinner
+                    }
+                    // show error in the current view
+                    let message = "Unable to retrieve data from the server."
+                    if type == "MyItems" {
+                        let viewController = currentViewController as! MyItemsViewController
+                        viewController.showAlertMessage(message)
+                    } else {
+                        let viewController = currentViewController as! ShoppingListViewController
+                        viewController.showAlertMessage(message)
+                    }
+                }
+            }
+        }
+    }
+    
     func datastoreRemoveAll() {
         self.myItems.removeAll()
         self.myCategories.removeAll()

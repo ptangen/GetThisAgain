@@ -82,8 +82,6 @@ class APIClient {
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 
                 if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
-                    
-                    print("itemNameUnwrapped: \(itemNameUnwrapped)")
                 
                     let param = [
                         "createdBy"     : createdBy,

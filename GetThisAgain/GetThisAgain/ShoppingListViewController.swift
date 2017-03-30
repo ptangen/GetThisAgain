@@ -9,7 +9,7 @@
 import UIKit
 
 class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
-    
+
     let store = DataStore.sharedInstance
     var shoppingListViewInst = ShoppingListView()
 
@@ -28,6 +28,8 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.title = "Shopping List"
+        // get myItems
+        store.myItems.isEmpty && UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") ? self.store.getMyItemsFromDB(currentViewController: self, type: "ShoppingList") : ()
         var shoppingListUnsorted = [MyItem]()
         
         // iterate through myItems and place the items that are on a list into the shoppingListItems array
@@ -49,8 +51,11 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
         self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false)
     }
     
+    func showAlertMessage(_ message: String) {
+        Utilities.showAlertMessage(message, viewControllerInst: self)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
