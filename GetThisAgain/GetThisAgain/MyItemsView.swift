@@ -22,6 +22,10 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     var myItemsTableViewInstYConstraintWithHeading = NSLayoutConstraint()
     var myItemsTableViewInstYConstraintWithoutHeading = NSLayoutConstraint()
     var myItemsViewCount = Int()
+    let activityIndicator = UIView()
+    // the activity indicator blocks the tap event so we have to move it off to the side when hidden
+    var activityIndicatorXConstraintWhileHidden = NSLayoutConstraint()
+    var activityIndicatorXConstraintWhileDisplayed = NSLayoutConstraint()
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -126,6 +130,34 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.myItemsTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
         self.myItemsTableView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
         self.myItemsTableView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        
+        // activityIndicator
+        self.addSubview(self.activityIndicator)
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        self.activityIndicatorXConstraintWhileHidden = self.activityIndicator.centerXAnchor.constraint(equalTo: self.leftAnchor, constant: -40)
+        self.activityIndicatorXConstraintWhileDisplayed = self.activityIndicator.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+        self.activityIndicatorXConstraintWhileHidden.isActive = true
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+        self.activityIndicator.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        self.activityIndicator.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        self.activityIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true
+    }
+    
+    func showActivityIndicator(uiView: UIView) {
+        self.activityIndicatorXConstraintWhileHidden.isActive = false
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = true
+        
+        self.activityIndicator.backgroundColor = UIColor(named: .blue)
+        self.activityIndicator.layer.cornerRadius = 10
+        self.activityIndicator.clipsToBounds = true
+        
+        let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+        actInd.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        actInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
+        actInd.center = CGPoint(x: 40, y: 40)
+        
+        self.activityIndicator.addSubview(actInd)
+        actInd.startAnimating()
     }
     
     required init?(coder aDecoder: NSCoder) {

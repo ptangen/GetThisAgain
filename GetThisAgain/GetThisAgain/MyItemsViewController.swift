@@ -8,10 +8,6 @@
 
 import UIKit
 
-//protocol MyItemsViewControllerDelegate: class {
-//    func setCurrentTab()
-//}
-
 class MyItemsViewController: UIViewController, MyItemsViewDelegate {
     
     //weak var delegate: MyItemsViewControllerDelegate?
@@ -38,7 +34,10 @@ class MyItemsViewController: UIViewController, MyItemsViewDelegate {
         super.viewWillAppear(animated)
         self.title = "My Items"
         // get myItems
-        self.store.myItems.isEmpty && !UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") ? self.store.getMyItemsFromDB(currentViewController: self, type: "MyItems") : ()
+        if self.store.myItems.isEmpty && !UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") {
+            self.store.getMyItemsFromDB(currentViewController: self, type: "MyItems")
+            self.myItemsViewInst.showActivityIndicator(uiView: self.myItemsViewInst)
+        }
         self.myItemsViewInst.myItemsTableView.reloadData()
     }
     

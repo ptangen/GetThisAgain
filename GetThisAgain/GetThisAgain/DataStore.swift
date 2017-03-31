@@ -31,24 +31,33 @@ class DataStore {
                         if type == "MyItems" {
                             let viewController = currentViewController as! MyItemsViewController
                             viewController.myItemsViewInst.myItemsTableView.reloadData()
+                            viewController.myItemsViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                            viewController.myItemsViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
                         } else {
                             let viewController = currentViewController as! ShoppingListViewController
                             viewController.viewWillAppear(false) // filter myItems to get the shooping list items
                             viewController.shoppingListViewInst.shoppingListTableView.reloadData()
+                            viewController.shoppingListViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                            viewController.shoppingListViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
                         }
                     }
                 } else {
                     OperationQueue.main.addOperation {
                         //self.activityIndicator.isHidden = true  TODO: Add spinner
-                    }
-                    // show error in the current view
-                    let message = "Unable to retrieve data from the server."
-                    if type == "MyItems" {
-                        let viewController = currentViewController as! MyItemsViewController
-                        viewController.showAlertMessage(message)
-                    } else {
-                        let viewController = currentViewController as! ShoppingListViewController
-                        viewController.showAlertMessage(message)
+                    
+                        // show error in the current view
+                        let message = "Unable to retrieve data from the server."
+                        if type == "MyItems" {
+                            let viewController = currentViewController as! MyItemsViewController
+                            viewController.myItemsViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                            viewController.myItemsViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                            viewController.showAlertMessage(message)
+                        } else {
+                            let viewController = currentViewController as! ShoppingListViewController
+                            viewController.shoppingListViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                            viewController.shoppingListViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                            viewController.showAlertMessage(message)
+                        }
                     }
                 }
             }

@@ -29,19 +29,26 @@ class ShoppingListViewController: UIViewController, ShoppingListViewDelegate {
         super.viewWillAppear(animated)
         self.title = "Shopping List"
         // get myItems
-        store.myItems.isEmpty && UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") ? self.store.getMyItemsFromDB(currentViewController: self, type: "ShoppingList") : ()
+        if store.myItems.isEmpty && UserDefaults.standard.bool(forKey: "mostRecentTabIsShoppingList") {
+            self.store.getMyItemsFromDB(currentViewController: self, type: "ShoppingList")
+            self.shoppingListViewInst.showActivityIndicator(uiView: self.shoppingListViewInst)
+        }
+        self.generateShoppingList()
+    }
+    
+    func generateShoppingList() {
         var shoppingListUnsorted = [MyItem]()
         
         // iterate through myItems and place the items that are on a list into the shoppingListItems array
         // items not in a list have listID = 0, items in a list have listID > 0
-
+        
         // myItems
         let myItemsFromAList = self.store.myItems.filter({ $0.listID > 0 })
         shoppingListUnsorted.append(contentsOf: myItemsFromAList)
         // other items
         let otherItemsFromAList = self.store.otherItems.filter({ $0.listID > 0 })
         shoppingListUnsorted.append(contentsOf: otherItemsFromAList)
-
+        
         self.shoppingListViewInst.shoppingListItems = shoppingListUnsorted.sorted(by: { $0.itemName < $1.itemName })
     }
     

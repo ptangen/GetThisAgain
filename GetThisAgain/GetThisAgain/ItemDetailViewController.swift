@@ -132,7 +132,11 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
 
     func addButtonClicked() {
         if let itemInst = self.itemInst {
+            self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
             APIClient.insertMyItem(itemInst: itemInst, image: self.itemInstImage) { (results, imageURL, barcode) in
+
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
                 if results == apiResponse.ok {
                     itemInst.barcode = barcode
                     itemInst.imageURL = imageURL
@@ -150,7 +154,11 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     
     func deleteButtonClicked() {
         if let itemInst = self.itemInst {
+            self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
             APIClient.deleteMyItem(createdBy: UserDefaults.standard.value(forKey: "userName") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
+                
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
                 if results == apiResponse.ok {
                     self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
@@ -163,12 +171,16 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
 
     func doneButtonClicked() {
         if self.itemDetailViewInst.updateRecordRequired {
+            self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
             APIClient.updateMyItem(createdBy: itemInst.createdBy, barcode: itemInst.barcode, itemName: itemInst.itemName, categoryID: itemInst.categoryID, getAgain: itemInst.getAgain, listID: itemInst.listID, completion: { (results) in
+                
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
                 if results == apiResponse.ok {
                     let itemsTabViewControllerInst = ItemsTabViewController()
                     self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
                 } else {
-                    print("error") // TODO: Show error message to user as changes were not applied.
+                    self.showAlertMessage("The system cannot update this item. Please forward this message to ptangen@ptangen.com")
                 }
             })
         } else {
@@ -220,5 +232,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         alertController.addAction(UIAlertAction(title: "Add Category", style: UIAlertActionStyle.default,handler: handleNewCategoryAlert))
         alertController.addAction(UIAlertAction(title: "Select Existing Category", style: UIAlertActionStyle.default, handler: handleNewCategoryAlert))
         viewControllerInst.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showAlertMessage(_ message: String) {
+        Utilities.showAlertMessage(message, viewControllerInst: self)
     }
 }

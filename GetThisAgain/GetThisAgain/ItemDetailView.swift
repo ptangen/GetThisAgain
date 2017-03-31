@@ -26,6 +26,10 @@ class ItemDetailView: UIView {
     var itemInst: MyItem!
     var editTextButton = UIButton()
     var updateRecordRequired = Bool()
+    let activityIndicator = UIView()
+    // the activity indicator blocks the tap event so we have to move it off to the side when hidden
+    var activityIndicatorXConstraintWhileHidden = NSLayoutConstraint()
+    var activityIndicatorXConstraintWhileDisplayed = NSLayoutConstraint()
     
     override init(frame:CGRect){
         super.init(frame: frame)
@@ -148,5 +152,33 @@ class ItemDetailView: UIView {
         self.shoppingListSwitch.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
         self.shoppingListSwitch.tintColor = UIColor(named: .blue)
         self.shoppingListSwitch.onTintColor = UIColor(named: .blue)
+        
+        // activityIndicator
+        self.addSubview(self.activityIndicator)
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        self.activityIndicatorXConstraintWhileHidden = self.activityIndicator.centerXAnchor.constraint(equalTo: self.leftAnchor, constant: -40)
+        self.activityIndicatorXConstraintWhileDisplayed = self.activityIndicator.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+        self.activityIndicatorXConstraintWhileHidden.isActive = true
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+        self.activityIndicator.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        self.activityIndicator.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        self.activityIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true
+    }
+    
+    func showActivityIndicator(uiView: UIView) {
+        self.activityIndicatorXConstraintWhileHidden.isActive = false
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = true
+        
+        self.activityIndicator.backgroundColor = UIColor(named: .blue)
+        self.activityIndicator.layer.cornerRadius = 10
+        self.activityIndicator.clipsToBounds = true
+        
+        let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+        actInd.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        actInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
+        actInd.center = CGPoint(x: 40, y: 40)
+        
+        self.activityIndicator.addSubview(actInd)
+        actInd.startAnimating()
     }
 }

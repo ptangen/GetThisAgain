@@ -19,6 +19,10 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
     weak var delegate: CaptureItemViewDelegate?
     let store = DataStore.sharedInstance
     let previewBorderWidth: CGFloat = 8.0
+    let activityIndicator = UIView()
+    // the activity indicator blocks the tap event so we have to move it off to the side when hidden
+    var activityIndicatorXConstraintWhileHidden = NSLayoutConstraint()
+    var activityIndicatorXConstraintWhileDisplayed = NSLayoutConstraint()
     
     // barcodeReader
     let barcodeReader = UIView()
@@ -108,7 +112,6 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         ]
         settings.previewPhotoFormat = previewFormat
         self.outputSnapshot.capturePhoto(with: settings, delegate: self)
-        
     }
     
     // capture snapshot output and show in item detail page
@@ -183,11 +186,15 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
             APIClient.getEandataFromAPI(barcode: barcodeValue, completion: {itemInst in
                 if itemInst.barcode != "notFound" {
                     DispatchQueue.main.async {
+                        self.activityIndicatorXConstraintWhileHidden.isActive = true
+                        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
                         self.delegate?.openItemDetail(item: itemInst)
                     }
                 } else {
                     // display not found message
                     DispatchQueue.main.async {
+                        self.activityIndicatorXConstraintWhileHidden.isActive = true
+                        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
                         self.barcodeStatusLabel.text = "The item was not found in the database."
                         self.startStopBarcodePreview()
                     }
@@ -420,6 +427,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
                     if let strDetected = strDetected {
                         self.getItemInformation(barcodeValue: strDetected)
                         DispatchQueue.main.async {
+                            self.showActivityIndicator(uiView: self)
                             self.barcodeStatusLabel.text = "Barcode captured. Searching for product information..."
                             self.barcodeReader.layer.borderWidth = 8
                             self.barcodeReader.layer.borderColor = UIColor.green.cgColor
@@ -530,5 +538,34 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         self.buttonSnapshot.rightAnchor.constraint(equalTo: self.snapshotView.rightAnchor, constant: -4).isActive = true
         self.buttonSnapshot.heightAnchor.constraint(equalToConstant: 48).isActive = true
         self.buttonSnapshot.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        
+        // activityIndicator
+        self.addSubview(self.activityIndicator)
+        self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        self.activityIndicatorXConstraintWhileHidden = self.activityIndicator.centerXAnchor.constraint(equalTo: self.leftAnchor, constant: -40)
+        self.activityIndicatorXConstraintWhileDisplayed = self.activityIndicator.centerXAnchor.constraint(equalTo: self.barcodeReader.centerXAnchor)
+        self.activityIndicatorXConstraintWhileHidden.isActive = true
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+        self.activityIndicator.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        self.activityIndicator.centerYAnchor.constraint(equalTo: self.barcodeReader.centerYAnchor).isActive = true
+        self.activityIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true
+    }
+    
+    
+    func showActivityIndicator(uiView: UIView) {
+        self.activityIndicatorXConstraintWhileHidden.isActive = false
+        self.activityIndicatorXConstraintWhileDisplayed.isActive = true
+        
+        self.activityIndicator.backgroundColor = UIColor(named: .blue)
+        self.activityIndicator.layer.cornerRadius = 10
+        self.activityIndicator.clipsToBounds = true
+        
+        let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+        actInd.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        actInd.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
+        actInd.center = CGPoint(x: 40, y: 40)
+        
+        self.activityIndicator.addSubview(actInd)
+        actInd.startAnimating()
     }
 }
