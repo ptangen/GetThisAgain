@@ -174,7 +174,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         self.snapshotView.addSubview(backgroundImage)
     }
     
-    func getItemInformation(barcodeValue: String) {
+    func getItemInformationVig(barcodeValue: String) {
         
         if let itemInst = self.store.getItemFromBarcode(barcode: barcodeValue) {
             // we have the item that was scanned in the datastore so show the item detail
@@ -183,7 +183,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
             }
         } else {
             // we dont have the item in the datastore so fetch it from the API
-            APIClient.getEandataFromAPI(barcode: barcodeValue, completion: {itemInst in
+            APIClient.getVigDataFromAPI(barcode: barcodeValue, completion: {itemInst in
                 if itemInst.barcode != "notFound" {
                     DispatchQueue.main.async {
                         self.activityIndicatorXConstraintWhileHidden.isActive = true
@@ -191,16 +191,34 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
                         self.delegate?.openItemDetail(item: itemInst)
                     }
                 } else {
-                    // display not found message
-                    DispatchQueue.main.async {
-                        self.activityIndicatorXConstraintWhileHidden.isActive = true
-                        self.activityIndicatorXConstraintWhileDisplayed.isActive = false
-                        self.barcodeStatusLabel.text = "The item was not found in the database."
-                        self.startStopBarcodePreview()
-                    }
+                    // item not found at Vig, search for it in the EAN DB
+                    self.getItemInformationEAN(barcodeValue: barcodeValue)
                 }
             })
         }
+    }
+    
+    func getItemInformationEAN(barcodeValue: String) {
+        
+        // fetch item info from the EAN API
+        APIClient.getEanDataFromAPI(barcode: barcodeValue, completion: {itemInst in
+            if itemInst.barcode != "notFound" {
+                DispatchQueue.main.async {
+                    self.activityIndicatorXConstraintWhileHidden.isActive = true
+                    self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                    self.delegate?.openItemDetail(item: itemInst)
+                }
+            } else {
+                // display not found message
+                DispatchQueue.main.async {
+                    self.activityIndicatorXConstraintWhileHidden.isActive = true
+                    self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                    self.barcodeStatusLabel.text = "The item was not found in the database."
+                    self.startStopBarcodePreview()
+                }
+            }
+        })
+        
     }
     
     func startStopSnapshotPreview() {
@@ -425,7 +443,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
                     self.captureSessionBarcode.stopRunning()
                     
                     if let strDetected = strDetected {
-                        self.getItemInformation(barcodeValue: strDetected)
+                        self.getItemInformationVig(barcodeValue: strDetected)
                         DispatchQueue.main.async {
                             self.showActivityIndicator(uiView: self)
                             self.barcodeStatusLabel.text = "Barcode captured. Searching for product information..."

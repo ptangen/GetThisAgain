@@ -101,6 +101,12 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         cell.itemImageView.contentMode = .scaleAspectFit
         
+        // if items on the shopping list come from multiple people, show the userName for each item
+        let otherItemsOnShoppingList = self.store.otherItems.filter( { $0.listID != 0 } )
+        if !otherItemsOnShoppingList.isEmpty {
+            cell.userNameLabel.text = shoppingItemCurrent.createdBy
+        }
+        
         return cell
     }
     

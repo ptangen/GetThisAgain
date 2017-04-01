@@ -17,8 +17,9 @@ class MyItem {
     var imageURL: String
     var listID: Int
     var getAgain: GetAgain
+    var merchants: Int
     
-    init (createdBy: String, barcode: String, itemName: String, categoryID: Int, imageURL: String, listID: Int, getAgain: GetAgain) {
+    init (createdBy: String, barcode: String, itemName: String, categoryID: Int, imageURL: String, listID: Int, getAgain: GetAgain, merchants: Int) {
         self.createdBy = createdBy
         self.barcode = barcode
         self.itemName = itemName
@@ -26,6 +27,7 @@ class MyItem {
         self.imageURL = imageURL
         self.listID = listID
         self.getAgain = getAgain
+        self.merchants = merchants
     }
     
     func setGetAgain(status: GetAgain) {

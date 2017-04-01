@@ -119,6 +119,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
                 self.itemDetailViewInst.editTextButton.isHidden = true
                 self.itemDetailViewInst.getAgainPicker.isHidden = true
                 self.itemDetailViewInst.getAgainLabel.isHidden = true
+                
+                // disable tap on nameLabel
+                self.itemDetailViewInst.nameLabel.isUserInteractionEnabled = false
             }
         }
     }
@@ -133,6 +136,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
     func addButtonClicked() {
         if let itemInst = self.itemInst {
             self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
+            itemInst.imageURL != "" ? self.itemInstImage = nil : ()
             APIClient.insertMyItem(itemInst: itemInst, image: self.itemInstImage) { (results, imageURL, barcode) in
 
                 self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false

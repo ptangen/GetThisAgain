@@ -16,6 +16,7 @@ class ItemsTableViewCell: UITableViewCell {
     var titleLabel = UILabel()
     var getThisAgainLabel = UILabel()
     var subTitleLabel = UILabel()
+    var userNameLabel = UILabel()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -27,6 +28,8 @@ class ItemsTableViewCell: UITableViewCell {
         // set the fonts
         self.titleLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.medium.rawValue)
         self.subTitleLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
+        self.userNameLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
+        self.userNameLabel.textAlignment = .right
         self.getThisAgainLabel.font = UIFont(name: Constants.iconFont.fontAwesome.rawValue, size: Constants.iconSize.xxsmall.rawValue)
         
         self.cellLayout()
@@ -56,11 +59,18 @@ class ItemsTableViewCell: UITableViewCell {
         self.getThisAgainLabel.leftAnchor.constraint(equalTo: self.titleLabel.leftAnchor, constant: 0).isActive = true
         self.getThisAgainLabel.widthAnchor.constraint(equalToConstant: 12)
         
+        //userNameLabel
+        contentView.addSubview(self.userNameLabel)
+        self.userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.userNameLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
+        self.userNameLabel.rightAnchor.constraint(equalTo: self.titleLabel.rightAnchor, constant: -8).isActive = true
+        
         //subTitleLabel
         contentView.addSubview(self.subTitleLabel)
         self.subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.subTitleLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
         self.subTitleLabel.leftAnchor.constraint(equalTo: self.getThisAgainLabel.rightAnchor, constant: 12).isActive = true
+        self.subTitleLabel.rightAnchor.constraint(equalTo: self.userNameLabel.leftAnchor, constant: -12).isActive = true
     }
 
 }

@@ -70,11 +70,11 @@ class APIClient {
         let url = URL(string: urlString)
         if let url = url {
             var request = URLRequest(url: url)
-            
+
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             
-            if let image = image {  // create request with image and parameters
+            if let image = image {  // create request with image and parameters, barcode value generated on the server
                 
                 let boundary = "Boundary-\(NSUUID().uuidString)"
                 let body = NSMutableData();
@@ -82,13 +82,14 @@ class APIClient {
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 
                 if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
-                
+
                     let param = [
                         "createdBy"     : createdBy,
                         "itemName"      : itemNameUnwrapped,
                         "categoryID"    : String(itemInst.categoryID),
                         "shoppingList"  : String(itemInst.listID),
                         "getAgain"      : String(describing: itemInst.getAgain),
+                        "merchants"     : String(itemInst.merchants),
                         "key"           : Secrets.gtaKey
                     ]
                 
@@ -117,7 +118,7 @@ class APIClient {
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
                 if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
-                    parameterString = "createdBy=\(createdBy)&barcode=\(itemInst.barcode)&itemName=\(itemNameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&listID=\(itemInst.listID)&getAgain=\(itemInst.getAgain)&key=\(Secrets.gtaKey)"
+                    parameterString = "createdBy=\(createdBy)&barcode=\(itemInst.barcode)&itemName=\(itemNameUnwrapped)&categoryID=\(itemInst.categoryID)&imageURL=\(itemInst.imageURL)&listID=\(itemInst.listID)&getAgain=\(itemInst.getAgain)&merchants=\(itemInst.merchants)&key=\(Secrets.gtaKey)"
                     }
                     request.httpBody = parameterString.data(using: .utf8)
             }
@@ -240,14 +241,82 @@ class APIClient {
         }
     }
     
-    class func getEandataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
-        
+    class func getVigDataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
+        let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=1&sortBy=price&upc=\(barcode)"
+        let url = URL(string: urlString)
+        var itemInst: MyItem?
+        if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
+            let itemInstNotFound = MyItem(createdBy: createdBy, barcode: "notFound", itemName: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure, merchants: 0)
+            
+            if let unwrappedUrl = url{
+                let session = URLSession.shared
+                let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
+                    if let unwrappedData = data {
+                        do {
+                            if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
+                                // check the status code and create object
+                                if let merchants = responseJSON["totalItems"] as? Int {
+                                    print("merchants = \(merchants)")
+                                    if merchants > 0 {
+                                        if let items = responseJSON["items"] as? [[String:String]] {
+                                            if let itemDict = items.first {
+                                                if let itemName = itemDict["name"] {
+                                                
+                                                    itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure, merchants: merchants)
+                                                    
+                                                    // set the imageURL and category values if we have them
+                                                    if let itemInst = itemInst {
+                                                        if let imageURL = itemDict["imageUrl"] {
+                                                            itemInst.imageURL = imageURL
+                                                        }
+                                                        
+                                                        if let category = itemDict["category"] {
+                                                            // try to get the id for the category, if we dont have it generate a new id if we have it
+                                                            // assign the id to the object
+                                                            let categoryID = store.getCategoryIDFromLabel(label: category)
+                                                            if categoryID == -1 {
+                                                                // create a temp category for this label, prompt user on item detail page about
+                                                                // keeping or discarding it
+                                                                
+                                                                if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
+                                                                    let tempCategory = MyCategory(createdBy: createdBy, id: -1, label: category)
+                                                                    //print("New category: \(tempCategory.createdBy), \(tempCategory.id) , \(tempCategory.label)")
+                                                                    store.myCategories.append(tempCategory)
+                                                                }
+                                                            }
+                                                            itemInst.categoryID = categoryID
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        print("item not found, itemInstNotFound will be used")
+                                    }
+                                }
+                            }
+                            let itemInstUnwrapped = itemInst ?? itemInstNotFound
+                            completion(itemInstUnwrapped)
+                        } catch {
+                            print("An error occured when creating responseJSON")
+                        }
+                    }
+                }
+                task.resume()
+            }
+        }
+    }
+    
+    class func getEanDataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
+        print("getEanDataFromAPI")
         let store = DataStore.sharedInstance
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?
         if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
-            let itemInstNotFound = MyItem(createdBy: createdBy, barcode: "notFound", itemName: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure)
+            let itemInstNotFound = MyItem(createdBy: createdBy, barcode: "notFound", itemName: "", categoryID: 1, imageURL: "", listID: 0, getAgain: .unsure, merchants: 0)
             
             if let unwrappedUrl = url{
                 let session = URLSession.shared
@@ -266,7 +335,7 @@ class APIClient {
                                             
                                             // create the item object
                                             if let itemName = productAttributesDict["product"] {
-                                                itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure)
+                                                itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure, merchants: 0)
                                                 // set the imageURL and category values if we have them
                                                 if let itemInst = itemInst {
                                                     if let imageURL = productDict["image"] as? String {
@@ -274,7 +343,7 @@ class APIClient {
                                                     }
                                                     
                                                     if let categoryText = productAttributesDict["category_text"] {
-                                                        // try to get the id for the cagtegory, if we dont have it generate a new id if we have it
+                                                        // try to get the id for the category, if we dont have it generate a new id if we have it
                                                         // assign the id to the object
                                                         let categoryID = store.getCategoryIDFromLabel(label: categoryText)
                                                         if categoryID == -1 {
@@ -283,7 +352,7 @@ class APIClient {
                                                             
                                                             if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
                                                                 let tempCategory = MyCategory(createdBy: createdBy, id: -1, label: categoryText)
-                                                                print("New category:\(tempCategory.createdBy), \(tempCategory.id) , \(tempCategory.label)")
+                                                                //print("New category:\(tempCategory.createdBy), \(tempCategory.id) , \(tempCategory.label)")
                                                                 store.myCategories.append(tempCategory)
                                                             }
                                                         }
@@ -385,12 +454,13 @@ class APIClient {
                                         let categoryIDString = myItemDict["categoryID"],
                                         let imageURL = myItemDict["imageURL"],
                                         let listIDString = myItemDict["listID"],
-                                        let getAgainString = myItemDict["getAgain"] {
+                                        let getAgainString = myItemDict["getAgain"],
+                                        let merchantsString = myItemDict["merchants"] {
                                     
                                         // clean html from the name
                                         let itemName = self.decodeCharactersIn(string: itemNameEncoded)
                                         
-                                        if let categoryID = Int(categoryIDString), let listID = Int(listIDString) {
+                                        if let categoryID = Int(categoryIDString), let listID = Int(listIDString), let merchants = Int(merchantsString) {
                                         
                                             // getAgain
                                             var getAgain: GetAgain!
@@ -404,7 +474,7 @@ class APIClient {
                                                 getAgain = GetAgain.unsure
                                             }
                                         
-                                            let itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain)
+                                            let itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: categoryID, imageURL: imageURL, listID: listID, getAgain: getAgain, merchants: merchants)
                                             
                                             // create an array of the user's items and an array for the other items.
                                             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
