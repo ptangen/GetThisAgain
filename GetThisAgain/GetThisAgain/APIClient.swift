@@ -243,7 +243,7 @@ class APIClient {
     
     class func getVigDataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
         let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=1&sortBy=price&upc=\(barcode)"
+        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=1&sortBy=price&barcode=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?
         if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
@@ -393,6 +393,12 @@ class APIClient {
                 if let unwrappedData = data {
                     do {
                         
+                        store.myItems.removeAll()
+                        store.myCategories.removeAll()
+                        store.myLists.removeAll()
+                        store.otherCategories.removeAll()
+                        store.otherItems.removeAll()
+                        
                         let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
                         if let responseJSON = responseJSON {
                             
@@ -514,6 +520,7 @@ class APIClient {
             URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
                 if let unwrappedData = data {
                     do {
+                        store.accessList.removeAll()
                         let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any]
                         if let responseJSON = responseJSON {
                             // accessList
@@ -659,7 +666,7 @@ class APIClient {
 
     static func decodeCharactersIn(string: String) -> String {
         var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
-        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " "]
+        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " ", "&gt;": ">"]
         for (code, character) in characters {
             string = string.replacingOccurrences(of: code, with: character, options: .caseInsensitive, range: nil)
         }

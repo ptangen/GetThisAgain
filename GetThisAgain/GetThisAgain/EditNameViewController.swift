@@ -101,7 +101,9 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
                 let itemInst = MyItem(createdBy: userName, barcode: "0", itemName: self.editNameViewInst.nameTextView.text, categoryID: self.editNameViewInst.getSelectedCategoryID(), imageURL: "", listID: 0, getAgain: .unsure, merchants: 0)
                 itemDetailViewControllerInst.itemInst = itemInst
-                itemDetailViewControllerInst.itemInstImage = self.editNameViewInst.itemImageView.image
+                if let itemImage = self.editNameViewInst.itemImageView.image {
+                    itemDetailViewControllerInst.itemInstImage = itemImage
+                }
                 self.navigationController?.pushViewController(itemDetailViewControllerInst, animated: false) // navigate to Item detail
             }
         }

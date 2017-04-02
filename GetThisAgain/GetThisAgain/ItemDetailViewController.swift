@@ -161,8 +161,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
             APIClient.deleteMyItem(createdBy: UserDefaults.standard.value(forKey: "userName") as! String, barcode: itemInst.barcode, imageURL: itemInst.imageURL) { (results) in
                 
-                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
                 self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                
                 if results == apiResponse.ok {
                     self.store.myItems = self.store.myItems.filter { $0.barcode != itemInst.barcode } // remove the item from the datastore
                     self.doneButtonClicked()
@@ -178,8 +179,9 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             self.itemDetailViewInst.showActivityIndicator(uiView: self.itemDetailViewInst)
             APIClient.updateMyItem(createdBy: itemInst.createdBy, barcode: itemInst.barcode, itemName: itemInst.itemName, categoryID: itemInst.categoryID, getAgain: itemInst.getAgain, listID: itemInst.listID, completion: { (results) in
                 
-                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
                 self.itemDetailViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                self.itemDetailViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
+                
                 if results == apiResponse.ok {
                     let itemsTabViewControllerInst = ItemsTabViewController()
                     self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)

@@ -33,12 +33,21 @@ class CaptureItemViewController: UIViewController, CaptureItemViewDelegate {
         self.navigationItem.setHidesBackButton(true, animated:false);
         
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
-        self.navigationItem.rightBarButtonItems = [cancelButton]
+        self.navigationItem.leftBarButtonItems = [cancelButton]
+        
+        let continueButton = UIBarButtonItem(title: "Continue", style: .plain, target: self, action: #selector(continueButtonClicked))
+        self.navigationItem.rightBarButtonItems = [continueButton]
     }
     
     func cancelButtonClicked() {
         let itemsTabViewControllerInst = ItemsTabViewController()
         self.navigationController?.pushViewController(itemsTabViewControllerInst, animated: false)
+    }
+    
+    func continueButtonClicked() {
+        // no barcode or image, just go to edit name
+        let editNameViewControllerInst = EditNameViewController()
+        self.navigationController?.pushViewController(editNameViewControllerInst, animated: false)
     }
     
     func openItemDetail(item: MyItem) {
