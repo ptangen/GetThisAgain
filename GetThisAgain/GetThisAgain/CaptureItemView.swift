@@ -218,7 +218,6 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
                 }
             }
         })
-        
     }
     
     func startStopSnapshotPreview() {
