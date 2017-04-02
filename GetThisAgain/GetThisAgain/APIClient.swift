@@ -257,7 +257,6 @@ class APIClient {
                             if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
                                 // check the status code and create object
                                 if let merchants = responseJSON["totalItems"] as? Int {
-                                    print("merchants = \(merchants)")
                                     if merchants > 0 {
                                         if let items = responseJSON["items"] as? [[String:String]] {
                                             if let itemDict = items.first {
@@ -293,7 +292,7 @@ class APIClient {
                                             }
                                         }
                                     } else {
-                                        print("item not found, itemInstNotFound will be used")
+                                        //print("item not found, itemInstNotFound will be used")
                                     }
                                 }
                             }
@@ -310,7 +309,6 @@ class APIClient {
     }
     
     class func getEanDataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
-        print("getEanDataFromAPI")
         let store = DataStore.sharedInstance
         let urlString = "\(Secrets.eandataAPIURL)&keycode=\(Secrets.keyCode)&find=\(barcode)"
         let url = URL(string: urlString)

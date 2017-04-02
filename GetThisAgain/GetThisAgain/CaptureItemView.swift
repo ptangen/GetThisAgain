@@ -92,8 +92,8 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         self.snapshotView.layer.borderWidth = 8
         self.snapshotView.layer.borderColor = UIColor.clear.cgColor
         
-        let cameraImage  = UIImage(named: "camera.png")
-        self.buttonSnapshot.setImage(cameraImage, for: .normal)
+        // shutter button when snapshot preview is displayed
+        self.buttonSnapshot.setBackgroundImage(#imageLiteral(resourceName: "record"), for: .normal)
         buttonSnapshot.addTarget(self, action: #selector(tapButtonSnapshot), for:.touchUpInside)
         self.addSubview(buttonSnapshot)
         self.buttonSnapshot.isHidden = true
@@ -186,8 +186,8 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
             APIClient.getVigDataFromAPI(barcode: barcodeValue, completion: {itemInst in
                 if itemInst.barcode != "notFound" {
                     DispatchQueue.main.async {
-                        self.activityIndicatorXConstraintWhileHidden.isActive = true
                         self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                        self.activityIndicatorXConstraintWhileHidden.isActive = true
                         self.delegate?.openItemDetail(item: itemInst)
                     }
                 } else {
@@ -204,15 +204,15 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         APIClient.getEanDataFromAPI(barcode: barcodeValue, completion: {itemInst in
             if itemInst.barcode != "notFound" {
                 DispatchQueue.main.async {
-                    self.activityIndicatorXConstraintWhileHidden.isActive = true
                     self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                    self.activityIndicatorXConstraintWhileHidden.isActive = true
                     self.delegate?.openItemDetail(item: itemInst)
                 }
             } else {
                 // display not found message
                 DispatchQueue.main.async {
-                    self.activityIndicatorXConstraintWhileHidden.isActive = true
                     self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                    self.activityIndicatorXConstraintWhileHidden.isActive = true
                     self.barcodeStatusLabel.text = "The item was not found in the database."
                     self.startStopBarcodePreview()
                 }
@@ -552,10 +552,10 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         // snapshotButton
         self.addSubview(self.buttonSnapshot)
         self.buttonSnapshot.translatesAutoresizingMaskIntoConstraints = false
-        self.buttonSnapshot.bottomAnchor.constraint(equalTo: self.snapshotView.topAnchor, constant: -4).isActive = true
-        self.buttonSnapshot.rightAnchor.constraint(equalTo: self.snapshotView.rightAnchor, constant: -4).isActive = true
-        self.buttonSnapshot.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        self.buttonSnapshot.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        self.buttonSnapshot.centerYAnchor.constraint(equalTo: self.snapshotView.centerYAnchor, constant: 0).isActive = true
+        self.buttonSnapshot.rightAnchor.constraint(equalTo: self.snapshotView.rightAnchor, constant: -16).isActive = true
+        self.buttonSnapshot.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.buttonSnapshot.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
         // activityIndicator
         self.addSubview(self.activityIndicator)
@@ -568,7 +568,6 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         self.activityIndicator.centerYAnchor.constraint(equalTo: self.barcodeReader.centerYAnchor).isActive = true
         self.activityIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true
     }
-    
     
     func showActivityIndicator(uiView: UIView) {
         self.activityIndicatorXConstraintWhileHidden.isActive = false

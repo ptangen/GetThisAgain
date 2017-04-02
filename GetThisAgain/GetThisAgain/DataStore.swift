@@ -43,9 +43,7 @@ class DataStore {
                     }
                 } else {
                     OperationQueue.main.addOperation {
-                        //self.activityIndicator.isHidden = true  TODO: Add spinner
-                    
-                        // show error in the current view
+                        // show error message in the current view
                         let message = "Unable to retrieve data from the server."
                         if type == "MyItems" {
                             let viewController = currentViewController as! MyItemsViewController

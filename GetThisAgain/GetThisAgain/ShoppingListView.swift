@@ -137,8 +137,9 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
             // set listID to 0 on the server
             APIClient.updateMyItem(createdBy: itemInst.createdBy, barcode: itemInst.barcode, itemName: itemInst.itemName, categoryID: itemInst.categoryID, getAgain: itemInst.getAgain, listID: 0, completion: { (results) in
                 
-                self.activityIndicatorXConstraintWhileHidden.isActive = true
                 self.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                self.activityIndicatorXConstraintWhileHidden.isActive = true
+
                 if results == apiResponse.ok {
                     if self.searchController.isActive && self.searchController.searchBar.text != "" {
                         itemInst.listID = 0
