@@ -23,6 +23,8 @@ class MerchantsViewController: UIViewController {
         self.doneButton.target = self
         self.doneButton.title = "Done"
         self.doneButton.action = #selector(doneButtonClicked)
+        
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,11 +46,14 @@ class MerchantsViewController: UIViewController {
         
         self.navigationItem.rightBarButtonItems = [self.doneButton]
         self.navigationItem.setHidesBackButton(true, animated:false);
-        
+       
+        self.merchantsViewInst.showActivityIndicator(uiView: self.merchantsViewInst)
         APIClient.getMerchantsFromAPI(barcode: self.merchantsViewInst.itemInst.barcode) { (merchants) in
             OperationQueue.main.addOperation {
                 self.merchantsViewInst.merchants = merchants
                 self.merchantsViewInst.merchantsTableView.reloadData()
+                self.merchantsViewInst.activityIndicatorXConstraintWhileDisplayed.isActive = false
+                self.merchantsViewInst.activityIndicatorXConstraintWhileHidden.isActive = true
             }
         }
     }

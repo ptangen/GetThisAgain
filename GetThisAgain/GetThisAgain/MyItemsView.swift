@@ -79,14 +79,21 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         // set the icon for the getAgain status
         switch myItemCurrent.getAgain.rawValue {
         case "yes" :
-            cell.getThisAgainLabel.text = Constants.iconLibrary.faCheckCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusGreen)
+            cell.getThisAgainAndMerchantLabel.text = Constants.iconLibrary.faCheckCircle.rawValue
+            cell.getThisAgainAndMerchantLabel.textColor = UIColor(named: UIColor.ColorName.statusGreen)
         case "no" :
-            cell.getThisAgainLabel.text = Constants.iconLibrary.faTimesCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.statusRed)
+            cell.getThisAgainAndMerchantLabel.text = Constants.iconLibrary.faTimesCircle.rawValue
+            cell.getThisAgainAndMerchantLabel.textColor = UIColor(named: UIColor.ColorName.statusRed)
         default:
-            cell.getThisAgainLabel.text = Constants.iconLibrary.faQuestionCircle.rawValue
-            cell.getThisAgainLabel.textColor = UIColor(named: UIColor.ColorName.disabledText)
+            cell.getThisAgainAndMerchantLabel.text = Constants.iconLibrary.faQuestionCircle.rawValue
+            cell.getThisAgainAndMerchantLabel.textColor = UIColor(named: UIColor.ColorName.disabledText)
+        }
+        
+        // if there are online merchants append the truck icon to the label
+        if myItemCurrent.merchants > 0 {
+            if let getAgainText = cell.getThisAgainAndMerchantLabel.text {
+                cell.getThisAgainAndMerchantLabel.text = "\(getAgainText) \(Constants.iconLibrary.faTruck.rawValue)"
+            }
         }
         
         // set the image

@@ -243,7 +243,7 @@ class APIClient {
     
     class func getMerchantsFromAPI(barcode: String, completion: @escaping ([Merchant]) -> Void) {
         //let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=10&sortBy=price&upc=\(barcode)"
+        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=100&sortBy=price&upc=\(barcode)"
         let url = URL(string: urlString)
         var merchants = [Merchant]()
         let merchantInstNotFound = Merchant(itemName: "No merchants found.", merchant: "notFound", country: "", price: 0, url: "")

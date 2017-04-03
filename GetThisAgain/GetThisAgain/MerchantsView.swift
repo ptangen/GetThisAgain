@@ -30,8 +30,9 @@ class MerchantsView: UIView, UITableViewDelegate, UITableViewDataSource {
         
         self.merchantsTableView.delegate = self
         self.merchantsTableView.dataSource = self
-        self.merchantsTableView.register(UITableViewCell.self, forCellReuseIdentifier: "prototype")
-        
+        //self.merchantsTableView.register(UITableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.merchantsTableView.register(MerchantTableViewCell.self, forCellReuseIdentifier: "prototype")
+  
         self.layoutForm()
     }
     
@@ -48,11 +49,15 @@ class MerchantsView: UIView, UITableViewDelegate, UITableViewDataSource {
         return self.merchants.count
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "prototype")
-        if let textLabel = cell.textLabel {
-            textLabel.text = self.merchants[indexPath.row].itemName
-        }
+        let cell = MerchantTableViewCell(style: .default, reuseIdentifier: "prototype")
+        cell.nameLabel.text = self.merchants[indexPath.row].itemName
+        cell.priceLabel.text = "$ \(String(self.merchants[indexPath.row].price))"
+        cell.merchantLabel.text = self.merchants[indexPath.row].merchant
         return cell
     }
     
@@ -67,8 +72,6 @@ class MerchantsView: UIView, UITableViewDelegate, UITableViewDataSource {
                 })
             }
         }
-        
-        
     }
     
     func layoutForm(){
@@ -134,5 +137,4 @@ class MerchantsView: UIView, UITableViewDelegate, UITableViewDataSource {
         self.activityIndicator.addSubview(actInd)
         actInd.startAnimating()
     }
-
 }

@@ -21,13 +21,12 @@ struct Constants{
     }
     
     enum iconLibrary: String {
-//        case menu =             "\u{E5D2}"
+
         case faTimesCircle =    "\u{f057}"
         case faCheckCircle =    "\u{f058}"
         case faQuestionCircle = "\u{f059}"
+        case faTruck =          "\u{f0d1}"
 
-//        case faCircleO =        "\u{f10c}"
-//        case faInfoCircle =     "\u{f05a}"
         case mode_edit =    "\u{E254}"
         case add =          "\u{E145}"
         case delete =       "\u{E872}"

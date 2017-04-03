@@ -8,13 +8,11 @@
 
 import UIKit
 
-import UIKit
-
 class ItemsTableViewCell: UITableViewCell {
     
     let itemImageView = UIImageView()
     var titleLabel = UILabel()
-    var getThisAgainLabel = UILabel()
+    var getThisAgainAndMerchantLabel = UILabel()
     var subTitleLabel = UILabel()
     var userNameLabel = UILabel()
     
@@ -30,7 +28,7 @@ class ItemsTableViewCell: UITableViewCell {
         self.subTitleLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
         self.userNameLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
         self.userNameLabel.textAlignment = .right
-        self.getThisAgainLabel.font = UIFont(name: Constants.iconFont.fontAwesome.rawValue, size: Constants.iconSize.xxsmall.rawValue)
+        self.getThisAgainAndMerchantLabel.font = UIFont(name: Constants.iconFont.fontAwesome.rawValue, size: Constants.iconSize.xxsmall.rawValue)
         
         self.cellLayout()
     }
@@ -52,12 +50,12 @@ class ItemsTableViewCell: UITableViewCell {
         self.titleLabel.leftAnchor.constraint(equalTo: self.itemImageView.rightAnchor, constant: 6).isActive = true
         self.titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
         
-        //getThisAgainLabel
-        contentView.addSubview(self.getThisAgainLabel)
-        self.getThisAgainLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.getThisAgainLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
-        self.getThisAgainLabel.leftAnchor.constraint(equalTo: self.titleLabel.leftAnchor, constant: 0).isActive = true
-        self.getThisAgainLabel.widthAnchor.constraint(equalToConstant: 12)
+        //getThisAgainAndMerchantLabel
+        contentView.addSubview(self.getThisAgainAndMerchantLabel)
+        self.getThisAgainAndMerchantLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.getThisAgainAndMerchantLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
+        self.getThisAgainAndMerchantLabel.leftAnchor.constraint(equalTo: self.titleLabel.leftAnchor, constant: 0).isActive = true
+        self.getThisAgainAndMerchantLabel.widthAnchor.constraint(equalToConstant: 12)
         
         //userNameLabel
         contentView.addSubview(self.userNameLabel)
@@ -69,8 +67,7 @@ class ItemsTableViewCell: UITableViewCell {
         contentView.addSubview(self.subTitleLabel)
         self.subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.subTitleLabel.topAnchor.constraint(equalTo: self.centerYAnchor, constant: 2).isActive = true
-        self.subTitleLabel.leftAnchor.constraint(equalTo: self.getThisAgainLabel.rightAnchor, constant: 12).isActive = true
+        self.subTitleLabel.leftAnchor.constraint(equalTo: self.getThisAgainAndMerchantLabel.rightAnchor, constant: 12).isActive = true
         self.subTitleLabel.rightAnchor.constraint(equalTo: self.userNameLabel.leftAnchor, constant: -12).isActive = true
     }
-
 }
