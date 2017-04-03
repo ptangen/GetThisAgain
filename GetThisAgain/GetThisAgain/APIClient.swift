@@ -241,9 +241,54 @@ class APIClient {
         }
     }
     
+    class func getMerchantsFromAPI(barcode: String, completion: @escaping ([Merchant]) -> Void) {
+        //let store = DataStore.sharedInstance
+        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=10&sortBy=price&upc=\(barcode)"
+        let url = URL(string: urlString)
+        var merchants = [Merchant]()
+        let merchantInstNotFound = Merchant(itemName: "", merchant: "notFound", country: "", price: 0, url: "")
+        
+        if let unwrappedUrl = url{
+            let session = URLSession.shared
+            let task = session.dataTask(with: unwrappedUrl) { (data, response, error) in
+                
+                if let unwrappedData = data {
+                    do {
+                        if let responseJSON = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
+                            // check the status code and create object
+                            if let merchantCount = responseJSON["totalItems"] as? Int {
+                                if merchantCount > 0 {
+                                    if let items = responseJSON["items"] as? [[String:String]] {
+                                        for itemDict in items {
+                                            if let itemName = itemDict["name"], let merchant = itemDict["merchant"], let country = itemDict["country"], let priceString = itemDict["price"], let url = itemDict["url"] {
+                                                
+                                                if let price = Double(priceString) {
+                                                    let merchantInst = Merchant(itemName: itemName, merchant: merchant, country: country, price: price, url: url)
+                                                    merchants.append(merchantInst)
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    //print("item not found, merchantInstNotFound will be used")
+                                }
+                            }
+                        }
+                        //let merchantInstUnwrapped = merchantInst ?? merchantInstNotFound
+                        completion(merchants)
+                    } catch {
+                        print("An error occured when creating responseJSON")
+                    }
+                }
+            }
+            task.resume()
+        }
+    }
+    
     class func getVigDataFromAPI(barcode: String, completion: @escaping (MyItem) -> Void) {
         let store = DataStore.sharedInstance
-        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=1&sortBy=price&barcode=\(barcode)"
+        let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=1&sortBy=price&upc=\(barcode)"
         let url = URL(string: urlString)
         var itemInst: MyItem?
         if let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {

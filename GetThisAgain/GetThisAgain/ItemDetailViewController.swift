@@ -113,6 +113,12 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
             break
         }
         
+        if self.itemInst.merchants > 0 {
+            self.itemDetailViewInst.buyOnlineButton.setTitle("  \(self.itemInst.merchants) merchants found  ", for: .normal)
+            self.itemDetailViewInst.buyOnlineButton.isHidden = false
+            self.itemDetailViewInst.buyOnlineLabel.isHidden = false
+        }
+        
         // disable editing of items that are not the current user's items
         if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
             if itemInst.createdBy != userName {
@@ -209,6 +215,12 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         let editNameViewControllerInst = EditNameViewController()
         editNameViewControllerInst.editNameViewInst.itemInst = item
         self.navigationController?.pushViewController(editNameViewControllerInst, animated: false)
+    }
+    
+    func buyOnlineTapped(item itemInst: MyItem) {
+        let merchantsViewControllerInst = MerchantsViewController()
+        merchantsViewControllerInst.merchantsViewInst.itemInst = itemInst
+        self.navigationController?.pushViewController(merchantsViewControllerInst, animated: false)
     }
     
     func handleNewCategoryAlert(action: UIAlertAction) {

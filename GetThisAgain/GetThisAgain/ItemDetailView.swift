@@ -10,22 +10,30 @@ import UIKit
 
 protocol ItemDetailViewDelegate: class {
     func openEditName(item: MyItem)
+    func buyOnlineTapped(item: MyItem)
 }
 
 class ItemDetailView: UIView {
 
     let store = DataStore.sharedInstance
     weak var delegate: ItemDetailViewDelegate?
+    var itemInst: MyItem!
+    var updateRecordRequired = Bool()
+    
+    var editTextButton = UIButton()
     let nameLabel = UILabel()
     let categoryLabel = UILabel()
+    var itemImageView = UIImageView()
+    
     let getAgainLabel = UILabel()
+    var getAgainPicker = UISegmentedControl()
+    
     let shoppingListLabel = UILabel()
     let shoppingListSwitch = UISwitch()
-    var getAgainPicker = UISegmentedControl()
-    var itemImageView = UIImageView()
-    var itemInst: MyItem!
-    var editTextButton = UIButton()
-    var updateRecordRequired = Bool()
+    
+    let buyOnlineLabel = UILabel()
+    var buyOnlineButton = UIButton()
+    
     let activityIndicator = UIView()
     // the activity indicator blocks the tap event so we have to move it off to the side when hidden
     var activityIndicatorXConstraintWhileHidden = NSLayoutConstraint()
@@ -33,19 +41,8 @@ class ItemDetailView: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.getAgainLabel.text = "Get This Again?"
-        self.shoppingListLabel.text = "On Shopping List"
         
-        // configure segmented control to pick status for the measure
-        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleTimes"), at: 0, animated: false)
-        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleQuestion"), at: 1, animated: false)
-        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleCheck"), at: 2, animated: false)
-        self.getAgainPicker.selectedSegmentIndex = 1
- 
-        self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
-        
-        self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
-        
+        // editTextButton
         self.editTextButton.addTarget(self, action: #selector(self.onTapItemNameOrIcon), for: UIControlEvents.touchUpInside)
         self.editTextButton.setTitle(Constants.iconLibrary.mode_edit.rawValue, for: .normal)
         self.editTextButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
@@ -55,12 +52,39 @@ class ItemDetailView: UIView {
         let tapNameLabel = UITapGestureRecognizer(target: self, action: #selector(self.onTapItemNameOrIcon))
         nameLabel.addGestureRecognizer(tapNameLabel)
         nameLabel.isUserInteractionEnabled = true
+        
+        // getAgain
+        self.getAgainLabel.text = "Get This Again?"
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleTimes"), at: 0, animated: false)
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleQuestion"), at: 1, animated: false)
+        self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleCheck"), at: 2, animated: false)
+        self.getAgainPicker.selectedSegmentIndex = 1
+        self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
+        
+        // shopping list
+        self.shoppingListLabel.text = "On Shopping List"
+        self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
+        
+        // buyOnline
+        self.buyOnlineLabel.text = "Buy Online"
+        self.buyOnlineLabel.isHidden = true
+        self.buyOnlineButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        self.buyOnlineButton.backgroundColor = .clear
+        self.buyOnlineButton.layer.cornerRadius = 5
+        self.buyOnlineButton.layer.borderWidth = 1
+        self.buyOnlineButton.layer.borderColor = UIColor(named: .blue).cgColor
+        self.buyOnlineButton.addTarget(self, action: #selector(self.buyOnlineTapped), for: UIControlEvents.touchUpInside)
+        self.buyOnlineButton.isHidden = true
 
         self.layoutForm()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func buyOnlineTapped() {
+        self.delegate?.buyOnlineTapped(item: self.itemInst)
     }
     
     func getThisAgainStatusValueChanged(_ sender:UISegmentedControl!) {
@@ -123,7 +147,7 @@ class ItemDetailView: UIView {
         // getAgainLabel
         self.addSubview(self.getAgainLabel)
         self.getAgainLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.getAgainLabel.topAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: 24).isActive = true
+        self.getAgainLabel.topAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: 36).isActive = true
         self.getAgainLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
         
         // getAgainButtons
@@ -142,7 +166,7 @@ class ItemDetailView: UIView {
         // shoppingListLabel
         self.addSubview(self.shoppingListLabel)
         self.shoppingListLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.shoppingListLabel.topAnchor.constraint(equalTo: self.getAgainLabel.bottomAnchor, constant: 36).isActive = true
+        self.shoppingListLabel.topAnchor.constraint(equalTo: self.getAgainLabel.bottomAnchor, constant: 48).isActive = true
         self.shoppingListLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
         
         // shoppingListSwitch
@@ -152,6 +176,19 @@ class ItemDetailView: UIView {
         self.shoppingListSwitch.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
         self.shoppingListSwitch.tintColor = UIColor(named: .blue)
         self.shoppingListSwitch.onTintColor = UIColor(named: .blue)
+        
+        // buyOnlineLabel
+        self.addSubview(self.buyOnlineLabel)
+        self.buyOnlineLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.buyOnlineLabel.topAnchor.constraint(equalTo: self.shoppingListLabel.bottomAnchor, constant: 48).isActive = true
+        self.buyOnlineLabel.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -12).isActive = true
+        
+        // buyOnlineButton
+        self.addSubview(self.buyOnlineButton)
+        self.buyOnlineButton.translatesAutoresizingMaskIntoConstraints = false
+        self.buyOnlineButton.centerYAnchor.constraint(equalTo: self.buyOnlineLabel.centerYAnchor, constant: 0).isActive = true
+        self.buyOnlineButton.leftAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
+        self.buyOnlineButton.rightAnchor.constraint(equalTo: self.getAgainPicker.rightAnchor).isActive = true
         
         // activityIndicator
         self.addSubview(self.activityIndicator)

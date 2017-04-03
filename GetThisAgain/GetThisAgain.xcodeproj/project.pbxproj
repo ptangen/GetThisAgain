@@ -20,6 +20,9 @@
 		C0393E641E85AFAD00541969 /* SharingInvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E631E85AFAD00541969 /* SharingInvitationViewController.swift */; };
 		C0393E661E895FF600541969 /* AccessRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0393E651E895FF600541969 /* AccessRecord.swift */; };
 		C04D3E6C1E5E3B7E005C538C /* noImageFound.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */; };
+		C05203F51E92BEB200942DA9 /* MerchantsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C05203F41E92BEB200942DA9 /* MerchantsViewController.swift */; };
+		C05203F71E92BF5500942DA9 /* MerchantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C05203F61E92BF5500942DA9 /* MerchantsView.swift */; };
+		C05203F91E92C8A500942DA9 /* Merchant.swift in Sources */ = {isa = PBXBuildFile; fileRef = C05203F81E92C8A500942DA9 /* Merchant.swift */; };
 		C06711F01E5748020047473B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06711EF1E5748020047473B /* AppDelegate.swift */; };
 		C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C06711F61E5748020047473B /* GetThisAgain.xcdatamodeld */; };
 		C06711FA1E5748020047473B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C06711F91E5748020047473B /* Assets.xcassets */; };
@@ -80,6 +83,9 @@
 		C0393E631E85AFAD00541969 /* SharingInvitationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingInvitationViewController.swift; sourceTree = "<group>"; };
 		C0393E651E895FF600541969 /* AccessRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessRecord.swift; sourceTree = "<group>"; };
 		C04D3E6B1E5E3B7E005C538C /* noImageFound.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noImageFound.jpg; sourceTree = "<group>"; };
+		C05203F41E92BEB200942DA9 /* MerchantsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MerchantsViewController.swift; sourceTree = "<group>"; };
+		C05203F61E92BF5500942DA9 /* MerchantsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MerchantsView.swift; sourceTree = "<group>"; };
+		C05203F81E92C8A500942DA9 /* Merchant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Merchant.swift; sourceTree = "<group>"; };
 		C06711EC1E5748020047473B /* GetThisAgain.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetThisAgain.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06711EF1E5748020047473B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C06711F71E5748020047473B /* GetThisAgain.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GetThisAgain.xcdatamodel; sourceTree = "<group>"; };
@@ -213,6 +219,7 @@
 				C027E0731E578D8A00CA6577 /* Secrets.swift */,
 				C0CE94F51E5A1EA400099F61 /* DataStore.swift */,
 				C0393E651E895FF600541969 /* AccessRecord.swift */,
+				C05203F81E92C8A500942DA9 /* Merchant.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -226,6 +233,7 @@
 				C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */,
 				C067121F1E574C700047473B /* CaptureItemViewController.swift */,
 				C031E5A51E59F89200A62051 /* ItemDetailViewController.swift */,
+				C05203F41E92BEB200942DA9 /* MerchantsViewController.swift */,
 				C0A232CD1E67880F00FB1617 /* EditNameViewController.swift */,
 				C0393E5B1E8460D800541969 /* SharingTabViewController.swift */,
 				C0393E5D1E84611900541969 /* SharingStatusViewController.swift */,
@@ -243,6 +251,7 @@
 				C067121D1E574AB20047473B /* ItemsTableViewCell.swift */,
 				C06712211E574C9E0047473B /* CaptureItemView.swift */,
 				C031E5A71E59F8B800A62051 /* ItemDetailView.swift */,
+				C05203F61E92BF5500942DA9 /* MerchantsView.swift */,
 				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
 				C0393E5F1E84649900541969 /* SharingStatusView.swift */,
 				C0393E611E85AF6B00541969 /* SharingInvitationView.swift */,
@@ -464,6 +473,7 @@
 				C067121C1E574A380047473B /* Constants.swift in Sources */,
 				C067121A1E5749DF0047473B /* MyItem.swift in Sources */,
 				C0A232D41E6861BC00FB1617 /* SignInView.swift in Sources */,
+				C05203F71E92BF5500942DA9 /* MerchantsView.swift in Sources */,
 				C031E5A61E59F89200A62051 /* ItemDetailViewController.swift in Sources */,
 				C0A232D01E67882A00FB1617 /* EditNameView.swift in Sources */,
 				C0393E641E85AFAD00541969 /* SharingInvitationViewController.swift in Sources */,
@@ -472,7 +482,9 @@
 				C06711F01E5748020047473B /* AppDelegate.swift in Sources */,
 				C06712201E574C700047473B /* CaptureItemViewController.swift in Sources */,
 				C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */,
+				C05203F51E92BEB200942DA9 /* MerchantsViewController.swift in Sources */,
 				C0393E5E1E84611900541969 /* SharingStatusViewController.swift in Sources */,
+				C05203F91E92C8A500942DA9 /* Merchant.swift in Sources */,
 				C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */,
 				C027E0721E578D3800CA6577 /* APIClient.swift in Sources */,
 			);
