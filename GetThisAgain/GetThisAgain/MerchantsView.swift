@@ -56,11 +56,20 @@ class MerchantsView: UIView, UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if let itemInst = self.itemInst {
-//            itemInst.categoryID = self.store.myCategories[indexPath.row].id
-//        }
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if let url = URL(string: self.merchants[indexPath.row].url) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                //If you want handle the completion block than
+                UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+                    print("Open url : \(success)")
+                })
+            }
+        }
+        
+        
+    }
     
     func layoutForm(){
         

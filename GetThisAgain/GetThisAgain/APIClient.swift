@@ -246,7 +246,7 @@ class APIClient {
         let urlString = "\(Secrets.vigAPIURL)apiKey=\(Secrets.vigApiKey)&secret=\(Secrets.vigSecret)&country=us&itemsPerPage=10&sortBy=price&upc=\(barcode)"
         let url = URL(string: urlString)
         var merchants = [Merchant]()
-        let merchantInstNotFound = Merchant(itemName: "", merchant: "notFound", country: "", price: 0, url: "")
+        let merchantInstNotFound = Merchant(itemName: "No merchants found.", merchant: "notFound", country: "", price: 0, url: "")
         
         if let unwrappedUrl = url{
             let session = URLSession.shared
@@ -258,15 +258,22 @@ class APIClient {
                             // check the status code and create object
                             if let merchantCount = responseJSON["totalItems"] as? Int {
                                 if merchantCount > 0 {
-                                    if let items = responseJSON["items"] as? [[String:String]] {
+                                    if let items = responseJSON["items"] as? [[String:Any]] {
                                         for itemDict in items {
-                                            if let itemName = itemDict["name"], let merchant = itemDict["merchant"], let country = itemDict["country"], let priceString = itemDict["price"], let url = itemDict["url"] {
+                                            if let itemNameAny = itemDict["name"], let merchantAny = itemDict["merchant"], let countryAny = itemDict["country"], let priceAny = itemDict["price"], let urlAny = itemDict["url"] {
+                                                
+                                                let itemNameHTML = String(describing: itemNameAny)
+                                                let itemName = self.decodeCharactersIn(string: itemNameHTML)
+                                                let merchantHTML = String(describing: merchantAny)
+                                                let merchant = self.decodeCharactersIn(string: merchantHTML)
+                                                let country = String(describing: countryAny)
+                                                let priceString = String(describing: priceAny)
+                                                let url = String(describing: urlAny)
                                                 
                                                 if let price = Double(priceString) {
                                                     let merchantInst = Merchant(itemName: itemName, merchant: merchant, country: country, price: price, url: url)
                                                     merchants.append(merchantInst)
                                                 }
-                                                
                                             }
                                         }
                                     }
@@ -275,7 +282,7 @@ class APIClient {
                                 }
                             }
                         }
-                        //let merchantInstUnwrapped = merchantInst ?? merchantInstNotFound
+                        merchants.isEmpty ? merchants = [merchantInstNotFound] : () // return the notFound message if needed
                         completion(merchants)
                     } catch {
                         print("An error occured when creating responseJSON")
@@ -711,7 +718,7 @@ class APIClient {
 
     static func decodeCharactersIn(string: String) -> String {
         var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
-        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " ", "&gt;": ">"]
+        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " ", "&gt;": ">", "&apos;": "'"]
         for (code, character) in characters {
             string = string.replacingOccurrences(of: code, with: character, options: .caseInsensitive, range: nil)
         }

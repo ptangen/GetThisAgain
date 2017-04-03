@@ -46,11 +46,9 @@ class MerchantsViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated:false);
         
         APIClient.getMerchantsFromAPI(barcode: self.merchantsViewInst.itemInst.barcode) { (merchants) in
-            //dump(merchants)
             OperationQueue.main.addOperation {
                 self.merchantsViewInst.merchants = merchants
                 self.merchantsViewInst.merchantsTableView.reloadData()
-                print("reload")
             }
         }
     }
