@@ -73,7 +73,7 @@ class APIClient {
 
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
-            
+
             if let image = image {  // create request with image and parameters, barcode value generated on the server
                 
                 let boundary = "Boundary-\(NSUUID().uuidString)"
@@ -114,7 +114,7 @@ class APIClient {
                     body.append("--\(boundary)--\r\n".data(using: .utf8)!)
                     request.httpBody = body as Data
                 }
-            } else {   // create request without image
+            } else {   // create request without image as we have a barcode
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                 var parameterString = String()
                 if let itemNameUnwrapped = itemInst.itemName.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed), let createdBy = UserDefaults.standard.value(forKey: "userName") as? String {
@@ -127,13 +127,13 @@ class APIClient {
                     DispatchQueue.main.async {
                         do {
                             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any] {
-                                if let results = json["results"] as! Int? {
+                                if let results = json["results"] as? Int {
                                     if results == 1 {
                                         // extract the imageURL and barcode from the results so we can creare the object in all cases
-                                        if let barcode = json["barcode"] as! String? {
+                                        if let barcode = json["barcode"] as? String {
                                             var imageURLString = String() // sometimes there is no image
                                             if let imageURL = json["imageURL"] {
-                                                imageURLString = (imageURL as? String)!
+                                                imageURLString = imageURL as! String
                                             } else {
                                                 imageURLString = ""
                                             }
@@ -147,6 +147,7 @@ class APIClient {
                                 }
                             }
                         } catch {
+                            print("catch")
                             completion(.noReply, "", "")
                         }
                     }
@@ -620,6 +621,8 @@ class APIClient {
                                     completion(.ok)
                                 } else if results == -1 {
                                     completion(.failed)
+                                } else if results == -2 {
+                                    completion(.userNameInvalid)
                                 } else {
                                     completion(.noReply)
                                 }

@@ -131,6 +131,8 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
                                             self.store.accessList.append(accessRecordinst)
                                             self.sharingInvitationViewInst.createArraysForTableView()
                                         }
+                                    } else if result == apiResponse.userNameInvalid {
+                                        Utilities.showAlertMessage("The user name provided does not exist in GetThisAgain.", viewControllerInst: self)
                                     } else {
                                         Utilities.showAlertMessage("The system was unable to process this invitation.", viewControllerInst: self)
                                     }

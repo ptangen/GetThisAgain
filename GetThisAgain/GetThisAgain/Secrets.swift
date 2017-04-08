@@ -17,7 +17,7 @@ struct Secrets {
     static let vigApiKey:String = "593db2f1f5071d4cc85a87043a233eed"
     static let vigSecret:String = "86fbfaf9b92362182700318b8afddad6570ba415"
     
-    static let gtaURL: String = "http://api.getthisagain.com"
+    static let gtaURL: String = "http://getthisagain.com/api"
     static let gtaKey:String = "6032768233"
     
     static let userName = "swift3"
