@@ -313,7 +313,9 @@ class APIClient {
                                     if merchants > 0 {
                                         if let items = responseJSON["items"] as? [[String:String]] {
                                             if let itemDict = items.first {
-                                                if let itemName = itemDict["name"] {
+                                                if let itemNameHTML = itemDict["name"] {
+                                                    
+                                                    let itemName = self.decodeCharactersIn(string: itemNameHTML)
                                                 
                                                     itemInst = MyItem(createdBy: createdBy, barcode: barcode, itemName: itemName, categoryID: 0, imageURL: "", listID: 0, getAgain: .unsure, merchants: merchants)
                                                     
@@ -721,7 +723,7 @@ class APIClient {
 
     static func decodeCharactersIn(string: String) -> String {
         var string = string; string = string.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
-        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " ", "&gt;": ">", "&apos;": "'"]
+        let characters = ["&#8217;" : "'", "&#8220;": "“", "[&hellip;]": "...", "&#038;": "&", "&#8230;": "...", "&#039;": "'", "&quot;": "“", "%20": " ", "&gt;": ">", "&apos;": "'" , "&reg;": ""]
         for (code, character) in characters {
             string = string.replacingOccurrences(of: code, with: character, options: .caseInsensitive, range: nil)
         }

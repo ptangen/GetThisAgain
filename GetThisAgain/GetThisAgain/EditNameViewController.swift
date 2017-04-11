@@ -198,7 +198,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         for category in self.store.myCategories {
             let itemsUsingCategoryID = self.store.myItems.filter({ $0.categoryID == category.id })
 
-            // if there are some unused categories and the unused category is not "none" (0) then add the cagtegory to the menu
+            // if there are some unused categories and the unused category is not "none" (0) then add the category to the menu
             if itemsUsingCategoryID.isEmpty && category.id != 0 {
                 
                     let menuItemToDeleteCategory = UIAlertAction(title: category.label, style: .default, handler: { (alert: UIAlertAction!) -> Void in

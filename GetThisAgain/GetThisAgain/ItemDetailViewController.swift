@@ -56,8 +56,8 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         self.itemDetailViewInst.updateRecordRequired = false
         
         self.itemDetailViewInst.nameLabel.text = itemInst.itemName
-        if itemInst.categoryID == -1 { // prompt user about new cagtegory
-            let message = "This item is associated with a new cagtegory: \(self.store.getCategoryLabelFromID(id: itemInst.categoryID))."
+        if itemInst.categoryID == -1 { // prompt user about new category
+            let message = "This item is associated with a new category: \(self.store.getCategoryLabelFromID(id: itemInst.categoryID))."
             self.showNewCategoryMessage(message, viewControllerInst: self)
         } else { // set the text in the label
             self.itemDetailViewInst.categoryLabel.text = self.store.getCategoryLabelFromID(id: itemInst.categoryID)
@@ -114,7 +114,7 @@ class ItemDetailViewController: UITabBarController, ItemDetailViewDelegate {
         }
         
         if self.itemInst.merchants > 0 {
-            self.itemDetailViewInst.buyOnlineButton.setTitle("  \(self.itemInst.merchants) merchants found  ", for: .normal)
+            self.itemDetailViewInst.buyOnlineButton.setTitle(" View Merchant(s) ", for: .normal)
             self.itemDetailViewInst.buyOnlineButton.isHidden = false
             self.itemDetailViewInst.buyOnlineLabel.isHidden = false
         }
