@@ -81,7 +81,6 @@ class SignInView: UIView, UITextFieldDelegate {
         self.userNameField.accessibilityLabel = "userNameField"
         self.passwordField.accessibilityLabel = "passwordField"
         self.signInButton.accessibilityLabel = "signInButton"
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -300,7 +299,7 @@ class SignInView: UIView, UITextFieldDelegate {
         self.passwordField.isSecureTextEntry = true
         
         self.passwordField.rightAnchor.constraint(equalTo: self.signInButton.rightAnchor, constant: 0).isActive = true
-        self.passwordField.bottomAnchor.constraint(equalTo: self.signInButton.topAnchor, constant: -20).isActive = true
+        self.passwordField.bottomAnchor.constraint(equalTo: self.signInButton.topAnchor, constant: -15).isActive = true
         
         self.passwordFieldWidthConstraintStart = self.passwordField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.4)
         self.passwordFieldWidthConstraintStart.isActive = true
@@ -316,7 +315,7 @@ class SignInView: UIView, UITextFieldDelegate {
         self.userNameField.placeholder = "user name"
         self.userNameField.borderStyle = .bezel
         
-        self.userNameField.bottomAnchor.constraint(equalTo: self.passwordField.topAnchor, constant: -20).isActive = true
+        self.userNameField.bottomAnchor.constraint(equalTo: self.passwordField.topAnchor, constant: -15).isActive = true
         self.userNameField.widthAnchor.constraint(equalTo: self.passwordField.widthAnchor).isActive = true
         self.userNameField.rightAnchor.constraint(equalTo: self.passwordField.rightAnchor, constant: 0).isActive = true
         
