@@ -24,6 +24,14 @@ class ItemDetailView: UIView {
     let nameLabel = UILabel()
     let categoryLabel = UILabel()
     var itemImageView = UIImageView()
+    var itemImageViewDefaultLeft = NSLayoutConstraint()
+    var itemImageViewExpandedLeft = NSLayoutConstraint()
+    var itemImageViewDefaultTop = NSLayoutConstraint()
+    var itemImageViewExpandedTop = NSLayoutConstraint()
+    var itemImageViewDefaultRight = NSLayoutConstraint()
+    var itemImageViewExpandedRight = NSLayoutConstraint()
+    var itemImageViewDefaultHeight = NSLayoutConstraint()
+    var itemImageViewExpandedHeight = NSLayoutConstraint()
     
     let getAgainLabel = UILabel()
     var getAgainPicker = UISegmentedControl()
@@ -52,6 +60,11 @@ class ItemDetailView: UIView {
         let tapNameLabel = UITapGestureRecognizer(target: self, action: #selector(self.onTapItemNameOrIcon))
         nameLabel.addGestureRecognizer(tapNameLabel)
         nameLabel.isUserInteractionEnabled = true
+        
+        // gesture recognizer for image
+        let tapItemImageView = UITapGestureRecognizer(target: self, action: #selector(self.onTapItemImageView))
+        itemImageView.addGestureRecognizer(tapItemImageView)
+        itemImageView.isUserInteractionEnabled = true
         
         // getAgain
         self.getAgainLabel.text = "Get This Again?"
@@ -104,6 +117,68 @@ class ItemDetailView: UIView {
         self.delegate?.openEditName(item: self.itemInst)
     }
     
+    func onTapItemImageView() {
+        
+        // enable/disable constraints to so the larger image.
+        if self.itemImageViewDefaultHeight.isActive {
+            
+            // expand the image and hide the other controls
+            UIView.animate(withDuration: 0.75) {
+            self.itemImageViewDefaultHeight.isActive = false
+            self.itemImageViewDefaultRight.isActive = false
+            self.itemImageViewDefaultTop.isActive = false
+            self.itemImageViewDefaultLeft.isActive = false
+            
+            self.itemImageViewExpandedHeight.isActive = true
+            self.itemImageViewExpandedRight.isActive = true
+            self.itemImageViewExpandedTop.isActive = true
+            self.itemImageViewExpandedLeft.isActive = true
+            
+            self.editTextButton.isHidden = true
+            self.nameLabel.isHidden = true
+            self.categoryLabel.isHidden = true
+            self.getAgainLabel.isHidden = true
+            self.getAgainPicker.isHidden = true
+            self.shoppingListLabel.isHidden = true
+            self.shoppingListSwitch.isHidden = true
+            self.buyOnlineLabel.isHidden = true
+            self.buyOnlineButton.isHidden = true
+                
+                self.layoutIfNeeded()
+            }
+            
+        } else {
+            // show image at default size and show the other controls
+            UIView.animate(withDuration: 0.75, animations: {
+                self.itemImageViewExpandedHeight.isActive = false
+                self.itemImageViewExpandedRight.isActive = false
+                self.itemImageViewExpandedTop.isActive = false
+                self.itemImageViewExpandedLeft.isActive = false
+                
+                self.itemImageViewDefaultHeight.isActive = true
+                self.itemImageViewDefaultRight.isActive = true
+                self.itemImageViewDefaultTop.isActive = true
+                self.itemImageViewDefaultLeft.isActive = true
+                
+                self.layoutIfNeeded()
+                
+            }, completion: { (value: Bool) in
+                self.editTextButton.isHidden = false
+                self.nameLabel.isHidden = false
+                self.categoryLabel.isHidden = false
+                self.getAgainLabel.isHidden = false
+                self.getAgainPicker.isHidden = false
+                self.shoppingListLabel.isHidden = false
+                self.shoppingListSwitch.isHidden = false
+                
+                if self.itemInst.merchants > 0 {
+                    self.buyOnlineLabel.isHidden = false
+                    self.buyOnlineButton.isHidden = false
+                }
+            })
+        }
+    }
+    
     func switchStateDidChange(_ sender:UISwitch!) {
         if let myList = self.store.myLists.first {
             sender.isOn ? (self.itemInst.listID = myList.id) : (self.itemInst.listID = 0)
@@ -116,10 +191,30 @@ class ItemDetailView: UIView {
         // itemImageView
         self.addSubview(self.itemImageView)
         self.itemImageView.translatesAutoresizingMaskIntoConstraints = false
-        self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
-        self.itemImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -4).isActive = true
-        self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
+
+        // top anchors for imageView
+        self.itemImageViewDefaultTop = self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 24)
+        self.itemImageViewDefaultTop.isActive = true
+        self.itemImageViewExpandedTop = self.itemImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0)
+        self.itemImageViewExpandedTop.isActive = false
+        
+        // left anchors for imageView
+        self.itemImageViewDefaultLeft = self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8)
+        self.itemImageViewDefaultLeft.isActive = true
+        self.itemImageViewExpandedLeft = self.itemImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0)
+        self.itemImageViewExpandedLeft.isActive = false
+        
+        // height anchors for imageView
+        self.itemImageViewDefaultHeight = self.itemImageView.heightAnchor.constraint(equalToConstant: 200)
+        self.itemImageViewDefaultHeight.isActive = true
+        self.itemImageViewExpandedHeight = self.itemImageView.heightAnchor.constraint(equalToConstant: 500)
+        self.itemImageViewExpandedHeight.isActive = false
+        
+        // right anchors for imageView
+        self.itemImageViewDefaultRight = self.itemImageView.rightAnchor.constraint(equalTo: self.centerXAnchor, constant: -4)
+        self.itemImageViewDefaultRight.isActive = true
+        self.itemImageViewExpandedRight = self.itemImageView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0)
+        self.itemImageViewExpandedRight.isActive = false
         
         // nameLabel
         self.addSubview(self.nameLabel)
