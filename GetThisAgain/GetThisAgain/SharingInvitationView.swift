@@ -61,6 +61,8 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.deleteInvitationButton.setTitleColor(UIColor(named: .disabledText), for: .disabled)
         self.deleteInvitationButton.isEnabled = false
         
+
+        
         self.pageLayout()
     }
     
@@ -101,8 +103,21 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         return self.sectionTitles.count
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionTitles[section] + ":"
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        // creates a custom label to show the header label. This supports wrapped labels on small screens.
+        let label = TableViewHeaderLabel()
+        label.text = sectionTitles[section] + ":"
+        label.backgroundColor = UIColor(named: .blue)
+        return label
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // the second section label wraps on small screens so must make the heading taller
+        if section == 1 && UIScreen.main.bounds.width < 330.0 {
+          return 56
+        } else {
+           return 36
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -146,7 +161,7 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.tabDescription.translatesAutoresizingMaskIntoConstraints = false
         self.tabDescription.topAnchor.constraint(equalTo: self.topAnchor, constant: 72).isActive = true
         self.tabDescription.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 6).isActive = true
-        self.tabDescription.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 6).isActive = true
+        self.tabDescription.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -6).isActive = true
         
         // myItemsTableView
         self.addSubview(self.invitationsTableView)

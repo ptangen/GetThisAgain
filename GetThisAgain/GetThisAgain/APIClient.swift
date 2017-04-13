@@ -326,7 +326,7 @@ class APIClient {
                                                         }
                                                         
                                                         if let category = itemDict["category"] {
-                                                            // try to get the id for the category, if we dont have it generate a new id if we have it
+                                                            // try to get the id for the category, if we dont have it then generate a new id
                                                             // assign the id to the object
                                                             let categoryID = store.getCategoryIDFromLabel(label: category)
                                                             if categoryID == -1 {

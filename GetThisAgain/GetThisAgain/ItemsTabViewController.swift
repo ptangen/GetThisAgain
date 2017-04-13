@@ -87,7 +87,7 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate {
             self.navigationController?.pushViewController(signInControllerInst, animated: true) // show destination with nav bar
         })
         
-        let openSharing = UIAlertAction(title: "Sharing Lists", style: .default, handler: { (alert: UIAlertAction!) -> Void in
+        let openSharing = UIAlertAction(title: "Sharing Shopping Lists", style: .default, handler: { (alert: UIAlertAction!) -> Void in
             let sharingTabViewControllerInst = SharingTabViewController()
             self.navigationController?.pushViewController(sharingTabViewControllerInst, animated: true) // show destination with nav bar
         })

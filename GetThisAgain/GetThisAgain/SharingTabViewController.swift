@@ -27,7 +27,7 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = false
-        self.title = "Sharing Lists"
+        self.title = "Sharing Shopping Lists"
         self.navigationItem.hidesBackButton = true
         UITabBar.appearance().tintColor = UIColor(named: .statusBarBlue)
         self.automaticallyAdjustsScrollViewInsets = false

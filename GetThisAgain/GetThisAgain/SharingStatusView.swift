@@ -19,6 +19,7 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     let store = DataStore.sharedInstance
     let usersWithAccessTableView = UITableView()
     let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
+  //                                                              People whose shopping lists I can see
     var deleteUserButton = UIButton()
     var selectedSection = Int()
     var selectedAccessRecord: AccessRecord?
@@ -70,12 +71,20 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         return self.sectionTitles.count
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionTitles[section] + ":"
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.accessListAccepted[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        // creates a custom label to show the header label. Now there is no wrapping on small screens.
+        let label = TableViewHeaderLabel()
+        label.text = sectionTitles[section] + ":"
+        label.backgroundColor = UIColor(named: .blue)
+        return label
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 36
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

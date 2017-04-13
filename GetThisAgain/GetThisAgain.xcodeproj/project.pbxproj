@@ -50,6 +50,7 @@
 		C0BDF9E11E785FEB003796CF /* MaterialIcons-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */; };
 		C0BDF9E31E786004003796CF /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E21E786004003796CF /* FontAwesome.otf */; };
 		C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0BDF9E41E78AF9A003796CF /* MyCategory.swift */; };
+		C0C4F6301E9FC665006B275A /* TableViewHeaderLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C4F62F1E9FC665006B275A /* TableViewHeaderLabel.swift */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
@@ -120,6 +121,7 @@
 		C0BDF9E01E785FEB003796CF /* MaterialIcons-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MaterialIcons-Regular.otf"; sourceTree = "<group>"; };
 		C0BDF9E21E786004003796CF /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
 		C0BDF9E41E78AF9A003796CF /* MyCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCategory.swift; sourceTree = "<group>"; };
+		C0C4F62F1E9FC665006B275A /* TableViewHeaderLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeaderLabel.swift; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				C0A232CF1E67882A00FB1617 /* EditNameView.swift */,
 				C0393E5F1E84649900541969 /* SharingStatusView.swift */,
 				C0393E611E85AF6B00541969 /* SharingInvitationView.swift */,
+				C0C4F62F1E9FC665006B275A /* TableViewHeaderLabel.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				C06712181E57498F0047473B /* MyItemsView.swift in Sources */,
 				C06712141E57492B0047473B /* MyItemsViewController.swift in Sources */,
 				C0A232D71E6862B200FB1617 /* KeychainWrapper.m in Sources */,
+				C0C4F6301E9FC665006B275A /* TableViewHeaderLabel.swift in Sources */,
 				C06711F81E5748020047473B /* GetThisAgain.xcdatamodeld in Sources */,
 				C0393E601E84649900541969 /* SharingStatusView.swift in Sources */,
 				C067121E1E574AB20047473B /* ItemsTableViewCell.swift in Sources */,

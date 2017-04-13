@@ -42,6 +42,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             let captureItemButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(captureItemButtonClicked))
             self.navigationItem.leftBarButtonItems = [captureItemButton]
             // set the category to none
+            
             let indexPath = self.getCategoryIndex(categoryID: 0)
             self.editNameViewInst.categoryTableView.selectRow(at: indexPath, animated: false, scrollPosition: .top)
             self.categoryInitial = 0

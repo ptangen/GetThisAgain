@@ -128,7 +128,7 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
                 let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
             
                 // reduce the image size
-                let reducedSize = CGSize(width: 200, height: 200)
+                let reducedSize = CGSize(width: 300, height: 300)
                 self.snapshotCaptured.image = resizeImage(image: image, targetSize: reducedSize)
 
                 if let delegate = self.delegate {
