@@ -45,17 +45,10 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
         let alertController = UIAlertController(title: "Confirmation", message: message, preferredStyle: UIAlertControllerStyle.alert)
 
         alertController.addAction(UIAlertAction(title: "Delete", style: UIAlertActionStyle.default){ action -> Void in
-            var action = String()
             
             if let selectedAccessRecord = self.sharingInvitationViewInst.selectedAccessRecord {
-                if self.sharingInvitationViewInst.selectedSection == 0 {
-                    action = "delete"  // remove the record that lets this user see my list.
-                } else {
-                    action = "updateToAcceptedByViewer"  // set the status of the record that lets me see this user's list to pending
-                }
-                
                 // send request to update DB
-                APIClient.handleAccessRecord(action: action, listID: selectedAccessRecord.id, listOwner: selectedAccessRecord.owner, listViewer: selectedAccessRecord.viewer, status: selectedAccessRecord.status, completion: { (result) in
+                APIClient.handleAccessRecord(action: "delete", listID: selectedAccessRecord.id, listOwner: selectedAccessRecord.owner, listViewer: selectedAccessRecord.viewer, status: selectedAccessRecord.status, completion: { (result) in
                     if result == apiResponse.ok {
                         DispatchQueue.main.async {
                             // update the array in the datastore
