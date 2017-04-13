@@ -111,7 +111,13 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         } else {
             self.selectedSection = indexPath.section
             self.selectedAccessRecord = self.accessListAccepted[indexPath.section][indexPath.row]
-            self.deleteUserButton.isEnabled = true
+            
+            // enable/disable the delete button as needed
+            if self.accessListAccepted[indexPath.section][indexPath.row].status != "empty" {
+                self.deleteUserButton.isEnabled = true
+            } else {
+                self.deleteUserButton.isEnabled = false
+            }
         }
     }
     

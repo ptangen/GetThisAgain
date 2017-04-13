@@ -139,18 +139,22 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.selectedSection = indexPath.section
+        self.selectedAccessRecord = self.accessListInvitations[indexPath.section][indexPath.row]
         
-        if self.accessListInvitations[indexPath.section].isEmpty {
-            self.selectedAccessRecord = nil
-            self.deleteInvitationButton.isEnabled = false
-            self.selectedSection = Int()
-        } else {
-            self.selectedSection = indexPath.section
-            self.selectedAccessRecord = self.accessListInvitations[indexPath.section][indexPath.row]
-            self.deleteInvitationButton.isEnabled = true
             
-            // enable acceptInvitationButton for invitations received
-            indexPath.section == 1 ? (self.acceptInvitationButton.isEnabled = true) : (self.acceptInvitationButton.isEnabled = false)
+        // enable acceptInvitationButton for invitations received
+        if indexPath.section == 1 && self.accessListInvitations[indexPath.section][indexPath.row].status != "empty" {
+            self.acceptInvitationButton.isEnabled = true
+        } else {
+            self.acceptInvitationButton.isEnabled = false
+        }
+        
+        // enable/disable the delete button as needed
+        if self.accessListInvitations[indexPath.section][indexPath.row].status != "empty" {
+            self.deleteInvitationButton.isEnabled = true
+        } else {
+            self.deleteInvitationButton.isEnabled = false
         }
     }
     
