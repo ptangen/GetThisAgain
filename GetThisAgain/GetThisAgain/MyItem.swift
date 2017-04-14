@@ -38,7 +38,6 @@ class MyItem {
 enum GetAgain: String {
     case yes, no, unsure
     
-    // thresholds for each measure
     func label() -> String {
         switch self {
         case .yes:

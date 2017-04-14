@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C3A5B8B808D23E880ACAD04 /* Pods_GetThisAgainTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61A5A18561727D0A9E0031E8 /* Pods_GetThisAgainTests.framework */; };
 		C024452A1E6DE65800DF78B3 /* jam.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C02445291E6DE65800DF78B3 /* jam.jpeg */; };
 		C027E0721E578D3800CA6577 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0711E578D3800CA6577 /* APIClient.swift */; };
 		C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0731E578D8A00CA6577 /* Secrets.swift */; };
@@ -51,6 +52,8 @@
 		C0BDF9E31E786004003796CF /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0BDF9E21E786004003796CF /* FontAwesome.otf */; };
 		C0BDF9E51E78AF9A003796CF /* MyCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0BDF9E41E78AF9A003796CF /* MyCategory.swift */; };
 		C0C4F6301E9FC665006B275A /* TableViewHeaderLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C4F62F1E9FC665006B275A /* TableViewHeaderLabel.swift */; };
+		C0C4F6321EA12937006B275A /* KIF+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C4F6311EA12936006B275A /* KIF+Extensions.swift */; };
+		C0C4F6391EA12A2A006B275A /* UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C4F6381EA12A2A006B275A /* UITests.swift */; };
 		C0CE94F61E5A1EA400099F61 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F51E5A1EA400099F61 /* DataStore.swift */; };
 		C0CE94F81E5B388100099F61 /* ShoppingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */; };
 		C0CE94FA1E5CE60600099F61 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */; };
@@ -70,6 +73,7 @@
 /* Begin PBXFileReference section */
 		148DC204A7A02501A3FEFAA4 /* Pods-GetThisAgain.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GetThisAgain.release.xcconfig"; path = "Pods/Target Support Files/Pods-GetThisAgain/Pods-GetThisAgain.release.xcconfig"; sourceTree = "<group>"; };
 		1A312362C3ECF6270120F103 /* Pods-GetThisAgain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GetThisAgain.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GetThisAgain/Pods-GetThisAgain.debug.xcconfig"; sourceTree = "<group>"; };
+		56F97AE9F3C0158C0B88F342 /* Pods-GetThisAgainTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GetThisAgainTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GetThisAgainTests/Pods-GetThisAgainTests.release.xcconfig"; sourceTree = "<group>"; };
 		61A5A18561727D0A9E0031E8 /* Pods_GetThisAgainTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GetThisAgainTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B51790200D6975B2C6AB2BA9 /* Pods_GetThisAgain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GetThisAgain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C02445291E6DE65800DF78B3 /* jam.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jam.jpeg; sourceTree = "<group>"; };
@@ -122,9 +126,13 @@
 		C0BDF9E21E786004003796CF /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
 		C0BDF9E41E78AF9A003796CF /* MyCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCategory.swift; sourceTree = "<group>"; };
 		C0C4F62F1E9FC665006B275A /* TableViewHeaderLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeaderLabel.swift; sourceTree = "<group>"; };
+		C0C4F6311EA12936006B275A /* KIF+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "KIF+Extensions.swift"; sourceTree = "<group>"; };
+		C0C4F6351EA129D0006B275A /* GetThisAgainTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GetThisAgainTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		C0C4F6381EA12A2A006B275A /* UITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITests.swift; sourceTree = "<group>"; };
 		C0CE94F51E5A1EA400099F61 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C0CE94F71E5B388100099F61 /* ShoppingListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListViewController.swift; sourceTree = "<group>"; };
 		C0CE94F91E5CE60600099F61 /* ShoppingListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
+		D58269461284E8ADF0CEF09D /* Pods-GetThisAgainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GetThisAgainTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GetThisAgainTests/Pods-GetThisAgainTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C3A5B8B808D23E880ACAD04 /* Pods_GetThisAgainTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +169,8 @@
 			children = (
 				1A312362C3ECF6270120F103 /* Pods-GetThisAgain.debug.xcconfig */,
 				148DC204A7A02501A3FEFAA4 /* Pods-GetThisAgain.release.xcconfig */,
+				D58269461284E8ADF0CEF09D /* Pods-GetThisAgainTests.debug.xcconfig */,
+				56F97AE9F3C0158C0B88F342 /* Pods-GetThisAgainTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -209,6 +220,9 @@
 			children = (
 				C06712071E5748020047473B /* GetThisAgainTests.swift */,
 				C06712091E5748020047473B /* Info.plist */,
+				C0C4F6311EA12936006B275A /* KIF+Extensions.swift */,
+				C0C4F6351EA129D0006B275A /* GetThisAgainTests-Bridging-Header.h */,
+				C0C4F6381EA12A2A006B275A /* UITests.swift */,
 			);
 			path = GetThisAgainTests;
 			sourceTree = "<group>";
@@ -309,9 +323,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C067120F1E5748020047473B /* Build configuration list for PBXNativeTarget "GetThisAgainTests" */;
 			buildPhases = (
+				6CE5F3D828E1935394B83ECE /* [CP] Check Pods Manifest.lock */,
 				C06711FF1E5748020047473B /* Sources */,
 				C06712001E5748020047473B /* Frameworks */,
 				C06712011E5748020047473B /* Resources */,
+				B35DD0135FD759A08EAEFEFC /* [CP] Embed Pods Frameworks */,
+				32692EBC992C9ADAA5FA7065 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -342,6 +359,7 @@
 					C06712021E5748020047473B = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = YHJTX4HXRQ;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 						TestTargetID = C06711EB1E5748020047473B;
 					};
@@ -394,6 +412,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		32692EBC992C9ADAA5FA7065 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GetThisAgainTests/Pods-GetThisAgainTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4CD3225A02B89A2CE0554510 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -409,6 +442,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GetThisAgain/Pods-GetThisAgain-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		6CE5F3D828E1935394B83ECE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		9232D4BC89217E666BDB5624 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -422,6 +470,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B35DD0135FD759A08EAEFEFC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GetThisAgainTests/Pods-GetThisAgainTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B8D49E4214C5DEE2E3BBAD37 /* [CP] Embed Pods Frameworks */ = {
@@ -502,6 +565,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0C4F6321EA12937006B275A /* KIF+Extensions.swift in Sources */,
+				C0C4F6391EA12A2A006B275A /* UITests.swift in Sources */,
 				C06712081E5748020047473B /* GetThisAgainTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -662,14 +727,19 @@
 		};
 		C06712101E5748020047473B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D58269461284E8ADF0CEF09D /* Pods-GetThisAgainTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgainTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ptangen.GetThisAgainTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GetThisAgainTests/GetThisAgainTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GetThisAgain.app/GetThisAgain";
 			};
@@ -677,14 +747,18 @@
 		};
 		C06712111E5748020047473B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56F97AE9F3C0158C0B88F342 /* Pods-GetThisAgainTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = YHJTX4HXRQ;
 				INFOPLIST_FILE = GetThisAgainTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ptangen.GetThisAgainTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GetThisAgainTests/GetThisAgainTests-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GetThisAgain.app/GetThisAgain";
 			};
