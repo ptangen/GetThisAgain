@@ -21,7 +21,6 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,7 +40,6 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
         self.sharingInvitationViewControllerInst.tabBarItem = tabInvitation
         
         self.viewControllers = [self.sharingStatusViewControllerInst, sharingInvitationViewControllerInst]
-        //self.viewControllers = [self.sharingStatusViewControllerInst]
         
         let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonClicked))
         self.navigationItem.rightBarButtonItems = [doneButton]

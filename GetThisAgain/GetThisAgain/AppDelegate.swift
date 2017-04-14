@@ -25,17 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         statusBarBackground.backgroundColor = UIColor(named: .statusBarBlue)
         UIApplication.shared.statusBarStyle = .lightContent // sets status bar text color white
-        
-        // set the initial view controller
-        
-        let signInViewControllerInst = SignInViewController()
-        //let itemsTabViewControllerInst = ItemsTabViewController()
-        
         self.window = UIWindow(frame: UIScreen.main.bounds)
+        
         if let window = self.window {
-            window.backgroundColor = UIColor.white
+            
+            let signInViewControllerInst = SignInViewController()
             let navigationController = UINavigationController(rootViewController: signInViewControllerInst)
-            //let navigationController = UINavigationController(rootViewController: itemsTabViewControllerInst)
+            
+            window.backgroundColor = UIColor.white
             navigationController.view.addSubview(statusBarBackground)
             navigationController.navigationBar.tintColor = UIColor.white
             
@@ -56,7 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Crashlytics.sharedInstance().setUserIdentifier("1")
         Crashlytics.sharedInstance().setUserName("ptangen")
     }
-
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

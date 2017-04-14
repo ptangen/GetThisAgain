@@ -6,6 +6,8 @@
 //  Copyright © 2017 Paul Tangen. All rights reserved.
 //
 
+// used by the headers in the sharing list pages
+
 import UIKit
 
 class TableViewHeaderLabel: UILabel {
@@ -21,13 +23,10 @@ class TableViewHeaderLabel: UILabel {
         self.setNeedsLayout()
         
         self.textColor = UIColor.white
-        //self.backgroundColor = UIColor.black
         
         self.lineBreakMode = .byWordWrapping
         self.numberOfLines = 0
-        
-        //self.heightAnchor.constraint(equalToConstant: 100)
-        
+
         return super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
     }
 }
