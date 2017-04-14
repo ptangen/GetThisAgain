@@ -39,6 +39,47 @@ class SignInViewController: UIViewController, SignInViewDelegate {
         navigationController?.pushViewController(itemsTabViewControllerInst, animated: false) // show destination with nav bar
     }
     
+    func onClickSignIn() {
+        if let userName = self.signInViewInst.userNameField.text {
+            if let password = self.signInViewInst.passwordField.text {
+                
+                UserDefaults.standard.setValue(self.signInViewInst.userNameField.text, forKey: "userName")
+                
+                if password == self.signInViewInst.myKeyChainWrapper.myObject(forKey: "v_Data") as? String &&
+                    userName == UserDefaults.standard.value(forKey: "userName") as? String {
+                    //creds match the keychain and user defaults
+                    self.openTabDisplay()
+                } else {
+                    //creds do not match the locally stored creds, validate creds on the server
+                    APIClient.requestAuth(userName: userName, password: password, completion: { response in
+                        
+                        switch response {
+                            
+                        case .authenticated:
+                            // set the password in the keychain
+                            self.signInViewInst.myKeyChainWrapper.mySetObject(password, forKey:kSecValueData)
+                            self.signInViewInst.myKeyChainWrapper.writeToKeychain()
+                            self.openTabDisplay()
+                            
+                        case.userNameInvalid:
+                            self.signInViewInst.indicateError(fieldName: self.signInViewInst.userNameField)
+                            
+                        case .passwordInvalid:
+                            self.signInViewInst.indicateError(fieldName: self.signInViewInst.passwordField)
+                            
+                        case.noReply:
+                            self.showAlertMessage("The server is not available. Please forward this message to ptangen@ptangen.com")
+                            
+                        default:
+                            break;
+                        }
+                    }) // end apiClient.requestAuth
+                }
+            }
+        }
+    }
+
+    
     func layoutAnimation() {
         // kick off animation in the view
         UIView.animate(withDuration: 0.75) {

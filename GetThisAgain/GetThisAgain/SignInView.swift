@@ -12,6 +12,7 @@ import LocalAuthentication
 protocol SignInViewDelegate: class {
     func openTabDisplay()
     func showAlertMessage(_: String)
+    func onClickSignIn()
 }
 
 class SignInView: UIView, UITextFieldDelegate {
@@ -61,8 +62,8 @@ class SignInView: UIView, UITextFieldDelegate {
         self.userNameField.delegate = self
         self.passwordField.delegate = self
         
-        self.signInButton.addTarget(self, action: #selector(SignInView.onClickSignIn), for: UIControlEvents.touchUpInside)
-        self.touchIDButton.addTarget(self, action: #selector(SignInView.touchIDLoginAction), for: UIControlEvents.touchUpInside)
+        self.signInButton.addTarget(self, action: #selector(onClickSignIn), for: UIControlEvents.touchUpInside)
+        self.touchIDButton.addTarget(self, action: #selector(touchIDLoginAction), for: UIControlEvents.touchUpInside)
         
         // if we have a stored userName, populate the userName field with that value.
         if let storedUserName = UserDefaults.standard.value(forKey: "userName") as? String {
@@ -88,48 +89,8 @@ class SignInView: UIView, UITextFieldDelegate {
     }
     
     func onClickSignIn() {
-        if let userName = self.userNameField.text {
-            if let password = self.passwordField.text {
-                
-                UserDefaults.standard.setValue(self.userNameField.text, forKey: "userName")
-                
-                if password == myKeyChainWrapper.myObject(forKey: "v_Data") as? String &&
-                    userName == UserDefaults.standard.value(forKey: "userName") as? String {
-                    //creds match the keychain and user defaults
-                    self.delegate?.openTabDisplay()
-                } else {
-                    //creds do not match the locally stored creds, validate creds on the server
-                    APIClient.requestAuth(userName: userName, password: password, completion: { response in
-                        
-                        switch response {
-                            
-                        case .authenticated:
-                            // set the password in the keychain
-                            self.myKeyChainWrapper.mySetObject(password, forKey:kSecValueData)
-                            self.myKeyChainWrapper.writeToKeychain()
-                            if let delegate = self.delegate {
-                                delegate.openTabDisplay()
-                            }
-                            break;
-                            
-                        case.userNameInvalid:
-                            self.indicateError(fieldName: self.userNameField)
-                            break;
-                            
-                        case .passwordInvalid:
-                            self.indicateError(fieldName: self.passwordField)
-                            break;
-                            
-                        case.noReply:
-                            self.delegate?.showAlertMessage("The server is not available. Please forward this message to ptangen@ptangen.com")
-                            break;
-                            
-                        default:
-                            break;
-                        }
-                    }) // end apiClient.requestAuth
-                }
-            }
+        if let delegate = self.delegate {
+            delegate.onClickSignIn()
         }
     }
     
@@ -138,28 +99,28 @@ class SignInView: UIView, UITextFieldDelegate {
         // 2. Check to see if the device has a finger print reader.
         // 3. Check to see if the fingerprint matches, if success, open tab display
         if myKeyChainWrapper.myObject(forKey: "v_Data") != nil {
-            if laContext.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error:nil) {
-                laContext.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Sign in with Touch ID", reply: { (success : Bool, error : Error? ) -> Void in
-                    
-                    DispatchQueue.main.async(execute: {
-                        if success {
-                            self.delegate?.openTabDisplay()
-                        }
+            if let delegate = self.delegate {
+                if laContext.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error:nil) {
+                    laContext.evaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Sign in with Touch ID", reply: { (success : Bool, error : Error? ) -> Void in
                         
-                        if let error = error {
-                            switch(error._code) {
-                            case LAError.authenticationFailed.rawValue:
-                                self.delegate?.showAlertMessage("Unable to login with fingerprint. Sign in with your user name and password.")
-                                break;
-                            default:
-                                self.delegate?.showAlertMessage("Touch ID may not be configured")
-                                break;
+                        DispatchQueue.main.async(execute: {
+                            if success {
+                                delegate.openTabDisplay()
                             }
-                        }
+                            
+                            if let error = error {
+                                switch(error._code) {
+                                case LAError.authenticationFailed.rawValue:
+                                    delegate.showAlertMessage("Unable to login with fingerprint. Sign in with your user name and password.")
+                                default:
+                                    delegate.showAlertMessage("Touch ID may not be configured")
+                                }
+                            }
+                        })
                     })
-                })
-            } else {
-                self.delegate?.showAlertMessage("Touch ID not available")
+                } else {
+                    delegate.showAlertMessage("Touch ID not available")
+                }
             }
         }
     }
