@@ -28,12 +28,12 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.sharingStatusViewInst.frame = CGRect.zero
         self.view = self.sharingStatusViewInst
-        self.sharingStatusViewInst.getAccessListFromDB()
+        self.getAccessListFromDB()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.sharingStatusViewInst.createArraysForTableView()
-        self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
+        self.createArraysForTableView()
+        //self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
     }
     
     func onTapDeleteUser(message: String) {
@@ -60,7 +60,7 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
                             } else {
                                 selectedAccessRecord.status = "pending"
                             }
-                            self.sharingStatusViewInst.createArraysForTableView()
+                            self.createArraysForTableView()
                         }
                     } else {
                         Utilities.showAlertMessage("The system was unable to remove this user.", viewControllerInst: self)
@@ -70,6 +70,42 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
         })
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel))
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func getAccessListFromDB() {
+        if self.store.accessList.isEmpty {
+            APIClient.getAccessList(completion: { isSuccessful in
+                if isSuccessful {
+                    self.createArraysForTableView()
+                } else {
+                    OperationQueue.main.addOperation {
+                        //self.activityIndicator.isHidden = true  TODO: Add spinner
+                    }
+                    self.showAlertMessage(message: "Unable to retrieve data from the server.")
+                }
+            })
+        }
+    }
+    
+    func createArraysForTableView() {
+        
+        self.sharingStatusViewInst.selectedAccessRecord = nil
+        self.sharingStatusViewInst.deleteUserButton.isEnabled = false
+        
+        OperationQueue.main.addOperation {
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                self.sharingStatusViewInst.accessListAccepted[0] = self.store.accessList.filter(
+                    { $0.owner == userName && $0.viewer != userName && $0.status == "accepted" } )
+                self.sharingStatusViewInst.accessListAccepted[1] = self.store.accessList.filter(
+                    { $0.viewer == userName && $0.owner != userName && $0.status == "accepted" } )
+                
+                // add messages when no record exists
+                self.sharingStatusViewInst.accessListAccepted[0].isEmpty ? (self.sharingStatusViewInst.accessListAccepted[0] = [AccessRecord(id: -1, owner: "", viewer: "Nobody has access to your list.", status: "empty")]) : ()
+                self.sharingStatusViewInst.accessListAccepted[1].isEmpty ? (self.sharingStatusViewInst.accessListAccepted[1] = [AccessRecord(id: -1, owner: "Nobody is sharing their list with you.", viewer: "", status: "empty")]) : ()
+                
+                self.sharingStatusViewInst.usersWithAccessTableView.reloadData()
+            }
+        }
     }
     
     func showAlertMessage(message: String) {

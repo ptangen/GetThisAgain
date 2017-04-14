@@ -19,7 +19,6 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
     let store = DataStore.sharedInstance
     let usersWithAccessTableView = UITableView()
     let sectionTitles = ["People that can see my shopping list", "People whose shopping lists I can see"]
-  //                                                              People whose shopping lists I can see
     var deleteUserButton = UIButton()
     var selectedSection = Int()
     var selectedAccessRecord: AccessRecord?
@@ -143,43 +142,5 @@ class SharingStatusView: UIView, UITableViewDataSource, UITableViewDelegate  {
         self.deleteUserButton.translatesAutoresizingMaskIntoConstraints = false
         self.deleteUserButton.bottomAnchor.constraint(equalTo: self.usersWithAccessTableView.topAnchor, constant: -4).isActive = true
         self.deleteUserButton.rightAnchor.constraint(equalTo: self.usersWithAccessTableView.rightAnchor, constant: -12).isActive = true
-    }
-    
-    func getAccessListFromDB() {
-        if self.store.accessList.isEmpty {
-            APIClient.getAccessList(completion: { isSuccessful in
-                if isSuccessful {
-                    self.createArraysForTableView()
-                } else {
-                    OperationQueue.main.addOperation {
-                        //self.activityIndicator.isHidden = true  TODO: Add spinner
-                    }
-                    if let delegate = self.delegate {
-                        delegate.showAlertMessage(message: "Unable to retrieve data from the server.")
-                    }
-                }
-            })
-        }
-    }
-    
-    func createArraysForTableView() {
-        
-        self.selectedAccessRecord = nil
-        self.deleteUserButton.isEnabled = false
-        
-        OperationQueue.main.addOperation {
-            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                self.accessListAccepted[0] = self.store.accessList.filter(
-                    { $0.owner == userName && $0.viewer != userName && $0.status == "accepted" } )
-                self.accessListAccepted[1] = self.store.accessList.filter(
-                    { $0.viewer == userName && $0.owner != userName && $0.status == "accepted" } )
-                
-                // add messages when no record exists
-                self.accessListAccepted[0].isEmpty ? (self.accessListAccepted[0] = [AccessRecord(id: -1, owner: "", viewer: "Nobody has access to your list.", status: "empty")]) : ()
-                self.accessListAccepted[1].isEmpty ? (self.accessListAccepted[1] = [AccessRecord(id: -1, owner: "Nobody is sharing their list with you.", viewer: "", status: "empty")]) : ()
-                
-                self.usersWithAccessTableView.reloadData()
-            }
-        }
     }
 }

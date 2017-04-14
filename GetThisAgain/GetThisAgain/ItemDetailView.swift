@@ -114,7 +114,9 @@ class ItemDetailView: UIView {
     }
     
     func onTapItemNameOrIcon() {
-        self.delegate?.openEditName(item: self.itemInst)
+        if let delegate = self.delegate {
+            delegate.openEditName(item: self.itemInst)
+        }
     }
     
     func onTapItemImageView() {

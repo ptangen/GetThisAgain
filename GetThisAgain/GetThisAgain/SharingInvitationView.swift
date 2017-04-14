@@ -194,24 +194,24 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.addInvitationButton.rightAnchor.constraint(equalTo: self.acceptInvitationButton.leftAnchor, constant: -18).isActive = true
     }
     
-    func createArraysForTableView() {
-
-        self.selectedAccessRecord = nil
-        self.deleteInvitationButton.isEnabled = false
-        
-        OperationQueue.main.addOperation {
-            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
-                self.accessListInvitations[0] = self.store.accessList.filter(
-                    { $0.owner == userName && $0.viewer != userName && $0.status == "pending" } )
-                self.accessListInvitations[1] = self.store.accessList.filter(
-                    { $0.viewer == userName && $0.owner != userName && $0.status == "pending" } )
-                
-                // add messages when no record exists
-                self.accessListInvitations[0].isEmpty ? (self.accessListInvitations[0] = [AccessRecord(id: -1, owner: "", viewer: "No pending invitations found.", status: "empty")]) : ()
-                self.accessListInvitations[1].isEmpty ? (self.accessListInvitations[1] = [AccessRecord(id: -1, owner: "No pending invitations found.", viewer: "", status: "empty")]) : ()
-                
-                self.invitationsTableView.reloadData()
-            }
-        }
-    }
+//    func createArraysForTableView() {
+//
+//        self.selectedAccessRecord = nil
+//        self.deleteInvitationButton.isEnabled = false
+//        
+//        OperationQueue.main.addOperation {
+//            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+//                self.accessListInvitations[0] = self.store.accessList.filter(
+//                    { $0.owner == userName && $0.viewer != userName && $0.status == "pending" } )
+//                self.accessListInvitations[1] = self.store.accessList.filter(
+//                    { $0.viewer == userName && $0.owner != userName && $0.status == "pending" } )
+//                
+//                // add messages when no record exists
+//                self.accessListInvitations[0].isEmpty ? (self.accessListInvitations[0] = [AccessRecord(id: -1, owner: "", viewer: "No pending invitations found.", status: "empty")]) : ()
+//                self.accessListInvitations[1].isEmpty ? (self.accessListInvitations[1] = [AccessRecord(id: -1, owner: "No pending invitations found.", viewer: "", status: "empty")]) : ()
+//                
+//                self.invitationsTableView.reloadData()
+//            }
+//        }
+//    }
 }

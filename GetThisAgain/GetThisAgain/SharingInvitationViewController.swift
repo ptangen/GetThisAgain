@@ -28,12 +28,11 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
         self.navigationController?.setNavigationBarHidden(false, animated: .init(true))
         self.sharingInvitationViewInst.frame = CGRect.zero
         self.view = self.sharingInvitationViewInst
-        self.sharingInvitationViewInst.createArraysForTableView()
+        self.createArraysForTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.sharingInvitationViewInst.createArraysForTableView()
-        self.sharingInvitationViewInst.invitationsTableView.reloadData()
+        self.createArraysForTableView()
     }
     
     func showAlertMessage(message: String) {
@@ -53,7 +52,7 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
                         DispatchQueue.main.async {
                             // update the array in the datastore
                             self.store.removeAccessRecord(accessRecord: selectedAccessRecord)
-                            self.sharingInvitationViewInst.createArraysForTableView()
+                            self.createArraysForTableView()
                         }
                     } else {
                         Utilities.showAlertMessage("The system was unable to remove this user.", viewControllerInst: self)
@@ -84,7 +83,7 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
                     DispatchQueue.main.async {
                         // update the array in the datastore
                         selectedAccessRecord.status = "accepted"
-                        self.sharingInvitationViewInst.createArraysForTableView()
+                        self.createArraysForTableView()
                         self.sharingInvitationViewInst.acceptInvitationButton.isEnabled = false
                         self.sharingInvitationViewInst.deleteInvitationButton.isEnabled = false
                     }
@@ -122,7 +121,7 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
                                             // update the array in the datastore
                                             let accessRecordinst = AccessRecord(id: myList.id, owner: userName, viewer: invitationRecipient, status: "pending")
                                             self.store.accessList.append(accessRecordinst)
-                                            self.sharingInvitationViewInst.createArraysForTableView()
+                                            self.createArraysForTableView()
                                         }
                                     } else if result == apiResponse.userNameInvalid {
                                         Utilities.showAlertMessage("The user name provided does not exist in GetThisAgain.", viewControllerInst: self)
@@ -138,5 +137,26 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func createArraysForTableView() {
+        
+        self.sharingInvitationViewInst.selectedAccessRecord = nil
+        self.sharingInvitationViewInst.deleteInvitationButton.isEnabled = false
+        
+        OperationQueue.main.addOperation {
+            if let userName = UserDefaults.standard.value(forKey: "userName") as? String {
+                self.sharingInvitationViewInst.accessListInvitations[0] = self.store.accessList.filter(
+                    { $0.owner == userName && $0.viewer != userName && $0.status == "pending" } )
+                self.sharingInvitationViewInst.accessListInvitations[1] = self.store.accessList.filter(
+                    { $0.viewer == userName && $0.owner != userName && $0.status == "pending" } )
+                
+                // add messages when no record exists
+                self.sharingInvitationViewInst.accessListInvitations[0].isEmpty ? (self.sharingInvitationViewInst.accessListInvitations[0] = [AccessRecord(id: -1, owner: "", viewer: "No pending invitations found.", status: "empty")]) : ()
+                self.sharingInvitationViewInst.accessListInvitations[1].isEmpty ? (self.sharingInvitationViewInst.accessListInvitations[1] = [AccessRecord(id: -1, owner: "No pending invitations found.", viewer: "", status: "empty")]) : ()
+                
+                self.sharingInvitationViewInst.invitationsTableView.reloadData()
+            }
+        }
     }
 }
