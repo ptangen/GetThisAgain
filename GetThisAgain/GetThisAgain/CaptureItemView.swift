@@ -99,6 +99,8 @@ class CaptureItemView: UIView, AVCaptureMetadataOutputObjectsDelegate, AVCapture
         self.addSubview(buttonSnapshot)
         self.buttonSnapshot.isHidden = true
         
+        self.accessibilityLabel = "captureItemViewInst"
+        
         //Crashlytics.sharedInstance().crash()
     }
     

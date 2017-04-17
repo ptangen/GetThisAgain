@@ -34,10 +34,12 @@ class ItemsTabViewController: UITabBarController, UITabBarControllerDelegate {
         // Create MyItems Tab
         let tabMyItems = UITabBarItem(title: "My Items", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
         self.myItemsViewControllerInst.tabBarItem = tabMyItems
+        tabMyItems.accessibilityLabel = "tabMyItems"
         
         // Create ShoppingList Tab
         let tabShoppingList = UITabBarItem(title: "Shopping List", image: UIImage(named: "shoppingCart"), selectedImage: UIImage(named: "shoppingCart"))
         self.shoppingListViewControllerInst.tabBarItem = tabShoppingList
+        tabShoppingList.accessibilityLabel = "tabShoppingList"
         
         self.viewControllers = [self.myItemsViewControllerInst, self.shoppingListViewControllerInst]
         

@@ -30,15 +30,18 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.accessibilityLabel = "editNameViewInst"
         self.nameLabel.text = "Name"
         self.categoryLabel.text = "Category"
         self.nameTextView.delegate = self
         self.nameTextView.returnKeyType = .done
+        self.nameTextView.accessibilityLabel = "nameTextView"
         self.layoutPage()
         
         self.categoryTableView.delegate = self
         self.categoryTableView.dataSource = self
         self.categoryTableView.register(UITableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.categoryTableView.accessibilityIdentifier = "categoryTableView"
         
         // select the first category by default
         let indexPath = IndexPath(item: 0, section: 0)
@@ -49,6 +52,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.addCategoryButton.setTitle(Constants.iconLibrary.add.rawValue, for: .normal)
         self.addCategoryButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
         self.addCategoryButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        self.addCategoryButton.accessibilityLabel = "addCategoryButton"
         
         // deleteCategoryButton
         self.deleteCategoryButton.addTarget(self, action: #selector(self.onTapDeleteCategory), for: UIControlEvents.touchUpInside)
@@ -57,6 +61,7 @@ class EditNameView: UIView, UITextViewDelegate, UITableViewDelegate, UITableView
         self.deleteCategoryButton.setTitleColor(UIColor(named: .blue), for: .normal)
         self.deleteCategoryButton.setTitleColor(UIColor(named: .disabledText), for: .disabled)
         self.deleteCategoryButton.isEnabled = false
+        self.deleteCategoryButton.accessibilityLabel = "deleteCategoryButton"
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

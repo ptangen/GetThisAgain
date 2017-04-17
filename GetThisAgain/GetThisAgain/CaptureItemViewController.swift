@@ -35,9 +35,11 @@ class CaptureItemViewController: UIViewController, CaptureItemViewDelegate {
         
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonClicked))
         self.navigationItem.leftBarButtonItems = [cancelButton]
+        cancelButton.accessibilityLabel = "cancelButton"
         
         let continueButton = UIBarButtonItem(title: "Continue", style: .plain, target: self, action: #selector(continueButtonClicked))
         self.navigationItem.rightBarButtonItems = [continueButton]
+        continueButton.accessibilityLabel = "continueButton"
     }
     
     func cancelButtonClicked() {

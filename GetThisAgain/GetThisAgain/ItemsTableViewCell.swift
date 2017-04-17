@@ -25,7 +25,9 @@ class ItemsTableViewCell: UITableViewCell {
         
         // set the fonts
         self.titleLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.medium.rawValue)
+        self.titleLabel.accessibilityIdentifier = "titleLabel"
         self.subTitleLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
+        self.subTitleLabel.accessibilityIdentifier = "subTitleLabel"
         self.userNameLabel.font = UIFont(name: Constants.appFont.regular.rawValue, size: Constants.fontSize.small.rawValue)
         self.userNameLabel.textAlignment = .right
         self.getThisAgainAndMerchantLabel.font = UIFont(name: Constants.iconFont.fontAwesome.rawValue, size: Constants.iconSize.xxsmall.rawValue)

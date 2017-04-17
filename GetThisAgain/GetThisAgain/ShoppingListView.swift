@@ -45,6 +45,8 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.shoppingListTableView.tableHeaderView = self.searchController.searchBar
         
         self.pageLayout()
+        
+        self.accessibilityLabel = "shoppingListViewInst"
     }
     
     // tableview config
@@ -65,7 +67,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = ItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "prototype", for: indexPath) as! ItemsTableViewCell
         var shoppingItemCurrent: MyItem
         if searchController.isActive && searchController.searchBar.text != "" {
             shoppingItemCurrent = self.filteredItems[indexPath.row]
@@ -98,6 +100,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         // set the image
+        cell.itemImageView.image = nil
         if shoppingItemCurrent.imageURL.isEmpty {
             // show no image found
             cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")

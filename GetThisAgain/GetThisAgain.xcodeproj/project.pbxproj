@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9C3A5B8B808D23E880ACAD04 /* Pods_GetThisAgainTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61A5A18561727D0A9E0031E8 /* Pods_GetThisAgainTests.framework */; };
+		C0219C2B1EA14031001B5BB7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0731E578D8A00CA6577 /* Secrets.swift */; };
 		C024452A1E6DE65800DF78B3 /* jam.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C02445291E6DE65800DF78B3 /* jam.jpeg */; };
 		C027E0721E578D3800CA6577 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0711E578D3800CA6577 /* APIClient.swift */; };
 		C027E0741E578D8A00CA6577 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C027E0731E578D8A00CA6577 /* Secrets.swift */; };
@@ -566,6 +567,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0C4F6321EA12937006B275A /* KIF+Extensions.swift in Sources */,
+				C0219C2B1EA14031001B5BB7 /* Secrets.swift in Sources */,
 				C0C4F6391EA12A2A006B275A /* UITests.swift in Sources */,
 				C06712081E5748020047473B /* GetThisAgainTests.swift in Sources */,
 			);

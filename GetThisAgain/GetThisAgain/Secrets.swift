@@ -20,6 +20,6 @@ struct Secrets {
     static let gtaURL: String = "http://getthisagain.com/api"
     static let gtaKey:String = "6032768233"
     
-    static let userName = "swift3"
-    static let password = "1234"
+    static let userNameUITest = "swift3"
+    static let passwordUITest = "1234"
 }

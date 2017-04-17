@@ -49,6 +49,7 @@ class ItemDetailView: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
+        self.accessibilityLabel = "itemDetailViewInst"
         
         // editTextButton
         self.editTextButton.addTarget(self, action: #selector(self.onTapItemNameOrIcon), for: UIControlEvents.touchUpInside)

@@ -133,6 +133,7 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
         //Add text field
         alertController.addTextField { (textField) -> Void in
             textField.placeholder = "Name"
+            textField.accessibilityLabel = "textField"
         }
         alertController.addAction(UIAlertAction(title: "Add", style: UIAlertActionStyle.default){ action -> Void in
             if let newCategoryLabel = ((alertController.textFields?.first)! as UITextField).text {
@@ -164,7 +165,16 @@ class EditNameViewController: UIViewController, EditNameViewDelegate {
             }
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            // accessibility labels for buttons in alertController
+            if let addCategory = alertController.actions.first {
+                addCategory.accessibilityLabel = "addCategory"
+            }
+            
+            if let cancelAddCategory = alertController.actions.last {
+                cancelAddCategory.accessibilityLabel = "cancelAddCategory"
+            }
+        })
     }
     
     func deleteSelectedCategory(id: Int) {

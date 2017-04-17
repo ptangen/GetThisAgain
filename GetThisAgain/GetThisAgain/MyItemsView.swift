@@ -31,11 +31,13 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     override init(frame:CGRect){
         super.init(frame: frame)
+        self.accessibilityLabel = "myItemsViewInst"
         // barcodeType: .EAN13,
         
         self.myItemsTableView.delegate = self
         self.myItemsTableView.dataSource = self
         self.myItemsTableView.register(ItemsTableViewCell.self, forCellReuseIdentifier: "prototype")
+        self.myItemsTableView.accessibilityIdentifier = "myItemsTableView"
         
         self.searchController.searchResultsUpdater = self
         self.searchController.hidesNavigationBarDuringPresentation = false 
@@ -63,8 +65,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = ItemsTableViewCell(style: .default, reuseIdentifier: "prototype")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "prototype", for: indexPath) as! ItemsTableViewCell
         var myItemCurrent: MyItem!
         if searchController.isActive && searchController.searchBar.text != "" {
             myItemCurrent = self.filteredItems[indexPath.row]
@@ -97,6 +98,7 @@ class MyItemsView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         // set the image
+        cell.itemImageView.image = nil
         if myItemCurrent.imageURL.isEmpty {
             // show no image found
             cell.itemImageView.image = #imageLiteral(resourceName: "noImageFound.jpg")
