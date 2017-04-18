@@ -69,7 +69,17 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
             }
         })
         alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel))
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            // accessibility labels for buttons in alertController
+            if let confirmDeleteListFromUser = alertController.actions.first {
+                confirmDeleteListFromUser.accessibilityLabel = "confirmDeleteListFromUser"
+            }
+            
+            if let cancelDeleteListFromUser = alertController.actions.last {
+                cancelDeleteListFromUser.accessibilityLabel = "cancelDeleteListFromUser"
+            }
+        })
+
     }
     
     func getAccessListFromDB() {
@@ -90,7 +100,7 @@ class SharingStatusViewController: UIViewController, SharingStatusViewDelegate {
     func createArraysForTableView() {
         
         self.sharingStatusViewInst.selectedAccessRecord = nil
-        self.sharingStatusViewInst.deleteUserButton.isEnabled = false
+        self.sharingStatusViewInst.deleteListFromUserButton.isEnabled = false
         
         OperationQueue.main.addOperation {
             if let userName = UserDefaults.standard.value(forKey: "userName") as? String {

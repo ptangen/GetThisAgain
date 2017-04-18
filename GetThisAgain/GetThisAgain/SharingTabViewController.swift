@@ -33,10 +33,12 @@ class SharingTabViewController: UITabBarController, UITabBarControllerDelegate  
         
         // Create tabStatus
         let tabStatus = UITabBarItem(title: "Sharing Status", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
+        tabStatus.accessibilityLabel = "tabStatus"
         self.sharingStatusViewControllerInst.tabBarItem = tabStatus
         
         // Create tabInvitation
         let tabInvitation = UITabBarItem(title: "Sharing Invitations", image: UIImage(named: "person"), selectedImage: UIImage(named: "person"))
+        tabInvitation.accessibilityLabel = "tabInvitation"
         self.sharingInvitationViewControllerInst.tabBarItem = tabInvitation
         
         self.viewControllers = [self.sharingStatusViewControllerInst, sharingInvitationViewControllerInst]

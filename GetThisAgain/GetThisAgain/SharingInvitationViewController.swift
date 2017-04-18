@@ -61,7 +61,16 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
             }
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            // accessibility labels for buttons in alertController
+            if let confirmDeleteInvitation = alertController.actions.first {
+                confirmDeleteInvitation.accessibilityLabel = "confirmDeleteInvitation"
+            }
+            
+            if let cancelDeleteInvitation = alertController.actions.last {
+                cancelDeleteInvitation.accessibilityLabel = "cancelDeleteInvitation"
+            }
+        })
     }
     
     func userAssociatedWithList(listID: Int, listOwner: String, listViewer: String) -> String {
@@ -99,6 +108,7 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
         //Add text field
         alertController.addTextField { (textField) -> Void in
             textField.placeholder = "Recipient's Sign in Name"
+            textField.accessibilityLabel = "textField"
         }
         alertController.addAction(UIAlertAction(title: "Send", style: UIAlertActionStyle.default){ action -> Void in
             if let invitationRecipient = ((alertController.textFields?.first)! as UITextField).text {
@@ -136,7 +146,16 @@ class SharingInvitationViewController: UIViewController, SharingInvitationViewDe
             }
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            // accessibility labels for buttons in alertController
+            if let sendInvitation = alertController.actions.first {
+                sendInvitation.accessibilityLabel = "sendInvitation"
+            }
+            
+            if let cancelInvitation = alertController.actions.last {
+                cancelInvitation.accessibilityLabel = "cancelInvitation"
+            }
+        })
     }
     
     func createArraysForTableView() {

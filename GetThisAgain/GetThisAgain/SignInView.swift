@@ -53,6 +53,7 @@ class SignInView: UIView, UITextFieldDelegate {
     
     override init(frame:CGRect){
         super.init(frame: frame)
+        self.accessibilityLabel = "signInViewInst"
         self.layoutForm()
         
         // add tag and set delegate for client side validation

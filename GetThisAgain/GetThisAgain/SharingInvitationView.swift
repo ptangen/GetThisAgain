@@ -31,12 +31,14 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
     
     override init(frame:CGRect){
         super.init(frame: frame)
+        self.accessibilityLabel = "sharingInvitationViewInst"
         
         self.tabDescription.text = "Send an invitation to share your shopping list with someone else. Accept invitations from people that want to share their list with you."
         self.tabDescription.numberOfLines = 0
         
         self.invitationsTableView.delegate = self
         self.invitationsTableView.dataSource = self
+        self.invitationsTableView.accessibilityIdentifier = "invitationsTableView"
         
         // addInvitationButton
         self.addInvitationButton.addTarget(self, action: #selector(self.onTapAddInvitation), for: UIControlEvents.touchUpInside)
@@ -44,6 +46,7 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.addInvitationButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
         self.addInvitationButton.setTitleColor(UIColor(named: .blue), for: .normal)
         self.addInvitationButton.isEnabled = true
+        self.addInvitationButton.accessibilityLabel = "addInvitationButton"
         
         // acceptInvitationButton
         self.acceptInvitationButton.addTarget(self, action: #selector(self.onTapAcceptInvitation), for: UIControlEvents.touchUpInside)
@@ -52,6 +55,7 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.acceptInvitationButton.setTitleColor(UIColor(named: .blue), for: .normal)
         self.acceptInvitationButton.setTitleColor(UIColor(named: .disabledText), for: .disabled)
         self.acceptInvitationButton.isEnabled = false
+        self.acceptInvitationButton.accessibilityLabel = "acceptInvitationButton"
         
         // deleteInvitationButton
         self.deleteInvitationButton.addTarget(self, action: #selector(self.onTapDeleteInvitation), for: UIControlEvents.touchUpInside)
@@ -60,6 +64,7 @@ class SharingInvitationView: UIView, UITableViewDataSource, UITableViewDelegate 
         self.deleteInvitationButton.setTitleColor(UIColor(named: .blue), for: .normal)
         self.deleteInvitationButton.setTitleColor(UIColor(named: .disabledText), for: .disabled)
         self.deleteInvitationButton.isEnabled = false
+        self.deleteInvitationButton.accessibilityLabel = "deleteInvitationButton"
         
         self.pageLayout()
     }
