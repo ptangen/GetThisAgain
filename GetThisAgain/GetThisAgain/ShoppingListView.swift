@@ -47,6 +47,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         self.pageLayout()
         
         self.accessibilityLabel = "shoppingListViewInst"
+        self.shoppingListTableView.accessibilityIdentifier = "shoppingListTableView"
     }
     
     // tableview config

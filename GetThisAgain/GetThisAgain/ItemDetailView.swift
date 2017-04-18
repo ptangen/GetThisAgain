@@ -50,6 +50,8 @@ class ItemDetailView: UIView {
     override init(frame:CGRect){
         super.init(frame: frame)
         self.accessibilityLabel = "itemDetailViewInst"
+        nameLabel.accessibilityLabel = "nameLabel"
+        categoryLabel.accessibilityLabel = "categoryLabel"
         
         // editTextButton
         self.editTextButton.addTarget(self, action: #selector(self.onTapItemNameOrIcon), for: UIControlEvents.touchUpInside)
@@ -74,10 +76,12 @@ class ItemDetailView: UIView {
         self.getAgainPicker.insertSegment(with: #imageLiteral(resourceName: "circleCheck"), at: 2, animated: false)
         self.getAgainPicker.selectedSegmentIndex = 1
         self.getAgainPicker.addTarget(self, action: #selector(self.getThisAgainStatusValueChanged(_:)), for: .valueChanged)
+        self.getAgainPicker.accessibilityLabel = "getAgainPicker"
         
         // shopping list
         self.shoppingListLabel.text = "On Shopping List"
         self.shoppingListSwitch.addTarget(self, action: #selector(self.switchStateDidChange(_:)), for: .valueChanged)
+        self.shoppingListSwitch.accessibilityLabel = "shoppingListSwitch"
         
         // buyOnline
         self.buyOnlineLabel.text = "Buy Online"
