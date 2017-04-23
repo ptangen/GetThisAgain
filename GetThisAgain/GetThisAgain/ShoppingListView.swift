@@ -48,6 +48,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         self.accessibilityLabel = "shoppingListViewInst"
         self.shoppingListTableView.accessibilityIdentifier = "shoppingListTableView"
+        self.shoppingListTableView.accessibilityLabel = "shoppingListTableView"
     }
     
     // tableview config
@@ -172,6 +173,7 @@ class ShoppingListView: UIView, UITableViewDataSource, UITableViewDelegate {
             })
         }
         removeButton.backgroundColor = UIColor(named: .statusGreen)
+        removeButton.accessibilityLabel = "removeButton"
         return [removeButton]
     }
 

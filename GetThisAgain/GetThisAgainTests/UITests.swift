@@ -50,8 +50,10 @@ class UITests : KIFTestCase {
         tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Add on right in nav bar
         tester().waitForView(withAccessibilityLabel: "captureItemViewInst")
         tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap Cancel on left in nav bar
+        tester().waitForAnimationsToFinish(withTimeout: 1)
         tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Add on right in nav bar
         tester().waitForView(withAccessibilityLabel: "captureItemViewInst")
+        tester().waitForAnimationsToFinish(withTimeout: 1)
         tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Continue on right in nav bar
         tester().waitForView(withAccessibilityLabel: "editNameViewInst")
         tester().enterText("Tester1 item", intoViewWithAccessibilityLabel: "nameTextView")
@@ -115,6 +117,7 @@ class UITests : KIFTestCase {
         tester().tapView(withAccessibilityLabel: "addInvitationButton")
         tester().enterText("tester2", intoViewWithAccessibilityLabel: "textField")
         tester().tapView(withAccessibilityLabel:"sendInvitation")
+        tester().waitForAnimationsToFinish(withTimeout: 1)
         if let newInvitations = tester().waitForCell(at: indexPath, inTableViewWithAccessibilityIdentifier: "invitationsTableView") {
             tester().expect(newInvitations.textLabel, toContainText: "tester2")
         }
@@ -164,8 +167,8 @@ class UITests : KIFTestCase {
         
         // enable on shoppingListSwitch
         let shoppingListSwitch2 = tester().waitForView(withAccessibilityLabel: "shoppingListSwitch")
-        let shoppingListSwitch2Center = CGPoint(x: (shoppingListSwitch2?.frame.maxX)! - 15, y: (shoppingListSwitch2?.frame.minY)! + 80) // + 60 for nav
-        tester().tapScreen(at: shoppingListSwitch2Center)
+        let shoppingListSwitch2Enable = CGPoint(x: (shoppingListSwitch2?.frame.maxX)! - 15, y: (shoppingListSwitch2?.frame.minY)! + 80) // + 60 for nav
+        tester().tapScreen(at: shoppingListSwitch2Enable)
         
         tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Add Item on right in nav bar
         
@@ -195,9 +198,46 @@ class UITests : KIFTestCase {
         tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Done on right in nav bar
         tester().waitForView(withAccessibilityLabel: "shoppingListViewInst")
         
-        // sign out user 2
-        tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap Menu button on right in nav bar
+        // remove item from shopping list by tester2
+        var indexPathShoppingList = IndexPath(row: 1, section: 0)
+        tester().waitForAnimationsToFinish(withTimeout: 1)
+        let shoppingListTableView = tester().waitForView(withAccessibilityLabel: "shoppingListTableView")
+        tester().swipeRow(at: indexPathShoppingList, in: shoppingListTableView as! UITableView, in: .left)
+        tester().tapView(withAccessibilityLabel: "removeButton")
+        
+        // remove item created by tester2
+        tester().tapView(withAccessibilityLabel:"tabMyItems")
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        let indexPathMyItems = IndexPath(row: 0, section: 0)
+        tester().tapRow(at: indexPathMyItems, inTableViewWithAccessibilityIdentifier: "myItemsTableView")
+        tester().waitForView(withAccessibilityLabel: "itemDetailViewInst")
+        let nameLabel2 = tester().waitForView(withAccessibilityLabel: "nameLabel")
+        tester().expect(nameLabel2, toContainText: "Tester2 item")
+        let categoryLabel2 = tester().waitForView(withAccessibilityLabel: "categoryLabel")
+        tester().expect(categoryLabel2, toContainText: "none")
+        tester().tapScreen(at: CGPoint(x: 40, y: 40)) // tap Delete on left in nav bar
+        tester().waitForAnimationsToFinish(withTimeout: 1)
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        
+        // clear sharing for tester2
+        tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap menu button in nav bar
+        tester().tapView(withAccessibilityLabel: "Sharing Shopping Lists") // accessibilityLabel provided automatically
+        tester().waitForView(withAccessibilityLabel: "sharingStatusViewInst")
+        tester().waitForView(withAccessibilityLabel: "sharingStatusViewInst")
+        tester().tapRow(at: indexPathSharing, inTableViewWithAccessibilityIdentifier: "usersWithAccessTableView")
+        tester().tapView(withAccessibilityLabel: "deleteListFromUserButton")
+        tester().tapView(withAccessibilityLabel:"confirmDeleteListFromUser")
+        
+        tester().tapView(withAccessibilityLabel: "tabInvitation")
+        tester().waitForView(withAccessibilityLabel: "sharingInvitationViewInst")
+        tester().tapRow(at: indexPathSharing, inTableViewWithAccessibilityIdentifier: "invitationsTableView")
+        tester().tapView(withAccessibilityLabel: "deleteInvitationButton")
+        tester().tapView(withAccessibilityLabel:"confirmDeleteInvitation")
+        tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Done on right in nav bar
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        
+        // sign out tester2
+        tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap menu button in nav bar
         tester().tapView(withAccessibilityLabel: "Sign Out") // accessibilityLabel provided automatically
     }
-    
 }
