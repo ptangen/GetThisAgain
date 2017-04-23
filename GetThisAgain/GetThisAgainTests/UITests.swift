@@ -199,7 +199,7 @@ class UITests : KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "shoppingListViewInst")
         
         // remove item from shopping list by tester2
-        var indexPathShoppingList = IndexPath(row: 1, section: 0)
+        let indexPathShoppingList = IndexPath(row: 1, section: 0)
         tester().waitForAnimationsToFinish(withTimeout: 1)
         let shoppingListTableView = tester().waitForView(withAccessibilityLabel: "shoppingListTableView")
         tester().swipeRow(at: indexPathShoppingList, in: shoppingListTableView as! UITableView, in: .left)
@@ -237,6 +237,48 @@ class UITests : KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
         
         // sign out tester2
+        tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap menu button in nav bar
+        tester().tapView(withAccessibilityLabel: "Sign Out") // accessibilityLabel provided automatically
+        
+        // clear objects created by tester1
+        
+        // sign in as tester1
+        tester().clearTextFromView(withAccessibilityLabel: "userNameField")
+        tester().enterText(Secrets.userNameUITest1, intoViewWithAccessibilityLabel: "userNameField")
+        tester().enterText(Secrets.passwordUITest1, intoViewWithAccessibilityLabel: "passwordField")
+        tester().tapView(withAccessibilityLabel:"signInButton")
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        
+        // open item
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        tester().tapRow(at: indexPathMyItems, inTableViewWithAccessibilityIdentifier: "myItemsTableView")
+        tester().waitForView(withAccessibilityLabel: "itemDetailViewInst")
+        let nameLabel1 = tester().waitForView(withAccessibilityLabel: "nameLabel")
+        tester().expect(nameLabel1, toContainText: "Tester1 item")
+        let categoryLabel1 = tester().waitForView(withAccessibilityLabel: "categoryLabel")
+        tester().expect(categoryLabel1, toContainText: "Tester1 category")
+        tester().tapView(withAccessibilityLabel:"editTextButton")
+        tester().waitForView(withAccessibilityLabel: "editNameViewInst")
+        
+        // editNameView
+        var indexPathCategory = IndexPath(row: 1, section: 0) // select 'none' category
+        tester().tapRow(at: indexPathCategory, inTableViewWithAccessibilityIdentifier: "categoryTableView")
+        tester().waitForAnimationsToFinish(withTimeout: 1)
+        tester().tapView(withAccessibilityLabel:"deleteCategoryButton")
+        tester().tapView(withAccessibilityLabel: "Tester1 category") // accessibilityLabel provided automatically
+        // verify category was removed
+        indexPathCategory = IndexPath(row: 0, section: 0)
+        if let newCategoryResults = tester().waitForCell(at: indexPathCategory, inTableViewWithAccessibilityIdentifier: "categoryTableView") {
+            tester().expect(newCategoryResults.textLabel, toContainText: "none")
+        }
+        tester().tapScreen(at: CGPoint(x: UIScreen.main.bounds.width - 40, y: 40)) // tap Next on right in nav bar
+        tester().waitForView(withAccessibilityLabel: "itemDetailViewInst")
+        let categoryLabelNone = tester().waitForView(withAccessibilityLabel: "categoryLabel")
+        tester().expect(categoryLabelNone, toContainText: "none")
+        tester().tapScreen(at: CGPoint(x: 40, y: 40)) // tap Delete item on right in nav bar
+        tester().waitForView(withAccessibilityLabel: "myItemsViewInst")
+        
+        // sign out tester1
         tester().tapScreen(at: CGPoint(x: 40, y: 50)) // tap menu button in nav bar
         tester().tapView(withAccessibilityLabel: "Sign Out") // accessibilityLabel provided automatically
     }

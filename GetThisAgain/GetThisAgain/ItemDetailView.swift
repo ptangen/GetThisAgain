@@ -58,6 +58,7 @@ class ItemDetailView: UIView {
         self.editTextButton.setTitle(Constants.iconLibrary.mode_edit.rawValue, for: .normal)
         self.editTextButton.titleLabel!.font =  UIFont(name: Constants.iconFont.material.rawValue, size: CGFloat(Constants.iconSize.small.rawValue))
         self.editTextButton.setTitleColor(UIColor(named: .blue), for: .normal)
+        self.editTextButton.accessibilityLabel = "editTextButton"
         
         // gesture recognizer for nameLabel
         let tapNameLabel = UITapGestureRecognizer(target: self, action: #selector(self.onTapItemNameOrIcon))
